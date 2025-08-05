@@ -1,0 +1,254 @@
+# ClearStay - Commission-Free Hotel Booking Platform
+
+A modern, commission-free hotel booking platform for independent hotels, starting with Toronto. ClearStay provides a high-trust, no-middleman experience by connecting guests directly to hotel booking engines with Apple-style polish and travel-tech simplicity.
+
+## 🎯 Mission
+
+**For Hotels**: No commissions, use their real booking engine, act as a transparent traffic source.
+**For Guests**: Cleaner prices, confidence of "booking direct," ClearStay mimics hotel's booking engine layout and passes bookings directly.
+
+## 🏗️ Tech Stack
+
+- **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Data Source**: SerpAPI Google Hotel Search API
+- **Styling**: Tailwind CSS with custom design system
+- **Icons**: Lucide React
+- **Date Handling**: react-datepicker with custom styling
+- **Animations**: CSS keyframes and Tailwind transitions
+
+## 🚀 Features
+
+### Current Implementation
+
+#### Homepage (`/`)
+- **Modern Hero Section**: Soft gradient background with centered headline and search box
+- **Expedia-Style Search Form**: Horizontally segmented card with date range picker, traveler selector, and CTA button
+- **Enhanced Date Picker**: Single calendar view for selecting both check-in and check-out dates with "Search Hotels" button within calendar
+- **Trust-Building Sections**: "Why We Built ClearStay," "How It Works" (4-step visual guide), and "What You Get" with icons and responsive grid layout
+- **Premium Navigation**: Sticky navbar with ClearStay branding, navigation links, and CTA button
+- **Subtle Animations**: Fade-in and slide-up effects on page load
+
+#### About Page (`/about`)
+- **Trust-Building Content**: Explains ClearStay's mission and differentiators
+- **Problem Section**: 3-column card layout explaining issues with traditional booking
+- **Solution Section**: 4-step visual flow showing how ClearStay works differently
+- **Benefits Section**: List of user benefits with checkmark icons
+- **CTA Section**: Call-to-action for users to start searching
+- **Consistent Design**: Matches homepage styling and navigation
+
+#### Search Results (`/search`)
+- **Enhanced Card Design**: Soft white cards with rounded corners, subtle shadows, and hover effects
+- **Hotel Descriptions**: Parsed and cached hotel descriptions displayed in each card
+- **Improved Typography**: Bold hotel names, golden ratings, neighborhood information
+- **Price Badge**: Repositioned pricing as a green badge in bottom-right corner
+- **Action Buttons**: Enhanced "Book Direct" and "Check Direct for Best Rate" buttons with icons
+- **Hotel Images**: Placeholder images for visual appeal
+- **Responsive Layout**: Mobile-friendly design with proper spacing
+
+#### Unified API Integration (`/api/search`)
+- **Single Endpoint**: Unified `/api/search` handles both search results and individual hotel data
+- **Smart Routing**: Automatically detects if `slug` parameter is provided for individual hotel requests
+- **Enhanced Data Processing**: 
+  - Filters for official offers only (`official: true`)
+  - Extracts `extracted_before_taxes_fees` for accurate pricing
+  - Parses and caches hotel descriptions
+  - Removes generic room entries with intelligent filtering
+- **Advanced Room Filtering**: Filters out generic room names and entries without images
+- **Raw JSON Debugging**: Automatically saves all SerpAPI responses to `raw.json/` directory for debugging
+- **Static Metadata Caching**: Caches hotel metadata per property token for performance
+- **Real-Time Pricing**: Never caches rates to ensure fresh pricing data
+- **SerpAPI Integration**: Uses `google_hotels` engine with proper query parameters
+
+#### Premium Hotel Detail Pages (`/hotels/[slug]`)
+- **Brand-First Header**: Gradient header with hotel name, address, and ClearStay branding
+- **Hero Card Design**: Side-by-side layout with hotel image and comprehensive information
+- **Trust & Price Block**: Prominent pricing display with "Direct Rate from Hotel Website" messaging
+- **Trust Badges**: Visual indicators for "No middlemen," "No hidden fees," "Secure booking"
+- **Polished Room Grid**: Responsive 3-column grid layout for room cards with images and pricing
+- **Enhanced Room Cards**: Each room shows image, name, price, guest count, and booking link
+- **Mobile Sticky CTA**: Bottom-fixed booking button on mobile devices
+- **ClearStay Branding**: Consistent branding throughout with "Powered by ClearStay" messaging
+- **Professional Polish**: Premium design with shadows, gradients, and smooth transitions
+
+### Hotel Coverage (Toronto)
+
+Currently supports 8 Toronto hotels with enhanced descriptions:
+- Pantages Hotel Downtown Toronto
+- Town Inn Suites
+- One King West Hotel & Residence
+- The Omni King Edward Hotel
+- Chelsea Hotel, Toronto
+- The Anndore House - JDV by Hyatt
+- Sutton Place Hotel Toronto
+- Ace Hotel Toronto
+
+## 🎨 Design Philosophy
+
+- **Apple-Style Polish**: Clean, modern interface with travel-tech simplicity
+- **Trust-First Design**: Premium navigation, trust badges, and transparent pricing
+- **Mobile-First**: Responsive design optimized for all devices
+- **Microinteractions**: Hover states, button animations, and smooth transitions
+- **Color Palette**: Light base with deep blue accents and secondary highlights
+- **Typography**: Modern geometric fonts with increased line height and letter spacing
+
+## 🔧 Development
+
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+
+### Installation
+```bash
+npm install
+```
+
+### Running the Development Server
+```bash
+npm run dev
+```
+
+The application will be available at `http://localhost:3000`
+
+### Environment Variables
+Create a `.env.local` file in the root directory with:
+```
+SERPAPI_KEY=your_serpapi_key_here
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### Debugging Features
+- **Raw JSON Files**: All SerpAPI responses are automatically saved to `raw.json/` directory
+- **Timestamped Files**: Each API call creates a unique timestamped file for debugging
+- **Console Logging**: Detailed console output for API responses and data processing
+
+## 📁 Project Structure
+
+```
+ClearStay/
+├── app/
+│   ├── api/
+│   │   └── search/route.ts    # Unified API endpoint for search and individual hotels
+│   ├── hotels/
+│   │   └── [slug]/page.tsx    # Premium hotel detail pages with enhanced design
+│   ├── about/page.tsx         # About page with trust-building content
+│   ├── search/page.tsx        # Enhanced search results page
+│   ├── globals.css            # Global styles with custom datepicker styling
+│   ├── layout.tsx             # Root layout
+│   └── page.tsx               # Modern homepage with enhanced search form
+├── public/
+│   ├── clearstay-logo.png     # ClearStay logo (PNG)
+│   └── clearstay-logo.svg     # ClearStay logo (SVG)
+├── types/
+│   └── hotel.ts              # TypeScript interfaces
+├── lib/
+│   └── hotels.ts             # Hotel data, utilities, and slug mappings
+├── raw.json/                 # Debug directory for SerpAPI responses
+├── data/                     # Data files (gitignored)
+├── .gitignore               # Git ignore rules
+├── package.json             # Node.js dependencies
+├── tsconfig.json           # TypeScript configuration
+├── tailwind.config.js      # Tailwind CSS configuration
+├── next.config.js          # Next.js configuration
+└── README.md               # Project documentation
+```
+
+## 🔄 Data Flow
+
+1. **User Input**: Date range and guest count on homepage with enhanced date picker
+2. **Unified API Call**: Frontend calls `/api/search` with parameters (with or without slug)
+3. **Smart Routing**: API automatically detects request type and routes accordingly
+4. **SerpAPI Integration**: Backend fetches data from SerpAPI for each hotel
+5. **Enhanced Data Processing**: 
+   - Filters for official offers only (`official: true`)
+   - Extracts `extracted_before_taxes_fees` for accurate pricing
+   - Parses and caches hotel descriptions
+   - Filters out generic room entries and entries without images
+   - Saves raw JSON responses for debugging
+6. **Frontend Display**: 
+   - Search results: Shows one rate per hotel with descriptions and enhanced styling
+   - Hotel details: Premium layout with hero card, trust badges, and room grid
+7. **Direct Booking**: Seamless integration with hotel booking engines for commission-free bookings
+
+## 🚧 Current Status
+
+### ✅ Completed
+- Next.js project setup with TypeScript and Tailwind CSS
+- **Modern Homepage**: Redesigned with Apple-style polish and Expedia-style search form
+- **Enhanced Search Results**: Improved card design, typography, and user experience
+- **About Page**: New trust-building page with ClearStay's mission and differentiators
+- **Premium Navigation**: Consistent navbar across all pages with enhanced styling
+- **Hotel Descriptions**: Parsed and displayed hotel descriptions with caching
+- **Date Picker Enhancement**: Single calendar view with integrated search button
+- **Unified API Structure**: Single `/api/search` endpoint handles both search and individual hotel requests
+- **Premium Hotel Detail Pages**: Complete redesign with brand-first header, hero card, and polished room grid
+- **Enhanced Data Extraction**: Correctly extracts `extracted_before_taxes_fees` for accurate pricing
+- **Advanced Room Filtering**: Intelligent filtering removes generic room entries and entries without images
+- **Raw JSON Debugging**: Automatic saving of all SerpAPI responses for development and debugging
+- **Static Metadata Caching**: Performance optimization with cached hotel metadata
+- **Trust-Building Elements**: Visual trust badges and ClearStay branding throughout
+- **Mobile-First Design**: Responsive design with mobile-specific features like sticky CTAs
+- **Direct Booking Links**: Commission-free rates with dynamic parameters
+- **SerpAPI Integration**: Advanced data processing with correct API structure and debugging support
+
+### 🔄 In Progress
+- Environment variable configuration for API keys
+- Additional error handling and loading states
+- Performance optimization for large datasets
+- Testing and validation of updated SerpApi integration
+
+### 📋 Planned
+- Additional cities beyond Toronto
+- User reviews and ratings integration
+- Advanced search filters and sorting
+- Mobile app development
+- Hotel partner onboarding system
+- Real-time availability updates
+- Hotel image galleries and virtual tours
+- Guest review integration
+- Advanced room comparison features
+
+## 🎯 Key Features
+
+### Search Experience
+- **Single Calendar View**: Select both check-in and check-out dates in one interface
+- **Traveler Selection**: Modal-based guest and room selector
+- **Real-Time Pricing**: Direct from hotel booking engines with `extracted_before_taxes_fees`
+- **Commission-Free Rates**: Only official hotel rates displayed
+
+### Premium Hotel Detail Pages
+- **Brand-First Design**: Professional header with ClearStay branding
+- **Hero Card Layout**: Side-by-side hotel image and information display
+- **Trust & Price Block**: Prominent pricing with trust indicators
+- **Polished Room Grid**: Responsive 3-column layout for room options
+- **Mobile Sticky CTA**: Bottom-fixed booking button for mobile users
+- **ClearStay Branding**: Consistent "Powered by ClearStay" messaging
+
+### Trust & Transparency
+- **Hotel Descriptions**: Detailed information about each property
+- **Direct Booking**: Links go directly to hotel websites
+- **No Hidden Fees**: Transparent pricing with no markups
+- **Verified Hotels**: Only legitimate, verified properties
+- **Trust Badges**: Visual indicators for security and transparency
+
+### User Experience
+- **Modern Design**: Clean, trustworthy interface with premium feel
+- **Responsive Layout**: Optimized for all devices
+- **Smooth Animations**: Subtle microinteractions and transitions
+- **Clear Navigation**: Intuitive site structure with consistent branding
+- **Detailed Hotel Pages**: Comprehensive information with room availability and amenities
+- **SEO-Friendly URLs**: Clean, descriptive hotel URLs for better discoverability
+
+### Development & Debugging
+- **Raw JSON Files**: Automatic saving of all API responses for debugging
+- **Enhanced Filtering**: Intelligent removal of generic room entries
+- **Performance Optimization**: Static metadata caching for improved performance
+- **Unified API**: Single endpoint handles multiple use cases efficiently
+
+## 🤝 Contributing
+
+This is a private project for ClearStay. For questions or collaboration, please contact the development team.
+
+## 📄 License
+
+Private project - All rights reserved. 
