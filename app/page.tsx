@@ -53,8 +53,7 @@ export default function HomePage() {
 
   const getTravelerText = () => {
     const total = searchParams.adults + searchParams.children;
-    const roomText = searchParams.adults > 1 ? 'rooms' : 'room';
-    return `${total} traveler${total > 1 ? 's' : ''}, ${searchParams.adults} ${roomText}`;
+    return `${total} traveler${total > 1 ? 's' : ''}, 1 room`;
   };
 
   // Click outside handlers
