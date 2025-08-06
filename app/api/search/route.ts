@@ -327,6 +327,7 @@ async function fetch_all_hotels(checkin: string, checkout: string, adults: numbe
 
   for (const hotel of hotels) {
     try {
+      console.log(`Fetching data for ${hotel.name}...`);
       const response = await fetch(
         `https://serpapi.com/search?engine=google_hotels&q=Toronto&property_token=${hotel.token}&check_in_date=${checkin}&check_out_date=${checkout}&adults=2&currency=CAD&hl=en&gl=ca&api_key=${apiKey}`,
         {
@@ -342,6 +343,7 @@ async function fetch_all_hotels(checkin: string, checkout: string, adults: numbe
       }
       
       const data = await response.json();
+      console.log(`API Response for ${hotel.name}:`, JSON.stringify(data, null, 2));
       
       // Parse hotel description
       const description = parseHotelDescription(data, hotel.name);
@@ -367,11 +369,13 @@ async function fetch_all_hotels(checkin: string, checkout: string, adults: numbe
 
       // Check featured_prices[] for official offers
       const featuredPrices = data?.featured_prices || [];
+      console.log(`Featured prices for ${hotel.name}:`, featuredPrices);
       for (const offer of featuredPrices) {
         if (offer.official === true) {
           const rooms = offer.rooms || [];
           for (const room of rooms) {
             const beforeTaxes = room.before_taxes?.extracted_before_taxes_fees || room.price_per_night?.extracted_before_taxes_fees;
+            console.log(`Room ${room.name} price:`, beforeTaxes);
             
             // Only update if we have a valid before_taxes price and it's lower than current
             if (beforeTaxes && (!hotelResults[hotel.name].before_taxes || beforeTaxes < hotelResults[hotel.name].before_taxes)) {
@@ -387,6 +391,7 @@ async function fetch_all_hotels(checkin: string, checkout: string, adults: numbe
                 discount_remarks: room.discount_remarks || offer.remarks || null,
                 description: description
               };
+              console.log(`Updated ${hotel.name} with price:`, beforeTaxes);
             }
           }
         }
@@ -394,9 +399,11 @@ async function fetch_all_hotels(checkin: string, checkout: string, adults: numbe
       
       // Check prices[] for official offers
       const prices = data?.prices || [];
+      console.log(`Regular prices for ${hotel.name}:`, prices);
       for (const price of prices) {
         if (price.official === true) {
           const beforeTaxes = price.rate_per_night?.extracted_before_taxes_fees;
+          console.log(`Price for ${hotel.name}:`, beforeTaxes);
           
           // Only update if we have a valid before_taxes price and it's lower than current
           if (beforeTaxes && (!hotelResults[hotel.name].before_taxes || beforeTaxes < hotelResults[hotel.name].before_taxes)) {
@@ -412,6 +419,7 @@ async function fetch_all_hotels(checkin: string, checkout: string, adults: numbe
               discount_remarks: price.discount_remarks || null,
               description: description
             };
+            console.log(`Updated ${hotel.name} with price:`, beforeTaxes);
           }
         }
       }
@@ -422,6 +430,7 @@ async function fetch_all_hotels(checkin: string, checkout: string, adults: numbe
     }
   }
 
+  console.log('Final hotel results:', hotelResults);
   // Convert to array and filter out hotels without any data
   return Object.values(hotelResults).filter(hotel => hotel.link !== null);
 }
