@@ -135,7 +135,12 @@ async function fetch_individual_hotel(slug: string, checkin: string, checkout: s
     throw new Error("Hotel not found");
   }
 
-  const apiKey = "63a0bf1d12a68858787d3e5edc4c1126b0fb7a07d26850cfddaefadf5ff20f11";
+  const apiKey = process.env.SERPAPI_KEY;
+  if (!apiKey) {
+    console.error("SERPAPI_KEY environment variable is not set");
+    return getFallbackHotelData(slug, hotelName, checkin, checkout, adults, children);
+  }
+
   const serpUrl = `https://serpapi.com/search.json?engine=google_hotels&q=Toronto&property_token=${token}&check_in_date=${checkin}&check_out_date=${checkout}&adults=${adults}&children=${children}&currency=CAD&hl=en&gl=ca&api_key=${apiKey}`;
 
   try {
@@ -271,7 +276,13 @@ function getFallbackHotelData(slug: string, hotelName: string, checkin: string, 
 }
 
 async function fetch_all_hotels(checkin: string, checkout: string, adults: number, children: number) {
-  const apiKey = "63a0bf1d12a68858787d3e5edc4c1126b0fb7a07d26850cfddaefadf5ff20f11";
+  const apiKey = process.env.SERPAPI_KEY;
+  if (!apiKey) {
+    console.error("SERPAPI_KEY environment variable is not set");
+    // Return fallback data for all hotels
+    return getFallbackHotelDataForAllHotels(checkin, checkout, adults, children);
+  }
+
   const hotels = [
     { name: "Pantages Hotel Downtown Toronto", token: "ChUIuuHw2tTc5roDGgkvbS8wOGw0bHIQAQ" },
     { name: "Town Inn Suites", token: "ChgI-qf9yYXimbHBARoLL2cvMXRoeDAxemoQAQ" },
@@ -412,4 +423,37 @@ function getHotelRating(hotelName: string): number {
     "Ace Hotel Toronto": 4.3
   };
   return ratings[hotelName] || 4.0;
+} 
+
+function getFallbackHotelDataForAllHotels(checkin: string, checkout: string, adults: number, children: number) {
+  const hotels = [
+    "Pantages Hotel Downtown Toronto",
+    "Town Inn Suites", 
+    "One King West Hotel & Residence",
+    "The Omni King Edward Hotel",
+    "Chelsea Hotel, Toronto",
+    "The Anndore House - JDV by Hyatt",
+    "Sutton Place Hotel Toronto",
+    "Ace Hotel Toronto"
+  ];
+
+  return hotels.map(hotelName => {
+    const base_link = HARDCODED_BOOKING_LINKS[hotelName];
+    const link = base_link ? 
+      inject_parameters_into_url(base_link, checkin, checkout, adults, children) : 
+      null;
+
+    return {
+      hotel: hotelName,
+      link,
+      before_taxes: null,
+      source: "Official Site",
+      address: getHotelAddress(hotelName),
+      rating: getHotelRating(hotelName),
+      image: null,
+      remarks: null,
+      discount_remarks: null,
+      description: HOTEL_DESCRIPTIONS[hotelName] || "A comfortable hotel in downtown Toronto with modern amenities and excellent service."
+    };
+  }).filter(hotel => hotel.link !== null);
 } 
