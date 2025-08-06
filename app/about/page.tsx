@@ -11,7 +11,11 @@ export default function AboutPage() {
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
               <a href="/" className="flex items-center space-x-3">
-                <img src="/innstastay-logo.png" alt="InnstaStay" className="h-12 w-auto" />
+                <img
+                  src="/innstastay-logo.svg"
+                  alt="InnstaStay Logo"
+                  className="h-10 w-auto"
+                />
               </a>
             </div>
             <ul className="flex space-x-8 text-md font-medium text-neutral-700">
