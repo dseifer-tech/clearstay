@@ -208,13 +208,9 @@ export default function SearchResults() {
                       </div>
                       
                       <div className="flex flex-col justify-between items-end">
-                        {hotel.before_taxes ? (
+                        {hotel.before_taxes && (
                           <div className="bg-green-100 text-green-800 font-bold px-4 py-2 rounded-full text-lg">
                             ${hotel.before_taxes} / night
-                          </div>
-                        ) : (
-                          <div className="bg-zinc-100 text-zinc-600 font-semibold px-4 py-2 rounded-full text-sm">
-                            Rate Unavailable
                           </div>
                         )}
                       </div>
