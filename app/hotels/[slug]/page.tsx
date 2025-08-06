@@ -1,8 +1,22 @@
-'use client';
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import type { Metadata } from 'next';
+import { SLUG_TO_TOKEN } from '@/lib/hotels';
 import { Star, MapPin, Wifi, Coffee, Car, Dumbbell, Users, Building, Shield, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const name = params.slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  return {
+    title: `${name} | Book Direct on InnstaStay`,
+    description: `Compare real-time direct rates for ${name}. No commissions. Always book direct with InnstaStay.`,
+    openGraph: {
+      title: `${name} | InnstaStay`,
+      description: `Verified hotel. Live pricing from the hotel website.`,
+      url: `https://innstastay.com/hotels/${params.slug}`,
+      images: ['/innstastay-logo.svg']
+    },
+    robots: 'index, follow'
+  };
+}
 
 interface HotelData {
   hotel: string;
@@ -39,53 +53,46 @@ interface HotelData {
   }[];
 }
 
-export default function HotelSlugPage({ params }: { params: { slug: string } }) {
-  const searchParams = useSearchParams();
-  const checkin = searchParams.get("checkin");
-  const checkout = searchParams.get("checkout");
-  const adults = searchParams.get("adults") || "2";
-  const children = searchParams.get("children") || "0";
-  const [hotel, setHotel] = useState<HotelData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export default async function HotelSlugPage({ 
+  params, 
+  searchParams 
+}: { 
+  params: { slug: string };
+  searchParams: { checkin?: string; checkout?: string; adults?: string; children?: string };
+}) {
+  const checkin = searchParams.checkin;
+  const checkout = searchParams.checkout;
+  const adults = searchParams.adults || "2";
+  const children = searchParams.children || "0";
 
-  useEffect(() => {
-    if (!checkin || !checkout || !params.slug) {
-      setError("Missing required parameters");
-      setLoading(false);
-      return;
-    }
-
-    const loadHotel = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/search?slug=${params.slug}&checkin=${checkin}&checkout=${checkout}&adults=${adults}&children=${children}`);
-        const data = await res.json();
-        
-        if (data.error) {
-          setError(data.error);
-        } else {
-          setHotel(data);
-        }
-      } catch (err) {
-        setError("Failed to load hotel data");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadHotel();
-  }, [checkin, checkout, params.slug, adults, children]);
-
-  if (loading) {
+  if (!checkin || !checkout || !params.slug) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading hotel information...</p>
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Error</h1>
+          <p className="text-gray-600 mb-4">Missing required parameters</p>
+          <Link href="/search" className="text-blue-600 hover:underline">
+            ← Back to Search
+          </Link>
         </div>
       </div>
     );
+  }
+
+  let hotel: HotelData | null = null;
+  let error: string | null = null;
+
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search?slug=${params.slug}&checkin=${checkin}&checkout=${checkout}&adults=${adults}&children=${children}`);
+    const data = await res.json();
+    
+    if (data.error) {
+      error = data.error;
+    } else {
+      hotel = data;
+    }
+  } catch (err) {
+    error = "Failed to load hotel data";
   }
 
   if (error || !hotel) {
@@ -103,7 +110,36 @@ export default function HotelSlugPage({ params }: { params: { slug: string } }) 
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Hotel",
+            "name": hotel.hotel,
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": hotel.address,
+              "addressLocality": "Toronto",
+              "addressRegion": "ON",
+              "addressCountry": "CA"
+            },
+            "priceRange": hotel.official_price?.rate_per_night ? `$${hotel.official_price.rate_per_night} CAD` : undefined,
+            "url": `https://innstastay.com/hotels/${params.slug}`,
+            "starRating": {
+              "@type": "Rating",
+              "ratingValue": hotel.rating,
+              "bestRating": 5
+            },
+            "amenityFeature": [
+              { "@type": "LocationFeatureSpecification", "name": "Book Direct", "value": true },
+              { "@type": "LocationFeatureSpecification", "name": "No Commission", "value": true }
+            ]
+          })
+        }}
+      />
+      <div className="min-h-screen bg-gray-50">
       {/* Brand-First Header Strip */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-400 text-white p-6 rounded-b-xl shadow-md">
         <div className="max-w-7xl mx-auto">
@@ -275,5 +311,6 @@ export default function HotelSlugPage({ params }: { params: { slug: string } }) 
         </div>
       </div>
     </div>
+    </>
   );
 } 
