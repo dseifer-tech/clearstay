@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ClearStay - Commission-Free Hotel Booking Platform
 
 A modern, commission-free hotel booking platform for independent hotels, starting with Toronto. ClearStay provides a high-trust, no-middleman experience by connecting guests directly to hotel booking engines with Apple-style polish and travel-tech simplicity.
@@ -252,3 +253,6 @@ This is a private project for ClearStay. For questions or collaboration, please 
 ## 📄 License
 
 Private project - All rights reserved. 
+=======
+# clearstay
+>>>>>>> 8f276913548b3f5ebaa525b0f3b55c2e48c6f863
