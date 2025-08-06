@@ -316,7 +316,7 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
     try {
       console.log(`Fetching data for ${hotel.name}...`);
       const response = await fetch(
-        `https://serpapi.com/search?engine=google_hotels&q=Toronto&property_token=${hotel.token}&check_in_date=${checkin}&check_out_date=${checkout}&adults=2&currency=CAD&hl=en&gl=ca&api_key=${apiKey}`,
+        `https://serpapi.com/search.json?engine=google_hotels&q=Toronto&property_token=${hotel.token}&check_in_date=${checkin}&check_out_date=${checkout}&adults=${adults}&children=${children}&currency=CAD&hl=en&gl=ca&api_key=${apiKey}`,
         {
           headers: {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
@@ -361,7 +361,7 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
         if (offer.official === true) {
           const rooms = offer.rooms || [];
           for (const room of rooms) {
-            const beforeTaxes = room.before_taxes?.extracted_before_taxes_fees || room.price_per_night?.extracted_before_taxes_fees;
+            const beforeTaxes = room.rate_per_night?.extracted_before_taxes_fees || room.before_taxes?.extracted_before_taxes_fees || room.price_per_night?.extracted_before_taxes_fees;
             console.log(`Room ${room.name} price:`, beforeTaxes);
             
             // Only update if we have a valid before_taxes price and it's lower than current
