@@ -84,7 +84,7 @@ export default function HomePage() {
                 <img
                   src="/innstastay-logo.svg"
                   alt="InnstaStay Logo"
-                  className="h-24 w-auto block"
+                  className="h-20 w-auto block"
                 />
               </a>
             </div>
