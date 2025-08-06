@@ -186,24 +186,9 @@ export default function HotelSlugPage({ params }: { params: { slug: string } }) 
           </div>
         )}
 
-        {/* Nearby Places Section */}
-        {hotel.nearby_places && hotel.nearby_places.length > 0 && (
-          <div className="mt-8 bg-white rounded-xl shadow-md p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Nearby Places</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {hotel.nearby_places.map((place, i) => (
-                <div key={i} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                  <h4 className="font-medium text-gray-800 text-sm mb-1">{place.name}</h4>
-                  <p className="text-gray-600 text-xs">{place.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Polished Room Grid Layout */}
         {hotel.rooms && hotel.rooms.length > 0 && (
-          <div className="mt-10">
+          <div className="mt-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Available Rooms</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {hotel.rooms.map((room, i) => (
@@ -247,6 +232,21 @@ export default function HotelSlugPage({ params }: { params: { slug: string } }) 
                       Book Direct
                     </a>
                   )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Nearby Places Section */}
+        {hotel.nearby_places && hotel.nearby_places.length > 0 && (
+          <div className="mt-8 bg-white rounded-xl shadow-md p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Nearby Places</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {hotel.nearby_places.map((place, i) => (
+                <div key={i} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                  <h4 className="font-medium text-gray-800 text-sm mb-1">{place.name}</h4>
+                  <p className="text-gray-600 text-xs">{place.description}</p>
                 </div>
               ))}
             </div>
