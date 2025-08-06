@@ -177,6 +177,7 @@ async function fetch_individual_hotel(slug: string, checkin: string, checkout: s
         images: hotelImages.map((img: any) => img.original_image || img),
         rating: hotelRating,
         reviews: data.reviews || null,
+        nearby_places: data.nearby_places || [],
       };
     }
 

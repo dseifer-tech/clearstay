@@ -14,6 +14,11 @@ interface HotelData {
   hotel_class?: number;
   gps_coordinates?: { latitude: number; longitude: number };
   images: string[];
+  nearby_places?: {
+    category: string;
+    name: string;
+    description: string;
+  }[];
   official_price: {
     source: string;
     rate_per_night: number;
@@ -178,6 +183,21 @@ export default function HotelSlugPage({ params }: { params: { slug: string } }) 
           <div className="mt-8 bg-white rounded-xl shadow-md p-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">About This Hotel</h3>
             <p className="text-gray-600 leading-relaxed">{hotel.description}</p>
+          </div>
+        )}
+
+        {/* Nearby Places Section */}
+        {hotel.nearby_places && hotel.nearby_places.length > 0 && (
+          <div className="mt-8 bg-white rounded-xl shadow-md p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Nearby Places</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {hotel.nearby_places.map((place, i) => (
+                <div key={i} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                  <h4 className="font-medium text-gray-800 text-sm mb-1">{place.name}</h4>
+                  <p className="text-gray-600 text-xs">{place.description}</p>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
