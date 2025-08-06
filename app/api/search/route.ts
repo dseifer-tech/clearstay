@@ -131,7 +131,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-async function fetch_individual_hotel(slug: string, checkin: string, checkout: string, adults: number, children: number) {
+export async function fetch_individual_hotel(slug: string, checkin: string, checkout: string, adults: number, children: number) {
   console.log(`fetch_individual_hotel: Processing slug: ${slug}`);
   
   const token = SLUG_TO_TOKEN[slug];
