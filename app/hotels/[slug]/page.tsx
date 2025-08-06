@@ -84,7 +84,13 @@ export default async function HotelSlugPage({
 
   try {
     console.log(`Fetching hotel data for slug: ${params.slug}`);
-    const res = await fetch(`/api/search?slug=${params.slug}&checkin=${checkin}&checkout=${checkout}&adults=${adults}&children=${children}`);
+    
+    // Use absolute URL for server-side fetch
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const apiUrl = `${baseUrl}/api/search?slug=${params.slug}&checkin=${checkin}&checkout=${checkout}&adults=${adults}&children=${children}`;
+    
+    console.log(`Making API call to: ${apiUrl}`);
+    const res = await fetch(apiUrl);
     
     if (!res.ok) {
       console.error(`API response not ok: ${res.status} ${res.statusText}`);
