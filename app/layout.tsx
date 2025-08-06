@@ -10,8 +10,8 @@ export const metadata: Metadata = {
   keywords: 'InnstaStay, direct hotel booking, no commission, Toronto hotels, book direct, real-time rates',
   metadataBase: new URL('https://innstastay.com'),
   icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
+    icon: '/innstastay-logo.svg',
+    shortcut: '/innstastay-logo.svg',
   },
   robots: 'index, follow'
 }
