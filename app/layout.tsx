@@ -5,12 +5,11 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'InnstaStay - Book Direct. Stay Transparent.',
-  description: 'Commission-free hotel booking platform for Toronto. Book directly with hotels, no middleman fees.',
-  keywords: 'innstastay, hotel booking, Toronto hotels, direct booking, no commission, transparent pricing',
+  title: 'InnstaStay – Book Direct. No Commissions.',
+  description: 'InnstaStay is a commission-free hotel booking platform. Book direct with hotels and save money with real-time rates.',
   icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
   },
   themeColor: '#1F60C4',
 }

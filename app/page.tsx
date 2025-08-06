@@ -80,13 +80,9 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6 py-5">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
-              <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-xl tracking-tight">I</span>
-                </div>
-                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
-              </div>
-              <a href="/" className="text-2xl font-bold text-blue-600 tracking-tight">InnstaStay</a>
+              <a href="/" className="flex items-center space-x-3">
+                <img src="/innstastay-logo.png" alt="InnstaStay" className="h-12 w-auto" />
+              </a>
             </div>
             <ul className="flex space-x-8 text-md font-medium text-neutral-700">
               <li><a href="/" className="hover:text-blue-600 transition-colors duration-200">Home</a></li>
