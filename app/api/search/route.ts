@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { SLUG_TO_TOKEN } from '@/lib/hotels';
 
 // Cache for hotel descriptions to avoid repeated API calls
 const descriptionCache: { [key: string]: string } = {};
@@ -27,6 +28,18 @@ const HOTEL_DESCRIPTIONS: { [key: string]: string } = {
   "The Anndore House - JDV by Hyatt": "Boutique hotel with unique design and local character. Located in the trendy Yorkville neighborhood.",
   "Sutton Place Hotel Toronto": "Upscale hotel with sophisticated amenities and excellent dining options. Perfect for business and leisure travelers.",
   "Ace Hotel Toronto": "Contemporary design hotel with artistic flair and cultural programming. Located in the vibrant Entertainment District."
+};
+
+// Hotel name mapping for slugs
+const SLUG_TO_HOTEL_NAME: { [key: string]: string } = {
+  "pantages-hotel-downtown-toronto": "Pantages Hotel Downtown Toronto",
+  "town-inn-suites": "Town Inn Suites",
+  "one-king-west-hotel-residence": "One King West Hotel & Residence",
+  "the-omni-king-edward-hotel": "The Omni King Edward Hotel",
+  "chelsea-hotel-toronto": "Chelsea Hotel, Toronto",
+  "the-anndore-house-jdv": "The Anndore House - JDV by Hyatt",
+  "sutton-place-hotel-toronto": "Sutton Place Hotel Toronto",
+  "ace-hotel-toronto": "Ace Hotel Toronto"
 };
 
 function inject_parameters_into_url(base_url: string, checkin: string, checkout: string, adults: number, children: number): string {
@@ -112,18 +125,145 @@ export async function GET(request: NextRequest) {
 }
 
 async function fetch_individual_hotel(slug: string, checkin: string, checkout: string, adults: number, children: number) {
-  // This would need the SLUG_TO_TOKEN mapping from lib/hotels
-  // For now, return a basic structure
+  const token = SLUG_TO_TOKEN[slug];
+  if (!token) {
+    throw new Error("Invalid slug");
+  }
+
+  const hotelName = SLUG_TO_HOTEL_NAME[slug];
+  if (!hotelName) {
+    throw new Error("Hotel not found");
+  }
+
+  const apiKey = "63a0bf1d12a68858787d3e5edc4c1126b0fb7a07d26850cfddaefadf5ff20f11";
+  const serpUrl = `https://serpapi.com/search.json?engine=google_hotels&q=Toronto&property_token=${token}&check_in_date=${checkin}&check_out_date=${checkout}&adults=${adults}&children=${children}&currency=CAD&hl=en&gl=ca&api_key=${apiKey}`;
+
+  try {
+    const response = await fetch(serpUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
+    });
+
+    if (!response.ok) {
+      console.error(`API Error for ${hotelName}: ${response.status} ${response.statusText}`);
+      // Return fallback data
+      return getFallbackHotelData(slug, hotelName, checkin, checkout, adults, children);
+    }
+
+    const data = await response.json();
+
+    // Cache static hotel metadata per property_token
+    if (!globalCache[token]) {
+      globalCache[token] = {
+        hotel: data.name || hotelName,
+        description: data.description || "",
+        link: data.link || "",
+        address: data.address || getHotelAddress(hotelName),
+        phone: data.phone || "",
+        gps_coordinates: data.gps_coordinates || null,
+        hotel_class: data.extracted_hotel_class || null,
+        images: (data.images || []).map((img: any) => img.original_image),
+        rating: data.rating || getHotelRating(hotelName),
+        reviews: data.reviews || null,
+      };
+    }
+
+    const metadata = globalCache[token];
+
+    // Grab direct pricing — prefer featured, fallback to regular prices
+    const featuredPrices = data.featured_prices || [];
+    const prices = data.prices || [];
+
+    const directFeatured = featuredPrices.find((p: any) => p.official);
+    const directFallback = prices.find((p: any) => p.official && p.rate_per_night?.extracted_before_taxes_fees);
+
+    const selectedOffer = directFeatured || directFallback;
+
+    let official_price = null;
+    let rooms: any[] = [];
+
+    if (selectedOffer) {
+      official_price = {
+        source: selectedOffer.source,
+        rate_per_night: selectedOffer.rate_per_night?.extracted_before_taxes_fees || null,
+        total_rate: selectedOffer.total_rate?.extracted_before_taxes_fees || null,
+        link: selectedOffer.link,
+        free_cancellation: selectedOffer.free_cancellation || false,
+        free_cancellation_until_date: selectedOffer.free_cancellation_until_date || null,
+        remarks: selectedOffer.remarks || [],
+        discount_remarks: selectedOffer.discount_remarks || [],
+      };
+
+      if (selectedOffer.rooms?.length > 0) {
+        rooms = selectedOffer.rooms
+          .filter((room: any) => {
+            // Filter out generic room names that don't provide useful information
+            const genericNames = [
+              'Flexible Rate', 
+              'Standard Rate', 
+              'Basic Rate',
+              'Advance Purchase',
+              '15% Off Advance Purchase',
+              'Flexible',
+              'Standard',
+              'Basic',
+              'Rate',
+              'Room',
+              'Guest Room',
+              'Standard Room',
+              'Basic Room'
+            ];
+            
+            // Also filter out rooms without images and with generic names
+            const hasImages = room.images && room.images.length > 0;
+            const isGenericName = genericNames.some(name => 
+              room.name?.toLowerCase() === name.toLowerCase()
+            );
+            
+            // Only filter out exact matches, not partial matches
+            return !isGenericName && hasImages;
+          })
+          .map((room: any) => ({
+            name: room.name,
+            rate_per_night: room.rate_per_night?.extracted_before_taxes_fees || null,
+            total_rate: room.total_rate?.extracted_before_taxes_fees || null,
+            images: room.images || [],
+            link: room.link || null,
+            num_guests: room.num_guests || null,
+          }));
+      }
+    }
+
+    return {
+      ...metadata,
+      official_price,
+      rooms
+    };
+
+  } catch (error) {
+    console.error(`Error fetching data for ${hotelName}:`, error);
+    // Return fallback data
+    return getFallbackHotelData(slug, hotelName, checkin, checkout, adults, children);
+  }
+}
+
+function getFallbackHotelData(slug: string, hotelName: string, checkin: string, checkout: string, adults: number, children: number) {
+  const base_link = HARDCODED_BOOKING_LINKS[hotelName];
+  const link = base_link ? 
+    inject_parameters_into_url(base_link, checkin, checkout, adults, children) : 
+    null;
+
   return {
-    hotel: slug,
-    description: "Hotel description",
-    link: null,
-    address: "Toronto, ON",
+    hotel: hotelName,
+    description: HOTEL_DESCRIPTIONS[hotelName] || "A comfortable hotel in downtown Toronto with modern amenities and excellent service.",
+    link: link,
+    address: getHotelAddress(hotelName),
     phone: null,
     gps_coordinates: null,
     hotel_class: null,
     images: [],
-    rating: 4.0,
+    rating: getHotelRating(hotelName),
     reviews: null,
     official_price: null,
     rooms: []
