@@ -148,20 +148,8 @@ export default function HotelSlugPage({ params }: { params: { slug: string } }) 
             </div>
             
             <div className="flex items-center mb-3">
-              <div className="flex items-center">
-                {[...Array(5)].map((_, i) => (
-                  <Star 
-                    key={i} 
-                    className={`w-4 h-4 ${i < Math.floor(hotel.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
-                  />
-                ))}
-              </div>
-              <span className="ml-2 text-gray-600 text-sm">{hotel.rating}/5</span>
+              <span className="text-gray-600 text-sm">{Math.floor(hotel.rating)}-star hotel</span>
             </div>
-            
-            {hotel.description && (
-              <p className="text-gray-600 mt-2 text-sm leading-relaxed">{hotel.description}</p>
-            )}
             
             <div className="mt-3">
               {hotel.official_price?.link && (
