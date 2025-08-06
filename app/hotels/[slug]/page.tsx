@@ -86,7 +86,7 @@ export default async function HotelSlugPage({
     console.log(`Fetching hotel data for slug: ${params.slug}`);
     
     // Use absolute URL for server-side fetch
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://innstastay.com';
     const apiUrl = `${baseUrl}/api/search?slug=${params.slug}&checkin=${checkin}&checkout=${checkout}&adults=${adults}&children=${children}`;
     
     console.log(`Making API call to: ${apiUrl}`);
