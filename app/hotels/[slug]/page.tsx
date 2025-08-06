@@ -83,7 +83,7 @@ export default async function HotelSlugPage({
   let error: string | null = null;
 
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search?slug=${params.slug}&checkin=${checkin}&checkout=${checkout}&adults=${adults}&children=${children}`);
+    const res = await fetch(`/api/search?slug=${params.slug}&checkin=${checkin}&checkout=${checkout}&adults=${adults}&children=${children}`);
     const data = await res.json();
     
     if (data.error) {
