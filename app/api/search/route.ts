@@ -152,24 +152,30 @@ async function fetch_individual_hotel(slug: string, checkin: string, checkout: s
 
     if (!response.ok) {
       console.error(`API Error for ${hotelName}: ${response.status} ${response.statusText}`);
-      // Return fallback data
       return getFallbackHotelData(slug, hotelName, checkin, checkout, adults, children);
     }
 
     const data = await response.json();
+    console.log(`API Response for ${hotelName}:`, JSON.stringify(data, null, 2));
+
+    // Extract hotel metadata from the response
+    const hotelMetadata = data.hotel_info || data.hotel || {};
+    const hotelImages = data.images || [];
+    const hotelRating = data.rating || data.hotel_class || getHotelRating(hotelName);
+    const hotelDescription = data.description || data.about?.description || HOTEL_DESCRIPTIONS[hotelName];
 
     // Cache static hotel metadata per property_token
     if (!globalCache[token]) {
       globalCache[token] = {
-        hotel: data.name || hotelName,
-        description: data.description || "",
-        link: data.link || "",
-        address: data.address || getHotelAddress(hotelName),
-        phone: data.phone || "",
-        gps_coordinates: data.gps_coordinates || null,
-        hotel_class: data.extracted_hotel_class || null,
-        images: (data.images || []).map((img: any) => img.original_image),
-        rating: data.rating || getHotelRating(hotelName),
+        hotel: hotelMetadata.name || hotelName,
+        description: hotelDescription || HOTEL_DESCRIPTIONS[hotelName],
+        link: hotelMetadata.link || "",
+        address: hotelMetadata.address || getHotelAddress(hotelName),
+        phone: hotelMetadata.phone || "",
+        gps_coordinates: hotelMetadata.gps_coordinates || null,
+        hotel_class: hotelMetadata.hotel_class || hotelRating,
+        images: hotelImages.map((img: any) => img.original_image || img),
+        rating: hotelRating,
         reviews: data.reviews || null,
       };
     }
@@ -240,6 +246,21 @@ async function fetch_individual_hotel(slug: string, checkin: string, checkout: s
       }
     }
 
+    // If no official price found, try to get any available price
+    if (!official_price && prices.length > 0) {
+      const firstPrice = prices[0];
+      official_price = {
+        source: firstPrice.source || "Hotel",
+        rate_per_night: firstPrice.rate_per_night?.extracted_before_taxes_fees || null,
+        total_rate: firstPrice.total_rate?.extracted_before_taxes_fees || null,
+        link: firstPrice.link || null,
+        free_cancellation: firstPrice.free_cancellation || false,
+        free_cancellation_until_date: firstPrice.free_cancellation_until_date || null,
+        remarks: firstPrice.remarks || [],
+        discount_remarks: firstPrice.discount_remarks || [],
+      };
+    }
+
     return {
       ...metadata,
       official_price,
@@ -248,7 +269,6 @@ async function fetch_individual_hotel(slug: string, checkin: string, checkout: s
 
   } catch (error) {
     console.error(`Error fetching data for ${hotelName}:`, error);
-    // Return fallback data
     return getFallbackHotelData(slug, hotelName, checkin, checkout, adults, children);
   }
 }
@@ -270,7 +290,16 @@ function getFallbackHotelData(slug: string, hotelName: string, checkin: string, 
     images: [],
     rating: getHotelRating(hotelName),
     reviews: null,
-    official_price: null,
+    official_price: link ? {
+      source: "Official Site",
+      rate_per_night: null,
+      total_rate: null,
+      link: link,
+      free_cancellation: false,
+      free_cancellation_until_date: null,
+      remarks: [],
+      discount_remarks: [],
+    } : null,
     rooms: []
   };
 }
