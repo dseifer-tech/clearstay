@@ -6,10 +6,6 @@ import { Star, MapPin, ExternalLink, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { HOTEL_SLUG_MAP } from '@/lib/hotels';
 
-export const metadata = {
-  robots: 'noindex, follow'
-}
-
 interface HotelRoom {
   hotel: string;
   link: string;

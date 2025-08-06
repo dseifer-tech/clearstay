@@ -1,12 +1,11 @@
-<<<<<<< HEAD
-# ClearStay - Commission-Free Hotel Booking Platform
+# InnstaStay - Commission-Free Hotel Booking Platform
 
-A modern, commission-free hotel booking platform for independent hotels, starting with Toronto. ClearStay provides a high-trust, no-middleman experience by connecting guests directly to hotel booking engines with Apple-style polish and travel-tech simplicity.
+A modern, commission-free hotel booking platform for independent hotels, starting with Toronto. InnstaStay provides a high-trust, no-middleman experience by connecting guests directly to hotel booking engines with Apple-style polish and travel-tech simplicity.
 
 ## 🎯 Mission
 
 **For Hotels**: No commissions, use their real booking engine, act as a transparent traffic source.
-**For Guests**: Cleaner prices, confidence of "booking direct," ClearStay mimics hotel's booking engine layout and passes bookings directly.
+**For Guests**: Cleaner prices, confidence of "booking direct," InnstaStay mimics hotel's booking engine layout and passes bookings directly.
 
 ## 🏗️ Tech Stack
 
@@ -26,14 +25,14 @@ A modern, commission-free hotel booking platform for independent hotels, startin
 - **Modern Hero Section**: Soft gradient background with centered headline and search box
 - **Expedia-Style Search Form**: Horizontally segmented card with date range picker, traveler selector, and CTA button
 - **Enhanced Date Picker**: Single calendar view for selecting both check-in and check-out dates with "Search Hotels" button within calendar
-- **Trust-Building Sections**: "Why We Built ClearStay," "How It Works" (4-step visual guide), and "What You Get" with icons and responsive grid layout
-- **Premium Navigation**: Sticky navbar with ClearStay branding, navigation links, and CTA button
+- **Trust-Building Sections**: "Why We Built InnstaStay," "How It Works" (4-step visual guide), and "What You Get" with icons and responsive grid layout
+- **Premium Navigation**: Sticky navbar with InnstaStay branding, navigation links, and CTA button
 - **Subtle Animations**: Fade-in and slide-up effects on page load
 
 #### About Page (`/about`)
-- **Trust-Building Content**: Explains ClearStay's mission and differentiators
+- **Trust-Building Content**: Explains InnstaStay's mission and differentiators
 - **Problem Section**: 3-column card layout explaining issues with traditional booking
-- **Solution Section**: 4-step visual flow showing how ClearStay works differently
+- **Solution Section**: 4-step visual flow showing how InnstaStay works differently
 - **Benefits Section**: List of user benefits with checkmark icons
 - **CTA Section**: Call-to-action for users to start searching
 - **Consistent Design**: Matches homepage styling and navigation
@@ -69,7 +68,7 @@ A modern, commission-free hotel booking platform for independent hotels, startin
 - **Polished Room Grid**: Responsive 3-column grid layout for room cards with images and pricing
 - **Enhanced Room Cards**: Each room shows image, name, price, guest count, and booking link
 - **Mobile Sticky CTA**: Bottom-fixed booking button on mobile devices
-- **ClearStay Branding**: Consistent branding throughout with "Powered by ClearStay" messaging
+- **InnstaStay Branding**: Consistent branding throughout with "Powered by InnstaStay" messaging
 - **Professional Polish**: Premium design with shadows, gradients, and smooth transitions
 
 ### Hotel Coverage (Toronto)
@@ -138,8 +137,7 @@ ClearStay/
 │   ├── layout.tsx             # Root layout
 │   └── page.tsx               # Modern homepage with enhanced search form
 ├── public/
-│   ├── clearstay-logo.png     # ClearStay logo (PNG)
-│   └── clearstay-logo.svg     # ClearStay logo (SVG)
+│   └── innstastay-logo.svg    # InnstaStay logo (SVG)
 ├── types/
 │   └── hotel.ts              # TypeScript interfaces
 ├── lib/
@@ -177,7 +175,7 @@ ClearStay/
 - Next.js project setup with TypeScript and Tailwind CSS
 - **Modern Homepage**: Redesigned with Apple-style polish and Expedia-style search form
 - **Enhanced Search Results**: Improved card design, typography, and user experience
-- **About Page**: New trust-building page with ClearStay's mission and differentiators
+- **About Page**: New trust-building page with InnstaStay's mission and differentiators
 - **Premium Navigation**: Consistent navbar across all pages with enhanced styling
 - **Hotel Descriptions**: Parsed and displayed hotel descriptions with caching
 - **Date Picker Enhancement**: Single calendar view with integrated search button
@@ -187,7 +185,7 @@ ClearStay/
 - **Advanced Room Filtering**: Intelligent filtering removes generic room entries and entries without images
 - **Raw JSON Debugging**: Automatic saving of all SerpAPI responses for development and debugging
 - **Static Metadata Caching**: Performance optimization with cached hotel metadata
-- **Trust-Building Elements**: Visual trust badges and ClearStay branding throughout
+- **Trust-Building Elements**: Visual trust badges and InnstaStay branding throughout
 - **Mobile-First Design**: Responsive design with mobile-specific features like sticky CTAs
 - **Direct Booking Links**: Commission-free rates with dynamic parameters
 - **SerpAPI Integration**: Advanced data processing with correct API structure and debugging support
@@ -218,12 +216,12 @@ ClearStay/
 - **Commission-Free Rates**: Only official hotel rates displayed
 
 ### Premium Hotel Detail Pages
-- **Brand-First Design**: Professional header with ClearStay branding
+- **Brand-First Design**: Professional header with InnstaStay branding
 - **Hero Card Layout**: Side-by-side hotel image and information display
 - **Trust & Price Block**: Prominent pricing with trust indicators
 - **Polished Room Grid**: Responsive 3-column layout for room options
 - **Mobile Sticky CTA**: Bottom-fixed booking button for mobile users
-- **ClearStay Branding**: Consistent "Powered by ClearStay" messaging
+- **InnstaStay Branding**: Consistent "Powered by InnstaStay" messaging
 
 ### Trust & Transparency
 - **Hotel Descriptions**: Detailed information about each property
@@ -248,11 +246,8 @@ ClearStay/
 
 ## 🤝 Contributing
 
-This is a private project for ClearStay. For questions or collaboration, please contact the development team.
+This is a private project for InnstaStay. For questions or collaboration, please contact the development team.
 
 ## 📄 License
 
-Private project - All rights reserved. 
-=======
-# clearstay
->>>>>>> 8f276913548b3f5ebaa525b0f3b55c2e48c6f863
+Private project - All rights reserved.

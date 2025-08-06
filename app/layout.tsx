@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     shortcut: '/favicon.svg',
   },
   themeColor: '#1F60C4',
+  robots: 'index, follow'
 }
 
 export default function RootLayout({
