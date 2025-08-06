@@ -150,33 +150,44 @@ export default async function HotelSlugPage({
       <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-zinc-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5">
           <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-3">
-              <a href="/" className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <a href="/" className="flex items-center space-x-2 sm:space-x-3">
                 <img
                   src="/innstastay-logo.svg"
                   alt="InnstaStay Logo"
-                  className="h-20 w-auto block"
+                  className="h-12 sm:h-16 md:h-20 w-auto block"
                 />
               </a>
             </div>
-            <ul className="flex space-x-8 text-md font-medium text-neutral-700">
-              <li><a href="/" className="hover:text-blue-600 transition-colors duration-200">Home</a></li>
-              <li><a href="/about" className="hover:text-blue-600 transition-colors duration-200">About</a></li>
-              <li><a href="/search" className="hover:text-blue-600 transition-colors duration-200">Toronto Hotels</a></li>
-            </ul>
-            <a href="/search" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-              Search Hotels
-            </a>
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              <ul className="flex space-x-8 text-md font-medium text-neutral-700">
+                <li><a href="/" className="hover:text-blue-600 transition-colors duration-200">Home</a></li>
+                <li><a href="/about" className="hover:text-blue-600 transition-colors duration-200">About</a></li>
+                <li><a href="/search" className="hover:text-blue-600 transition-colors duration-200">Toronto Hotels</a></li>
+              </ul>
+              <a href="/search" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                Search Hotels
+              </a>
+            </div>
+            
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <a href="/search" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm">
+                Search
+              </a>
+            </div>
           </div>
         </div>
       </nav>
 
       {/* Brand-First Header Strip */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-400 text-white p-6 rounded-b-xl shadow-md">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-400 text-white p-4 sm:p-6 rounded-b-xl shadow-md">
         <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
             <div>
               <Link 
                 href={`/search?checkin=${checkin}&checkout=${checkout}&adults=${adults}&children=${children}`} 
@@ -184,20 +195,20 @@ export default async function HotelSlugPage({
               >
                 ← Back to Search
               </Link>
-              <h1 className="text-3xl font-bold">{hotel.hotel}</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold">{hotel.hotel}</h1>
               <p className="text-sm text-blue-100">{hotel.address}</p>
             </div>
-            <div className="text-sm font-semibold text-right">
+            <div className="text-sm font-semibold text-left sm:text-right">
               Powered by <span className="text-white">InnstaStay</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Hero Card with Clear CTA */}
-        <div className="bg-white p-6 rounded-xl shadow-md mt-4 flex gap-6 items-center">
-          <div className="w-48 h-36">
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md mt-4 flex flex-col sm:flex-row gap-4 sm:gap-6 items-center">
+          <div className="w-full sm:w-48 h-36">
             {hotel.images && hotel.images.length > 0 ? (
               <img 
                 src={hotel.images[0]} 
@@ -211,17 +222,17 @@ export default async function HotelSlugPage({
             )}
           </div>
           
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
+          <div className="flex-1 text-center sm:text-left">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 mb-2">
               {hotel.official_price && (
-                <p className="text-green-600 text-2xl font-bold">
+                <p className="text-green-600 text-xl sm:text-2xl font-bold">
                   ${hotel.official_price.total_rate} CAD
                 </p>
               )}
               <span className="text-sm text-gray-500">direct from hotel</span>
             </div>
             
-            <div className="flex items-center mb-3">
+            <div className="flex items-center justify-center sm:justify-start mb-3">
               <span className="text-gray-600 text-sm">
                 {hotel.rating && !isNaN(hotel.rating) ? `${Math.floor(hotel.rating)}-star hotel` : 'Hotel'}
               </span>
@@ -233,7 +244,7 @@ export default async function HotelSlugPage({
                   href={hotel.official_price.link} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="inline-block bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg shadow text-sm font-semibold transition-colors"
+                  className="inline-block bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg shadow text-sm font-semibold transition-colors w-full sm:w-auto"
                 >
                   Book Now
                 </a>
@@ -241,7 +252,7 @@ export default async function HotelSlugPage({
             </div>
             
             {/* Value Signals */}
-            <div className="text-xs text-gray-400 mt-2">
+            <div className="text-xs text-gray-400 mt-2 text-center sm:text-left">
               ✅ No middlemen · 💵 No extra fees · 🔒 Secure checkout
             </div>
           </div>

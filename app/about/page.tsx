@@ -7,25 +7,36 @@ export default function AboutPage() {
     <div className="min-h-screen bg-gradient-to-b from-[#eef5ff] to-white">
       {/* Sticky Navigation */}
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-zinc-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5">
           <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-3">
-              <a href="/" className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <a href="/" className="flex items-center space-x-2 sm:space-x-3">
                 <img
                   src="/innstastay-logo.svg"
                   alt="InnstaStay Logo"
-                  className="h-20 w-auto block"
+                  className="h-12 sm:h-16 md:h-20 w-auto block"
                 />
               </a>
             </div>
-            <ul className="flex space-x-8 text-md font-medium text-neutral-700">
-              <li><a href="/" className="hover:text-blue-600 transition-colors duration-200">Home</a></li>
-              <li><a href="/about" className="hover:text-blue-600 transition-colors duration-200">About</a></li>
-              <li><a href="/search" className="hover:text-blue-600 transition-colors duration-200">Toronto Hotels</a></li>
-            </ul>
-            <a href="/search" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-              Search Hotels
-            </a>
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              <ul className="flex space-x-8 text-md font-medium text-neutral-700">
+                <li><a href="/" className="hover:text-blue-600 transition-colors duration-200">Home</a></li>
+                <li><a href="/about" className="hover:text-blue-600 transition-colors duration-200">About</a></li>
+                <li><a href="/search" className="hover:text-blue-600 transition-colors duration-200">Toronto Hotels</a></li>
+              </ul>
+              <a href="/search" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                Search Hotels
+              </a>
+            </div>
+            
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <a href="/search" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm">
+                Search
+              </a>
+            </div>
           </div>
         </div>
       </nav>

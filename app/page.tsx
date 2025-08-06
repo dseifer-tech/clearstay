@@ -77,25 +77,36 @@ export default function HomePage() {
     <div className="min-h-screen bg-gradient-to-b from-[#eef5ff] to-white">
       {/* Sticky Navigation */}
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-zinc-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5">
           <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-3">
-              <a href="/" className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <a href="/" className="flex items-center space-x-2 sm:space-x-3">
                 <img
                   src="/innstastay-logo.svg"
                   alt="InnstaStay Logo"
-                  className="h-20 w-auto block"
+                  className="h-12 sm:h-16 md:h-20 w-auto block"
                 />
               </a>
             </div>
-            <ul className="flex space-x-8 text-md font-medium text-neutral-700">
-              <li><a href="/" className="hover:text-blue-600 transition-colors duration-200">Home</a></li>
-              <li><a href="/about" className="hover:text-blue-600 transition-colors duration-200">About</a></li>
-              <li><a href="/search" className="hover:text-blue-600 transition-colors duration-200">Toronto Hotels</a></li>
-            </ul>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-              Compare Rates
-            </button>
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              <ul className="flex space-x-8 text-md font-medium text-neutral-700">
+                <li><a href="/" className="hover:text-blue-600 transition-colors duration-200">Home</a></li>
+                <li><a href="/about" className="hover:text-blue-600 transition-colors duration-200">About</a></li>
+                <li><a href="/search" className="hover:text-blue-600 transition-colors duration-200">Toronto Hotels</a></li>
+              </ul>
+              <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                Compare Rates
+              </button>
+            </div>
+            
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm">
+                Menu
+              </button>
+            </div>
           </div>
         </div>
       </nav>
@@ -104,19 +115,19 @@ export default function HomePage() {
       <section className="relative py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
           <div className="animate-fade-in">
-            <h1 className="text-4xl md:text-6xl font-bold text-neutral-800 tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-neutral-800 tracking-tight leading-tight">
               Book with Confidence.
               <br />
               <span className="text-blue-600">Stay with Trust.</span>
             </h1>
-            <p className="text-xl text-neutral-600 mt-6 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-neutral-600 mt-4 sm:mt-6 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0">
               Toronto's commission-free hotel booking platform. No markups, no games — just real prices from verified hotels.
             </p>
           </div>
           
           {/* Search Form */}
-          <div className="mt-12 animate-fade-in-up">
-            <form onSubmit={handleSearch} className="bg-white shadow-xl rounded-xl px-6 py-4 flex flex-col md:flex-row items-center gap-4 max-w-4xl mx-auto">
+          <div className="mt-8 sm:mt-12 animate-fade-in-up">
+            <form onSubmit={handleSearch} className="bg-white shadow-xl rounded-xl px-4 sm:px-6 py-4 sm:py-6 flex flex-col md:flex-row items-center gap-3 sm:gap-4 max-w-4xl mx-auto">
               
               {/* Dates */}
               <div className="relative w-full md:w-auto" ref={datePickerRef}>

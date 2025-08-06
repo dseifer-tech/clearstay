@@ -98,25 +98,36 @@ export default function SearchResults() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Sticky Navigation */}
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-zinc-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5">
           <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-3">
-              <a href="/" className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <a href="/" className="flex items-center space-x-2 sm:space-x-3">
                 <img
                   src="/innstastay-logo.svg"
                   alt="InnstaStay Logo"
-                  className="h-20 w-auto block"
+                  className="h-12 sm:h-16 md:h-20 w-auto block"
                 />
               </a>
             </div>
-            <ul className="flex space-x-8 text-md font-medium text-neutral-700">
-              <li><a href="/" className="hover:text-blue-600 transition-colors duration-200">Home</a></li>
-              <li><a href="/about" className="hover:text-blue-600 transition-colors duration-200">About</a></li>
-              <li><a href="/search" className="hover:text-blue-600 transition-colors duration-200">Toronto Hotels</a></li>
-            </ul>
-            <a href="/" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-              Compare Rates
-            </a>
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              <ul className="flex space-x-8 text-md font-medium text-neutral-700">
+                <li><a href="/" className="hover:text-blue-600 transition-colors duration-200">Home</a></li>
+                <li><a href="/about" className="hover:text-blue-600 transition-colors duration-200">About</a></li>
+                <li><a href="/search" className="hover:text-blue-600 transition-colors duration-200">Toronto Hotels</a></li>
+              </ul>
+              <a href="/" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                Compare Rates
+              </a>
+            </div>
+            
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <a href="/" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm">
+                Home
+              </a>
+            </div>
           </div>
         </div>
       </nav>
@@ -150,17 +161,17 @@ export default function SearchResults() {
                 const children = searchParams.get('children');
                 
                 return (
-                  <div key={index} className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-200 border border-zinc-100 p-6">
-                    <div className="flex flex-col md:flex-row justify-between gap-6">
+                  <div key={index} className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-200 border border-zinc-100 p-4 sm:p-6">
+                    <div className="flex flex-col md:flex-row justify-between gap-4 sm:gap-6">
                       <div className="flex-1">
-                        <div className="flex items-start gap-4">
+                        <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
                           {/* Hotel Image Placeholder */}
-                          <div className="w-32 h-24 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <div className="w-full sm:w-32 h-24 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center flex-shrink-0">
                             <span className="text-blue-600 font-semibold text-sm">Hotel</span>
                           </div>
                           
                           <div className="flex-1">
-                            <h4 className="text-xl font-bold text-neutral-900 mb-2">{hotel.hotel}</h4>
+                            <h4 className="text-lg sm:text-xl font-bold text-neutral-900 mb-2">{hotel.hotel}</h4>
                             <div className="flex items-center text-sm text-yellow-500 mb-2">
                               <Star className="w-4 h-4 mr-1" />
                               <span className="font-medium">{hotel.rating}</span>
@@ -183,11 +194,11 @@ export default function SearchResults() {
                               <p className="text-sm text-green-600 mb-2">{hotel.discount_remarks}</p>
                             )}
                             
-                            <div className="flex gap-3 mt-4">
+                            <div className="flex flex-col sm:flex-row gap-3 mt-4">
                               <button
                                 onClick={() => handleBookDirect(hotel.link)}
                                 disabled={!hotel.link}
-                                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 hover:shadow-lg transform hover:-translate-y-0.5"
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 sm:px-6 py-3 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:shadow-lg transform hover:-translate-y-0.5 text-sm sm:text-base"
                               >
                                 <ExternalLink className="w-4 h-4" />
                                 {hotel.before_taxes ? "Book Direct" : "Check Direct for Best Rate"}
@@ -196,7 +207,7 @@ export default function SearchResults() {
                               {slug && checkin && checkout && (
                                 <Link
                                   href={`/hotels/${slug}?checkin=${checkin}&checkout=${checkout}&adults=${adults}&children=${children}`}
-                                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl transition-all duration-200 flex items-center gap-2 hover:shadow-lg transform hover:-translate-y-0.5"
+                                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-4 sm:px-6 py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 hover:shadow-lg transform hover:-translate-y-0.5 text-sm sm:text-base"
                                 >
                                   <Eye className="w-4 h-4" />
                                   View Details
@@ -207,9 +218,9 @@ export default function SearchResults() {
                         </div>
                       </div>
                       
-                      <div className="flex flex-col justify-between items-end">
+                      <div className="flex flex-col justify-between items-start sm:items-end mt-4 sm:mt-0">
                         {hotel.before_taxes && (
-                          <div className="bg-green-100 text-green-800 font-bold px-4 py-2 rounded-full text-lg">
+                          <div className="bg-green-100 text-green-800 font-bold px-3 sm:px-4 py-2 rounded-full text-base sm:text-lg">
                             ${hotel.before_taxes} / night
                           </div>
                         )}
