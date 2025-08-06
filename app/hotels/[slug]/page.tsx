@@ -85,25 +85,18 @@ export default async function HotelSlugPage({
   try {
     console.log(`Fetching hotel data for slug: ${params.slug}`);
     
-    // Use absolute URL for server-side fetch
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://innstastay.com';
-    const apiUrl = `${baseUrl}/api/search?slug=${params.slug}&checkin=${checkin}&checkout=${checkout}&adults=${adults}&children=${children}`;
+    // Import and call the API function directly instead of making HTTP request
+    const { fetch_individual_hotel } = await import('@/app/api/search/route');
     
-    console.log(`Making API call to: ${apiUrl}`);
-    const res = await fetch(apiUrl);
+    console.log(`Calling fetch_individual_hotel directly for slug: ${params.slug}`);
+    const data = await fetch_individual_hotel(params.slug, checkin, checkout, parseInt(adults), parseInt(children));
     
-    if (!res.ok) {
-      console.error(`API response not ok: ${res.status} ${res.statusText}`);
-      error = `API error: ${res.status} ${res.statusText}`;
+    console.log('API response data:', data);
+    
+    if (data.error) {
+      error = data.error;
     } else {
-      const data = await res.json();
-      console.log('API response data:', data);
-      
-      if (data.error) {
-        error = data.error;
-      } else {
-        hotel = data;
-      }
+      hotel = data;
     }
   } catch (err) {
     console.error('Fetch error:', err);
