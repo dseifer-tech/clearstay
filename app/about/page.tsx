@@ -12,11 +12,11 @@ export default function AboutPage() {
             <div className="flex items-center space-x-3">
               <div className="relative">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-xl">C</span>
+                  <span className="text-white font-bold text-xl tracking-tight">I</span>
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
               </div>
-              <a href="/" className="text-2xl font-bold text-blue-600 tracking-tight">ClearStay</a>
+              <a href="/" className="text-2xl font-bold text-blue-600 tracking-tight">InnstaStay</a>
             </div>
             <ul className="flex space-x-8 text-md font-medium text-neutral-700">
               <li><a href="/" className="hover:text-blue-600 transition-colors duration-200">Home</a></li>
@@ -35,7 +35,7 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto text-center">
           <div className="animate-fade-in">
             <h1 className="text-4xl md:text-5xl font-bold text-neutral-900 mb-6">
-              Why We Built ClearStay
+              Why We Built InnstaStay
             </h1>
             <p className="text-xl text-neutral-600 max-w-3xl mx-auto leading-relaxed">
               We believe in direct, honest hotel booking — no commissions, no inflated rates, no middlemen. 
@@ -97,7 +97,7 @@ export default function AboutPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-6">
-              What ClearStay Does Differently
+              What InnstaStay Does Differently
             </h2>
             <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
               Our simple 4-step process ensures you get the best rates directly from verified hotels.
@@ -264,7 +264,7 @@ export default function AboutPage() {
               <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Shield className="w-8 h-8 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold text-neutral-800 mb-3">Verified by ClearStay</h3>
+              <h3 className="text-lg font-semibold text-neutral-800 mb-3">Verified by InnstaStay</h3>
               <p className="text-neutral-600 text-sm">All hotels are verified and trusted partners</p>
             </div>
             <div className="bg-white rounded-2xl p-8 text-center shadow-sm hover:shadow-md transition-shadow duration-200">

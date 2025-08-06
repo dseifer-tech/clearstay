@@ -119,7 +119,7 @@ export default function HotelSlugPage({ params }: { params: { slug: string } }) 
               <p className="text-sm text-blue-100">{hotel.address}</p>
             </div>
             <div className="text-sm font-semibold text-right">
-              Powered by <span className="text-white">ClearStay</span>
+              Powered by <span className="text-white">InnstaStay</span>
             </div>
           </div>
         </div>
@@ -255,7 +255,7 @@ export default function HotelSlugPage({ params }: { params: { slug: string } }) 
 
         {/* Footer Branding */}
         <div className="mt-12 text-center text-sm text-gray-400">
-          Built for travelers who book smart. Powered by <span className="text-blue-600 font-semibold">ClearStay</span>.
+          Built for travelers who book smart. Powered by <span className="text-blue-600 font-semibold">InnstaStay</span>.
         </div>
       </div>
 
