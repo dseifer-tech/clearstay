@@ -86,7 +86,7 @@ export default async function HotelSlugPage({
     console.log(`Fetching hotel data for slug: ${params.slug}`);
     
     // Import and call the API function directly instead of making HTTP request
-    const { fetch_individual_hotel } = await import('@/app/api/search/route');
+    const { fetch_individual_hotel } = await import('@/lib/hotelData');
     
     console.log(`Calling fetch_individual_hotel directly for slug: ${params.slug}`);
     const data = await fetch_individual_hotel(params.slug, checkin, checkout, parseInt(adults), parseInt(children));
