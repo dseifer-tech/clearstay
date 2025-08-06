@@ -111,34 +111,49 @@ export async function GET(request: NextRequest) {
   try {
     // If slug is provided, return individual hotel data
     if (slug) {
+      console.log(`API: Fetching individual hotel data for slug: ${slug}`);
       const hotelData = await fetch_individual_hotel(slug, checkin, checkout, parseInt(adults), parseInt(children));
+      console.log(`API: Successfully fetched hotel data for ${slug}:`, hotelData);
       return NextResponse.json(hotelData);
     } else {
       // Otherwise, return all hotels for search
+      console.log(`API: Fetching all hotels data`);
       const hotels = await fetch_all_hotels(checkin, checkout, parseInt(adults), parseInt(children));
+      console.log(`API: Successfully fetched all hotels data:`, hotels);
       return NextResponse.json(hotels);
     }
   } catch (error) {
-    console.error('Error fetching hotel data:', error);
-    return NextResponse.json({ error: 'Failed to fetch hotel data' }, { status: 500 });
+    console.error('API Error fetching hotel data:', error);
+    return NextResponse.json({ 
+      error: 'Failed to fetch hotel data',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
 
 async function fetch_individual_hotel(slug: string, checkin: string, checkout: string, adults: number, children: number) {
+  console.log(`fetch_individual_hotel: Processing slug: ${slug}`);
+  
   const token = SLUG_TO_TOKEN[slug];
   if (!token) {
-    throw new Error("Invalid slug");
+    console.error(`fetch_individual_hotel: Invalid slug: ${slug}`);
+    throw new Error(`Invalid slug: ${slug}`);
   }
 
   const hotelName = SLUG_TO_HOTEL_NAME[slug];
   if (!hotelName) {
-    throw new Error("Hotel not found");
+    console.error(`fetch_individual_hotel: Hotel not found for slug: ${slug}`);
+    throw new Error(`Hotel not found for slug: ${slug}`);
   }
+  
+  console.log(`fetch_individual_hotel: Found hotel: ${hotelName} with token: ${token}`);
 
   const apiKey = process.env.SERPAPI_KEY;
   if (!apiKey) {
-    console.error("SERPAPI_KEY environment variable is not set");
-    return getFallbackHotelData(slug, hotelName, checkin, checkout, adults, children);
+    console.log("SERPAPI_KEY environment variable is not set, using fallback data");
+    const fallbackData = getFallbackHotelData(slug, hotelName, checkin, checkout, adults, children);
+    console.log("Fallback data generated:", fallbackData);
+    return fallbackData;
   }
 
   const serpUrl = `https://serpapi.com/search.json?engine=google_hotels&q=Toronto&property_token=${token}&check_in_date=${checkin}&check_out_date=${checkout}&adults=${adults}&children=${children}&currency=CAD&hl=en&gl=ca&api_key=${apiKey}`;
@@ -275,12 +290,18 @@ async function fetch_individual_hotel(slug: string, checkin: string, checkout: s
 }
 
 function getFallbackHotelData(slug: string, hotelName: string, checkin: string, checkout: string, adults: number, children: number) {
+  console.log(`getFallbackHotelData: Generating fallback data for ${hotelName}`);
+  
   const base_link = HARDCODED_BOOKING_LINKS[hotelName];
+  console.log(`getFallbackHotelData: Base link for ${hotelName}:`, base_link);
+  
   const link = base_link ? 
     inject_parameters_into_url(base_link, checkin, checkout, adults, children) : 
     null;
+  
+  console.log(`getFallbackHotelData: Generated link for ${hotelName}:`, link);
 
-  return {
+  const result = {
     hotel: hotelName,
     description: HOTEL_DESCRIPTIONS[hotelName] || "A comfortable hotel in downtown Toronto with modern amenities and excellent service.",
     link: link,
@@ -303,6 +324,9 @@ function getFallbackHotelData(slug: string, hotelName: string, checkin: string, 
     } : null,
     rooms: []
   };
+  
+  console.log(`getFallbackHotelData: Final fallback data for ${hotelName}:`, result);
+  return result;
 }
 
 async function fetch_all_hotels(checkin: string, checkout: string, adults: number, children: number) {

@@ -83,15 +83,24 @@ export default async function HotelSlugPage({
   let error: string | null = null;
 
   try {
+    console.log(`Fetching hotel data for slug: ${params.slug}`);
     const res = await fetch(`/api/search?slug=${params.slug}&checkin=${checkin}&checkout=${checkout}&adults=${adults}&children=${children}`);
-    const data = await res.json();
     
-    if (data.error) {
-      error = data.error;
+    if (!res.ok) {
+      console.error(`API response not ok: ${res.status} ${res.statusText}`);
+      error = `API error: ${res.status} ${res.statusText}`;
     } else {
-      hotel = data;
+      const data = await res.json();
+      console.log('API response data:', data);
+      
+      if (data.error) {
+        error = data.error;
+      } else {
+        hotel = data;
+      }
     }
   } catch (err) {
+    console.error('Fetch error:', err);
     error = "Failed to load hotel data";
   }
 
