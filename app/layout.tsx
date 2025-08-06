@@ -9,17 +9,10 @@ export const metadata: Metadata = {
   description: 'Commission-free hotel booking platform for Toronto. Book directly with hotels, no middleman fees.',
   keywords: 'hotel booking, Toronto hotels, direct booking, no commission, transparent pricing',
   icons: {
-    icon: [
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-    ],
-    apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
-    shortcut: '/favicon.ico',
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
   },
-  manifest: '/site.webmanifest',
-  themeColor: '#ffffff',
+  themeColor: '#1F60C4',
 }
 
 export default function RootLayout({
