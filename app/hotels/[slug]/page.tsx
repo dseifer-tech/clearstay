@@ -160,7 +160,7 @@ export default function HotelSlugPage({ params }: { params: { slug: string } }) 
             </div>
             
             {hotel.description && (
-              <p className="text-gray-600 mt-2 text-sm line-clamp-2">{hotel.description}</p>
+              <p className="text-gray-600 mt-2 text-sm leading-relaxed">{hotel.description}</p>
             )}
             
             <div className="mt-3">
@@ -182,6 +182,14 @@ export default function HotelSlugPage({ params }: { params: { slug: string } }) 
             </div>
           </div>
         </div>
+
+        {/* Hotel Description Section */}
+        {hotel.description && (
+          <div className="mt-8 bg-white rounded-xl shadow-md p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">About This Hotel</h3>
+            <p className="text-gray-600 leading-relaxed">{hotel.description}</p>
+          </div>
+        )}
 
         {/* Polished Room Grid Layout */}
         {hotel.rooms && hotel.rooms.length > 0 && (
