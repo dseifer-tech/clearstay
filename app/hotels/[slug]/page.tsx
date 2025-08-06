@@ -148,7 +148,9 @@ export default function HotelSlugPage({ params }: { params: { slug: string } }) 
             </div>
             
             <div className="flex items-center mb-3">
-              <span className="text-gray-600 text-sm">{Math.floor(hotel.rating)}-star hotel</span>
+              <span className="text-gray-600 text-sm">
+                {hotel.rating && !isNaN(hotel.rating) ? `${Math.floor(hotel.rating)}-star hotel` : 'Hotel'}
+              </span>
             </div>
             
             <div className="mt-3">
