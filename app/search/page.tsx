@@ -105,7 +105,7 @@ export default function SearchResults() {
                 <img
                   src="/innstastay-logo.svg"
                   alt="InnstaStay Logo"
-                  className="h-12 w-auto block"
+                  className="h-16 w-auto block"
                 />
               </a>
             </div>
