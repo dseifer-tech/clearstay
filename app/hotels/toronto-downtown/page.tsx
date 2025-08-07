@@ -2,14 +2,25 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Downtown Toronto Hotels | Book Direct with InnstaStay',
-  description: 'Find real-time prices from trusted downtown Toronto hotels. InnstaStay lets you book directly — no commissions, no hidden fees.',
-  robots: 'index, follow',
+  description:
+    'Compare real-time hotel rates in downtown Toronto. Book direct with top hotels near CN Tower, Casa Loma, Eaton Centre, Ripley's Aquarium, and more. No commissions, no markups.',
   openGraph: {
     title: 'Downtown Toronto Hotels | InnstaStay',
-    description: 'Compare verified hotel rates in downtown Toronto. Book direct and save with InnstaStay.',
+    description:
+      'Find verified hotel rates near top downtown Toronto attractions like the CN Tower, Royal Ontario Museum, and St. Lawrence Market — all commission-free.',
     url: 'https://innstastay.com/hotels/toronto-downtown',
     images: ['/innstastay-logo.png'],
-  }
+  },
+  keywords: [
+    'Downtown Toronto hotels',
+    'Book direct Toronto',
+    'Hotels near CN Tower',
+    'Ripley's Aquarium hotel',
+    'St. Lawrence Market hotels',
+    'Toronto attractions hotel',
+    'InnstaStay'
+  ],
+  robots: 'index, follow',
 };
 
 export default function DowntownTorontoPage() {
@@ -223,6 +234,81 @@ export default function DowntownTorontoPage() {
           </div>
         </div>
       </section>
+
+      {/* JSON-LD Schema Markup for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Downtown Toronto Hotels",
+            "description": "Compare direct hotel rates in downtown Toronto near CN Tower, Casa Loma, Ripley's Aquarium, and more. Book direct, skip commissions.",
+            "mainEntity": [
+              {
+                "@type": "Place",
+                "name": "CN Tower",
+                "url": "https://www.google.com/search?q=CN+Tower"
+              },
+              {
+                "@type": "Place",
+                "name": "Casa Loma",
+                "url": "https://www.google.com/search?q=Casa+Loma"
+              },
+              {
+                "@type": "Place",
+                "name": "St. Lawrence Market",
+                "url": "https://www.google.com/search?q=St.+Lawrence+Market"
+              },
+              {
+                "@type": "Place",
+                "name": "Toronto Islands",
+                "url": "https://www.google.com/search?q=Toronto+Islands"
+              },
+              {
+                "@type": "Place",
+                "name": "Hockey Hall of Fame",
+                "url": "https://www.google.com/search?q=Hockey+Hall+of+Fame"
+              },
+              {
+                "@type": "Place",
+                "name": "CF Toronto Eaton Centre",
+                "url": "https://www.google.com/search?q=CF+Toronto+Eaton+Centre"
+              },
+              {
+                "@type": "Place",
+                "name": "High Park",
+                "url": "https://www.google.com/search?q=High+Park"
+              },
+              {
+                "@type": "Place",
+                "name": "Nathan Phillips Square",
+                "url": "https://www.google.com/search?q=Nathan+Phillips+Square"
+              },
+              {
+                "@type": "Place",
+                "name": "Rogers Centre",
+                "url": "https://www.google.com/search?q=Rogers+Centre"
+              },
+              {
+                "@type": "Place",
+                "name": "Evergreen Brick Works",
+                "url": "https://www.google.com/search?q=Evergreen+Brick+Works"
+              },
+              {
+                "@type": "Place",
+                "name": "EdgeWalk at the CN Tower",
+                "url": "https://www.google.com/search?q=EdgeWalk+at+the+CN+Tower"
+              },
+              {
+                "@type": "Place",
+                "name": "Sankofa Square",
+                "url": "https://www.google.com/search?q=Sankofa+Square"
+              }
+            ]
+          })
+        }}
+      />
     </div>
   );
 }
