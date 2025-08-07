@@ -113,6 +113,94 @@ export default function DowntownTorontoPage() {
                 rating: 4.7,
                 reviews: 17844,
                 description: "One of North America's largest art museums with a major Canadian and European collection."
+              },
+              {
+                name: "Casa Loma",
+                link: "https://www.google.com/search?q=Casa+Loma",
+                thumbnail: "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcT_DhhHAloXWTAcX84ZiwdwYHjlM13s9Jsl5SlBh3qc-jzyUUM6",
+                rating: 4.5,
+                reviews: 31533,
+                description: "Grand 1914 castle featuring regular tours & gardens that are open seasonally."
+              },
+              {
+                name: "St. Lawrence Market",
+                link: "https://www.google.com/search?q=St.+Lawrence+Market",
+                thumbnail: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSNzfS0Yisnz-lksUXqnJyMsg_Oqz0b1LqBRxC_0LQ1hfXII1C6",
+                rating: 4.6,
+                reviews: 39009,
+                description: "Spacious market with 100+ vendors, bakers, butchers & artisans, with produce & antiques on weekends."
+              },
+              {
+                name: "Toronto Islands",
+                link: "https://www.google.com/search?q=Toronto+Islands",
+                thumbnail: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT5in4EAwdgmFl5BBC-t_R2_Emd0JAJ-ynG1DciT5_xRScBGvmU",
+                rating: 4.7,
+                reviews: 1828,
+                description: "Islands across from downtown offering recreational activities, beaches & family-friendly attractions."
+              },
+              {
+                name: "Hockey Hall of Fame",
+                link: "https://www.google.com/search?q=Hockey+Hall+of+Fame",
+                thumbnail: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQM1-Y71XhtzuTXoaA9QPngRo_Ds6c8ohJef9f6C3PdeyY10b_1",
+                rating: 4.7,
+                reviews: 6735,
+                description: "Massive hockey museum with gear, games, and the Stanley Cup on display."
+              },
+              {
+                name: "CF Toronto Eaton Centre",
+                link: "https://www.google.com/search?q=CF+Toronto+Eaton+Centre",
+                thumbnail: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDE1qITYSV9U8ypboYS1QEp0nkwrgVHCLr3nZ38X39o6HgPsLI",
+                rating: 4.5,
+                reviews: 54664,
+                description: "Sprawling shopping mall with a historic glass roof and 250+ stores and boutiques."
+              },
+              {
+                name: "High Park",
+                link: "https://www.google.com/search?q=High+Park",
+                thumbnail: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQp4kuV2jzlxXpYaKLz52C-WXb3Rn-1HjGssXnCrd8xKK3YiyYq",
+                rating: 4.7,
+                reviews: 27472,
+                description: "Expansive park featuring trails, gardens, sports areas, a zoo, and more."
+              },
+              {
+                name: "Nathan Phillips Square",
+                link: "https://www.google.com/search?q=Nathan+Phillips+Square",
+                thumbnail: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRthVVW_oiEDVRgiMPp6fNOFu2EosC7h_nQCkNi-0R5MaFy7_HK",
+                rating: 4.6,
+                reviews: 39192,
+                description: "Lively civic square with skating rink, concerts, and seasonal events in front of city hall."
+              },
+              {
+                name: "Rogers Centre",
+                link: "https://www.google.com/search?q=rogers+centre",
+                thumbnail: "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTbvlNUduS39Z2g6TkzqhL235pD6Zc1bGYAvkRsi7Bs7q9Sdcix",
+                rating: 4.1,
+                reviews: 10,
+                description: "Iconic sports stadium and concert venue, home to the Toronto Blue Jays."
+              },
+              {
+                name: "Evergreen Brick Works",
+                link: "https://www.google.com/search?q=Evergreen+Brick+Works",
+                thumbnail: "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nor1qie4iFue-79QngzpnpqFQ0LSCHZODMKmJY0Om-hxTc7uksmJ6yK5DUhf2QYYPTywunRd3vD5XR4bqRPoC8ugDGbL1TNOqoiGw5JLAMfAHOsgojrT95P6yLz-JrAUr_mi0RLJA=w180-h120-k-no",
+                rating: 4.6,
+                reviews: 9764,
+                description: "Eco-friendly attraction with markets, trails, and cultural events in a former industrial space."
+              },
+              {
+                name: "EdgeWalk at the CN Tower",
+                link: "https://www.google.com/search?q=EdgeWalk+at+the+CN+Tower",
+                thumbnail: "https://lh3.googleusercontent.com/gps-cs-s/AC9h4np4G1N9h-UwdvK6T8kdGAi-ztiyCA2kjues-JBUhppqLTBKM6AyvThbsXudM6Xq2evgPd9cobNjdINhRSg-H-p_bcN-6kfZguvHntKq8FH7ZSqBN23FgQhju2Qqi3QtSD1vMIcp=w160-h120-k-no",
+                rating: 4.8,
+                reviews: 744,
+                description: "Outdoor skywalk experience at the top of the CN Tower for thrill-seekers."
+              },
+              {
+                name: "Sankofa Square",
+                link: "https://www.google.com/search?q=Sankofa+Square",
+                thumbnail: "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQMmZ6Ii1YyVijipK7Gfnv4SWhlDtTYwKFgeiSng78ZclY6ggz9",
+                rating: 4.5,
+                reviews: 20990,
+                description: "Downtown public space hosting community events, concerts, and cultural activations."
               }
             ].map((poi, i) => (
               <div key={i} className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 flex gap-4">
