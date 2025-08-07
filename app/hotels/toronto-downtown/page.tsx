@@ -73,6 +73,68 @@ export default function DowntownTorontoPage() {
           </div>
         </div>
       </section>
+
+      {/* Nearby Attractions Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">
+            Nearby Attractions
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {[
+              {
+                name: "CN Tower",
+                link: "https://www.google.com/search?q=CN+Tower",
+                thumbnail: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcToC6Dg8U9nucWiitonjOGkMhhIqrf6NalAdrVeYXaiQkDqBuDy",
+                rating: 4.6,
+                reviews: 81033,
+                description: "Over 553-metre landmark tower with panoramic city views and a glass floor experience."
+              },
+              {
+                name: "Royal Ontario Museum",
+                link: "https://www.google.com/search?q=Royal+Ontario+Museum",
+                thumbnail: "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTm301sIsH1CmyGx9hhuENMH3Ni1yzLZJvjE6iGGfo88sCYNTWw",
+                rating: 4.7,
+                reviews: 39728,
+                description: "Natural history and world cultures exhibits — including fossils, artifacts, and more."
+              },
+              {
+                name: "Ripley's Aquarium of Canada",
+                link: "https://www.google.com/search?q=Ripley's+Aquarium+of+Canada",
+                thumbnail: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQoCFpB93wBlMQcUqbnrBUM1I-BIS30KwpXkEZFawxcbOjHCqj_",
+                rating: 4.6,
+                reviews: 64115,
+                description: "Modern aquarium featuring diverse aquatic species, tunnel exhibits, and family-friendly events."
+              },
+              {
+                name: "Art Gallery of Ontario",
+                link: "https://www.google.com/search?q=Art+Gallery+of+Ontario",
+                thumbnail: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH4mdIZfQ-6BC-k4mO9xxXPB-eYZd37_oe73iDacYf_JkhBscP",
+                rating: 4.7,
+                reviews: 17844,
+                description: "One of North America's largest art museums with a major Canadian and European collection."
+              }
+            ].map((poi, i) => (
+              <div key={i} className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 flex gap-4">
+                <img
+                  src={poi.thumbnail}
+                  alt={poi.name}
+                  className="w-28 h-28 rounded-lg object-cover flex-shrink-0"
+                />
+                <div className="flex-1">
+                  <a href={poi.link} target="_blank" rel="noreferrer">
+                    <h3 className="text-lg font-semibold text-blue-600 hover:underline">{poi.name}</h3>
+                  </a>
+                  <p className="text-sm text-gray-500 mb-1">
+                    ⭐ {poi.rating} ({poi.reviews.toLocaleString()} reviews)
+                  </p>
+                  <p className="text-sm text-gray-700">{poi.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
