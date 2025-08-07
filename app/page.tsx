@@ -23,23 +23,23 @@ export default function HomePage() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTravelerModal, setShowTravelerModal] = useState(false);
   const [hasSelectedDates, setHasSelectedDates] = useState(false);
+  const [isNavigatingMonths, setIsNavigatingMonths] = useState(false);
   const datePickerRef = useRef<HTMLDivElement>(null);
   const travelerModalRef = useRef<HTMLDivElement>(null);
 
+  // Disable onChange completely to prevent auto-search
   const handleDateRangeChange = (dates: [Date | null, Date | null]) => {
-    // Only update if both dates are actually selected (not just navigating)
-    if (dates[0] && dates[1]) {
-      setDateRange(dates);
-      setHasSelectedDates(true);
-    } else {
-      // If only one date is selected or none, just update the range without marking as selected
-      setDateRange(dates);
-      setHasSelectedDates(false);
-    }
+    // Do nothing - this prevents any automatic updates
   };
 
-  // Custom handler for actual date selection
+  // Only allow date updates when user explicitly selects dates
   const handleDateSelection = (dates: [Date | null, Date | null]) => {
+    // Prevent updates during month navigation
+    if (isNavigatingMonths) {
+      return;
+    }
+    
+    // Only update if both dates are actually selected
     if (dates[0] && dates[1]) {
       setDateRange(dates);
       setHasSelectedDates(true);
@@ -203,12 +203,15 @@ export default function HomePage() {
                       monthsShown={1}
                       shouldCloseOnSelect={false}
                       onMonthChange={(date) => {
-                        // Prevent onChange from being called during month navigation
-                        // This is handled by the custom header buttons
+                        // Set navigation flag to prevent onChange
+                        setIsNavigatingMonths(true);
+                        // Reset after a short delay
+                        setTimeout(() => setIsNavigatingMonths(false), 100);
                       }}
                       onCalendarOpen={() => {
                         // Reset selection state when calendar opens
                         setHasSelectedDates(false);
+                        setIsNavigatingMonths(false);
                       }}
                       renderCustomHeader={({
                         date,
