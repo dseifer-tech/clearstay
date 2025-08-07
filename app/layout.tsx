@@ -10,8 +10,15 @@ export const metadata: Metadata = {
   keywords: 'InnstaStay, direct hotel booking, no commission, Toronto hotels, book direct, real-time rates',
   metadataBase: new URL('https://innstastay.com'),
   icons: {
-    icon: '/innstastay-logo.svg',
-    shortcut: '/innstastay-logo.svg',
+    icon: '/browser.png',
+    shortcut: '/browser.png',
+    apple: '/iPhone.png',
+    other: {
+      rel: 'icon',
+      url: '/Android.png',
+      sizes: '192x192',
+      type: 'image/png',
+    },
   },
   robots: 'index, follow'
 }
@@ -27,6 +34,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* Standard Favicon */}
+        <link rel="icon" href="/browser.png" type="image/png" />
+        
+        {/* Apple iOS */}
+        <link rel="apple-touch-icon" href="/iPhone.png" sizes="180x180" />
+        
+        {/* Android/Chrome */}
+        <link rel="icon" href="/Android.png" sizes="192x192" type="image/png" />
+      </head>
       <body className={inter.className}>
         {children}
       </body>
