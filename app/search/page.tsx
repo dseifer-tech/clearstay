@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Star, MapPin, ExternalLink, Eye } from 'lucide-react';
+import { Star, MapPin, ExternalLink, Eye, Search } from 'lucide-react';
 import Link from 'next/link';
 import { HOTEL_SLUG_MAP } from '@/lib/hotels';
 
@@ -100,33 +100,59 @@ export default function SearchResults() {
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-zinc-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5">
           <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              <a href="/" className="flex items-center space-x-2 sm:space-x-3">
+            {/* Logo and Navigation Links */}
+            <div className="flex items-center gap-6">
+              <a href="/" className="flex flex-col items-center">
                 <img
                   src="/innstastay-logo.svg"
                   alt="InnstaStay Logo"
                   className="h-12 sm:h-16 md:h-20 w-auto block"
                 />
+                <span className="text-xs text-blue-600 tracking-wide mt-1">Commission-Free Booking</span>
               </a>
+              
+              {/* Desktop Navigation Links */}
+              <div className="hidden md:flex items-center space-x-8">
+                <ul className="flex space-x-8 text-md font-medium text-neutral-700">
+                  <li>
+                    <a href="/" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
+                      Home
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/about" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
+                      About
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/search" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
+                      Toronto Hotels
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
             
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
-              <ul className="flex space-x-8 text-md font-medium text-neutral-700">
-                <li><a href="/" className="hover:text-blue-600 transition-colors duration-200">Home</a></li>
-                <li><a href="/about" className="hover:text-blue-600 transition-colors duration-200">About</a></li>
-                <li><a href="/search" className="hover:text-blue-600 transition-colors duration-200">Toronto Hotels</a></li>
-              </ul>
-              <a href="/" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                Compare Rates
-              </a>
-            </div>
-            
-            {/* Mobile Menu Button */}
-            <div className="md:hidden">
-              <a href="/" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm">
-                Home
-              </a>
+            {/* Right Side - Search Icon and CTA Button */}
+            <div className="flex items-center gap-4">
+              {/* Search Icon */}
+              <button className="hidden md:block hover:text-blue-600 transition-colors duration-200 p-2">
+                <Search className="w-5 h-5" />
+              </button>
+              
+              {/* Desktop CTA Button */}
+              <div className="hidden md:block">
+                <a href="/" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                  Compare Rates
+                </a>
+              </div>
+              
+              {/* Mobile Menu Button */}
+              <div className="md:hidden">
+                <a href="/" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm">
+                  Home
+                </a>
+              </div>
             </div>
           </div>
         </div>
