@@ -27,20 +27,20 @@ export default function HomePage() {
 
   const handleDateRangeChange = (dates: [Date | null, Date | null]) => {
     setDateRange(dates);
-    if (dates[0] && dates[1]) {
-      setSearchParams({
-        ...searchParams,
-        checkIn: format(dates[0], 'yyyy-MM-dd'),
-        checkOut: format(dates[1], 'yyyy-MM-dd')
-      });
-    }
+    // Don't update search parameters automatically
+    // This prevents automatic search when just navigating months
+    // Search parameters will only be updated when user clicks the search button
   };
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSearching(true);
     
-    const searchUrl = `/search?checkin=${searchParams.checkIn}&checkout=${searchParams.checkOut}&adults=${searchParams.adults}&children=${searchParams.children}`;
+    // Use the current dateRange values instead of searchParams
+    const checkIn = dateRange[0] ? format(dateRange[0], 'yyyy-MM-dd') : searchParams.checkIn;
+    const checkOut = dateRange[1] ? format(dateRange[1], 'yyyy-MM-dd') : searchParams.checkOut;
+    
+    const searchUrl = `/search?checkin=${checkIn}&checkout=${checkOut}&adults=${searchParams.adults}&children=${searchParams.children}`;
     window.location.href = searchUrl;
   };
 
