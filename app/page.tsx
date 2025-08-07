@@ -7,13 +7,6 @@ import { SearchParams } from '@/types/hotel';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-export const metadata = {
-  title: 'InnstaStay | Direct Hotel Rates in Downtown Toronto',
-  description: 'Compare real-time hotel prices in downtown Toronto. InnstaStay connects you to trusted hotels with no commission, no markups — just direct rates.',
-  keywords: 'InnstaStay, Toronto hotels, downtown Toronto hotels, book direct, no commission, transparent hotel prices',
-  robots: 'index, follow'
-};
-
 export default function HomePage() {
   const [searchParams, setSearchParams] = useState<SearchParams>({
     checkIn: format(addDays(new Date(), 1), 'yyyy-MM-dd'),

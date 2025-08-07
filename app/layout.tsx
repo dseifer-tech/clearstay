@@ -6,8 +6,8 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'InnstaStay | Direct Hotel Rates in Downtown Toronto',
-  description: 'Compare live hotel prices in downtown Toronto. InnstaStay lets you book directly with trusted hotels — no commissions, no markups, no surprises.',
-  keywords: 'Toronto hotels, downtown Toronto hotels, book direct, hotel rates Toronto, no commission booking, InnstaStay',
+  description: 'Compare real-time hotel prices in downtown Toronto. InnstaStay connects you to trusted hotels with no commission, no markups — just direct rates.',
+  keywords: 'InnstaStay, Toronto hotels, downtown Toronto hotels, book direct, no commission, transparent hotel prices',
   metadataBase: new URL('https://innstastay.com'),
   icons: {
     icon: '/browser.png',
