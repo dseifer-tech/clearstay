@@ -161,6 +161,8 @@ export default function SearchPage() {
                   <img
                     src="/innstastay-logo.svg"
                     alt="InnstaStay Logo"
+                    width={100}
+                    height={80}
                     className="h-12 sm:h-16 md:h-20 w-auto block"
                   />
                   <span className="text-xs text-blue-600 tracking-wide mt-1">Commission-Free Booking</span>
@@ -484,6 +486,8 @@ export default function SearchPage() {
                 <img
                   src="/innstastay-logo.svg"
                   alt="InnstaStay Logo"
+                  width={100}
+                  height={80}
                   className="h-12 sm:h-16 md:h-20 w-auto block"
                 />
                 <span className="text-xs text-blue-600 tracking-wide mt-1">Commission-Free Booking</span>
