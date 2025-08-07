@@ -27,22 +27,21 @@ export default function HomePage() {
   const datePickerRef = useRef<HTMLDivElement>(null);
   const travelerModalRef = useRef<HTMLDivElement>(null);
 
-  // Disable onChange completely to prevent auto-search
+  // Handle date range changes - this is the main onChange handler
   const handleDateRangeChange = (dates: [Date | null, Date | null]) => {
-    // Do nothing - this prevents any automatic updates
-  };
-
-  // Only allow date updates when user explicitly selects dates
-  const handleDateSelection = (dates: [Date | null, Date | null]) => {
     // Prevent updates during month navigation
     if (isNavigatingMonths) {
       return;
     }
     
-    // Only update if both dates are actually selected
+    // Update the date range
+    setDateRange(dates);
+    
+    // Only mark as selected if both dates are chosen
     if (dates[0] && dates[1]) {
-      setDateRange(dates);
       setHasSelectedDates(true);
+    } else {
+      setHasSelectedDates(false);
     }
   };
 
@@ -201,7 +200,7 @@ export default function HomePage() {
                       selectsRange={true}
                       startDate={dateRange[0]}
                       endDate={dateRange[1]}
-                      onChange={handleDateSelection}
+                      onChange={handleDateRangeChange}
                       minDate={new Date()}
                       dateFormat="MMM dd"
                       inline
