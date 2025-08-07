@@ -104,26 +104,31 @@ export default function HomePage() {
                 <span className="text-xs text-blue-600 tracking-wide mt-1">Commission-Free Booking</span>
               </a>
               
-              {/* Desktop Navigation Links */}
-              <div className="hidden md:flex items-center space-x-8">
-                <ul className="flex space-x-8 text-md font-medium text-neutral-700">
-                  <li>
-                    <a href="/" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
-                      Home
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/about" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
-                      About
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/search" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
-                      Toronto Hotels
-                    </a>
-                  </li>
-                </ul>
-              </div>
+                             {/* Desktop Navigation Links */}
+               <div className="hidden md:flex items-center space-x-8">
+                 <ul className="flex space-x-8 text-md font-medium text-neutral-700">
+                   <li>
+                     <a href="/" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
+                       Home
+                     </a>
+                   </li>
+                   <li>
+                     <a href="/about" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
+                       About
+                     </a>
+                   </li>
+                   <li>
+                     <a href="/search" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
+                       Compare Rates
+                     </a>
+                   </li>
+                   <li>
+                     <a href="/hotels/toronto-downtown" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
+                       Downtown Hotels
+                     </a>
+                   </li>
+                 </ul>
+               </div>
             </div>
             
             {/* Right Side - Search Icon and CTA Button */}
