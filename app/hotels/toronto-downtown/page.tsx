@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Downtown Toronto Hotels | Book Direct with InnstaStay',
   description:
-    'Compare real-time hotel rates in downtown Toronto. Book direct with top hotels near CN Tower, Casa Loma, Eaton Centre, Ripley's Aquarium, and more. No commissions, no markups.',
+    'Compare real-time hotel rates in downtown Toronto. Book direct with top hotels near CN Tower, Casa Loma, Eaton Centre, Ripley\'s Aquarium, and more. No commissions, no markups.',
   openGraph: {
     title: 'Downtown Toronto Hotels | InnstaStay',
     description:
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     'Downtown Toronto hotels',
     'Book direct Toronto',
     'Hotels near CN Tower',
-    'Ripley's Aquarium hotel',
+    'Ripley\'s Aquarium hotel',
     'St. Lawrence Market hotels',
     'Toronto attractions hotel',
     'InnstaStay'
