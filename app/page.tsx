@@ -7,6 +7,13 @@ import { SearchParams } from '@/types/hotel';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
+export const metadata = {
+  title: 'InnstaStay | Direct Hotel Rates in Downtown Toronto',
+  description: 'Compare real-time hotel prices in downtown Toronto. InnstaStay connects you to trusted hotels with no commission, no markups — just direct rates.',
+  keywords: 'InnstaStay, Toronto hotels, downtown Toronto hotels, book direct, no commission, transparent hotel prices',
+  robots: 'index, follow'
+};
+
 export default function HomePage() {
   const [searchParams, setSearchParams] = useState<SearchParams>({
     checkIn: format(addDays(new Date(), 1), 'yyyy-MM-dd'),
@@ -22,14 +29,28 @@ export default function HomePage() {
   ]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTravelerModal, setShowTravelerModal] = useState(false);
+  const [hasSelectedDates, setHasSelectedDates] = useState(false);
   const datePickerRef = useRef<HTMLDivElement>(null);
   const travelerModalRef = useRef<HTMLDivElement>(null);
 
   const handleDateRangeChange = (dates: [Date | null, Date | null]) => {
-    setDateRange(dates);
-    // Don't update search parameters automatically
-    // This prevents automatic search when just navigating months
-    // Search parameters will only be updated when user clicks the search button
+    // Only update if both dates are actually selected (not just navigating)
+    if (dates[0] && dates[1]) {
+      setDateRange(dates);
+      setHasSelectedDates(true);
+    } else {
+      // If only one date is selected or none, just update the range without marking as selected
+      setDateRange(dates);
+      setHasSelectedDates(false);
+    }
+  };
+
+  // Custom handler for actual date selection
+  const handleDateSelection = (dates: [Date | null, Date | null]) => {
+    if (dates[0] && dates[1]) {
+      setDateRange(dates);
+      setHasSelectedDates(true);
+    }
   };
 
   const handleSearch = async (e: React.FormEvent) => {
@@ -142,12 +163,14 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto text-center">
           <div className="animate-fade-in">
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-neutral-800 tracking-tight leading-tight">
-              Book with Confidence.
+              Stay Downtown.
               <br />
-              <span className="text-blue-600">Stay with Trust.</span>
+              <span className="text-blue-600">Book Smarter with InnstaStay.</span>
             </h1>
             <p className="text-lg sm:text-xl text-neutral-600 mt-4 sm:mt-6 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0">
-              Toronto's commission-free hotel booking platform. No markups, no games — just real prices from verified hotels.
+              Compare real-time direct hotel rates in downtown Toronto.
+              <br />
+              InnstaStay shows you live prices from trusted local hotels — no middlemen, no fees, just direct booking made easy.
             </p>
           </div>
           
@@ -180,12 +203,20 @@ export default function HomePage() {
                       selectsRange={true}
                       startDate={dateRange[0]}
                       endDate={dateRange[1]}
-                      onChange={handleDateRangeChange}
+                      onChange={handleDateSelection}
                       minDate={new Date()}
                       dateFormat="MMM dd"
                       inline
                       monthsShown={1}
                       shouldCloseOnSelect={false}
+                      onMonthChange={(date) => {
+                        // Prevent onChange from being called during month navigation
+                        // This is handled by the custom header buttons
+                      }}
+                      onCalendarOpen={() => {
+                        // Reset selection state when calendar opens
+                        setHasSelectedDates(false);
+                      }}
                       renderCustomHeader={({
                         date,
                         decreaseMonth,
@@ -220,7 +251,7 @@ export default function HomePage() {
                       calendarContainer={({ children, ...props }) => (
                         <div {...props} className="bg-white rounded-xl shadow-2xl border border-gray-200">
                           {children}
-                          {dateRange[0] && dateRange[1] && (
+                          {hasSelectedDates && dateRange[0] && dateRange[1] && (
                             <div className="p-4 border-t border-gray-200">
                               <button
                                 type="button"
@@ -506,6 +537,24 @@ export default function HomePage() {
               <p className="text-neutral-600 text-sm">Direct booking with hotels</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Optional CTA Section */}
+      <section className="py-16 bg-white border-t border-gray-100">
+        <div className="max-w-5xl mx-auto px-4 text-center">
+          <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-4">
+            Downtown stays, zero commission.
+          </h2>
+          <p className="text-gray-600 text-lg mb-6">
+            Skip the middlemen and find your hotel in downtown Toronto with real-time prices from the source.
+          </p>
+          <a 
+            href="/search" 
+            className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-sm font-semibold shadow hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
+          >
+            Find a Hotel in Downtown Toronto →
+          </a>
         </div>
       </section>
     </div>
