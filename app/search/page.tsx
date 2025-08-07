@@ -126,7 +126,12 @@ export default function SearchResults() {
                   </li>
                   <li>
                     <a href="/search" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
-                      Toronto Hotels
+                      Compare Rates
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/hotels/toronto-downtown" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
+                      Downtown Hotels
                     </a>
                   </li>
                 </ul>
