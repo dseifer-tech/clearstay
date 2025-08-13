@@ -6,14 +6,23 @@ const descriptionCache: { [key: string]: string } = {};
 // Static cache for hotel metadata
 const globalCache = (global as any)._hotelStaticCache ||= {};
 
+// Helper function to format date as MM/DD/YYYY
+function formatDateToMMDDYYYY(dateString: string): string {
+  const date = new Date(dateString);
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${month}/${day}/${year}`;
+}
+
 const HARDCODED_BOOKING_LINKS: { [key: string]: string } = {
-  "Pantages Hotel Downtown Toronto": "https://bookings.travelclick.com/102298?Adults={adults}&Children={children}&DateIn={checkin_slash}&DateOut={checkout_slash}&domain=pantageshotel.com&identifier=#/accommodation/room",
-  "Town Inn Suites": "https://bookings.travelclick.com/104140?Adults={adults}&Children={children}&DateIn={checkin}&DateOut={checkout}&domain=towninn.com&identifier=#/accommodation/room",
-  "One King West Hotel & Residence": "https://bookings.travelclick.com/95964?&DateIn={checkin_slash}&DateOut={checkout_slash}&domain=www.onekingwest.com#/accommodation/room",
+  "Pantages Hotel Downtown Toronto": "https://reservations.travelclick.com/102298?&adults={adults}&children={children}&rooms=1&datein={datein_mmddyyyy}&dateout={dateout_mmddyyyy}",
+  "Town Inn Suites": "https://www.towninn.com/book/accommodations?adults={adults}&children={children}&datein={datein_mmddyyyy}&dateout={dateout_mmddyyyy}&rooms=1",
+  "One King West Hotel & Residence": "https://reservations.travelclick.com/95964?&adults={adults}&children={children}&rooms=1&datein={datein_mmddyyyy}&dateout={dateout_mmddyyyy}",
   "The Omni King Edward Hotel": "https://bookings.omnihotels.com/rates-room1?hotel=110052&arrival={checkin_dash}&departure={checkout_dash}&nights=1&rooms=1&adults[1]={adults}&children[1]={children}&ratePlanCategory=&language=en-us",
   "Chelsea Hotel, Toronto": "https://reservation.brilliantbylangham.com/?a&adult={adults}&arrive={checkin_dash}&chain=10316&child={children}&config=brilliant&currency=CAD&depart={checkout_dash}&hotel=59052&level=hotel&locale=en-US&productcurrency=CAD&rooms=1&theme=brilliant",
   "The Anndore House - JDV by Hyatt": "https://www.hyatt.com/shop/rooms/torjd?rooms=1&checkinDate={checkin_dash}&checkoutDate={checkout_dash}",
-  "Sutton Place Hotel Toronto": "https://reservations.suttonplace.com/114627?&adults={adults}&datein={checkin_slash}&dateout={checkout_slash}&domain=www.suttonplace.com&languageid=1&rooms=1#/accommodation/room",
+  "Sutton Place Hotel Toronto": "https://reservations.travelclick.com/114627?&adults={adults}&children={children}&rooms=1&datein={datein_mmddyyyy}&dateout={dateout_mmddyyyy}",
   "Ace Hotel Toronto": "https://reservations.acehotel.com/?adult={adults}&arrive={checkin_dash}&chain=7231&child={children}&currency=CAD&depart={checkout_dash}&dest=ACE&hotel=36680&level=hotel&locale=en-US&productcurrency=CAD&rooms=1"
 };
 
@@ -63,6 +72,10 @@ function inject_parameters_into_url(base_url: string, checkin: string, checkout:
   const checkin_slash = checkin.replace("-", "/");
   const checkout_slash = checkout.replace("-", "/");
   
+  // Format for Town Inn: MM/DD/YYYY (e.g., 08/25/2025)
+  const checkin_mmddyyyy = formatDateToMMDDYYYY(checkin);
+  const checkout_mmddyyyy = formatDateToMMDDYYYY(checkout);
+  
   return base_url
     .replace("{checkin}", date_in)
     .replace("{checkout}", date_out)
@@ -70,6 +83,8 @@ function inject_parameters_into_url(base_url: string, checkin: string, checkout:
     .replace("{checkout_dash}", checkout_dash)
     .replace("{checkin_slash}", checkin_slash)
     .replace("{checkout_slash}", checkout_slash)
+    .replace("{datein_mmddyyyy}", checkin_mmddyyyy)
+    .replace("{dateout_mmddyyyy}", checkout_mmddyyyy)
     .replace("{adults}", adults.toString())
     .replace("{children}", children.toString());
 }
