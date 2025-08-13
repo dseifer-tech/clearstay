@@ -14,8 +14,9 @@ A modern, commission-free hotel booking platform for independent hotels, startin
 - **Data Source**: SerpAPI Google Hotel Search API
 - **Styling**: Tailwind CSS with custom design system
 - **Icons**: Lucide React
-- **Date Handling**: react-datepicker with custom styling
+- **Date Handling**: Custom ProfessionalCalendar component with enhanced navigation
 - **Animations**: CSS keyframes and Tailwind transitions
+- **Deployment**: Vercel with automatic deployments
 
 ## 🚀 Features
 
@@ -23,22 +24,24 @@ A modern, commission-free hotel booking platform for independent hotels, startin
 
 #### Homepage (`/`)
 - **Modern Hero Section**: Soft gradient background with centered headline and search box
-- **Expedia-Style Search Form**: Horizontally segmented card with date range picker, traveler selector, and CTA button
-- **Enhanced Date Picker**: Single calendar view for selecting both check-in and check-out dates with intelligent month navigation
-- **Trust-Building Sections**: "Why We Built InnstaStay," "How It Works" (4-step visual guide), and "What You Get" with icons and responsive grid layout
-- **Premium Navigation**: Sticky navbar with InnstaStay branding, navigation links, and CTA button
+- **Enhanced Search Form**: Horizontally segmented card with date range picker, traveler selector, and CTA button
+- **Professional Date Picker**: Custom calendar component with prominent month navigation arrows
+- **Trust-Building Sections**: "How It Works," "What You Get," and hotel directory with internal linking
+- **Premium Navigation**: Sticky navbar with InnstaStay branding, navigation links, and "Compare Rates" CTA
+- **Hotel Directory**: Featured hotels section with internal links to improve SEO
 - **Subtle Animations**: Fade-in and slide-up effects on page load
 - **Mobile-First Design**: Responsive layout with mobile menu and optimized touch interactions
-- **CLS Optimization**: Explicit width/height attributes on logo for improved Core Web Vitals
+- **SEO Optimized**: Unique metadata, H1 headings, and internal linking structure
 
 #### About Page (`/about`)
 - **Trust-Building Content**: Explains InnstaStay's mission and differentiators
 - **Problem Section**: 3-column card layout explaining issues with traditional booking
 - **Solution Section**: 4-step visual flow showing how InnstaStay works differently
 - **Benefits Section**: List of user benefits with checkmark icons
-- **CTA Section**: Call-to-action for users to start searching
+- **Hotel Directory**: Internal linking to hotel pages for SEO improvement
 - **Consistent Design**: Matches homepage styling and navigation
 - **Mobile Responsive**: Optimized for all device sizes
+- **SEO Optimized**: Unique metadata and proper heading structure
 
 #### Search Results (`/search`)
 - **Enhanced Card Design**: Soft white cards with rounded corners, subtle shadows, and hover effects
@@ -50,6 +53,8 @@ A modern, commission-free hotel booking platform for independent hotels, startin
 - **Responsive Layout**: Mobile-friendly design with proper spacing
 - **Real-Time Rates**: Aligned API calls with individual hotel pages for consistent rate display
 - **Dual Functionality**: Displays search form when no parameters provided, results when parameters present
+- **Dynamic H1 Headings**: Contextual headings based on search parameters
+- **Hotel Directory**: Internal linking when no search parameters present
 - **Consistent Navigation**: Matches homepage navigation bar styling
 
 #### Toronto Downtown Page (`/hotels/toronto-downtown`)
@@ -59,6 +64,7 @@ A modern, commission-free hotel booking platform for independent hotels, startin
 - **SEO Optimization**: Comprehensive metadata with keywords and JSON-LD schema markup
 - **Local SEO**: Structured data for attractions to improve local search visibility
 - **Commission-Free Messaging**: Clear value proposition throughout the page
+- **Unique Metadata**: Distinct title and description for SEO
 
 #### Unified API Integration (`/api/search`)
 - **Single Endpoint**: Unified `/api/search` handles both search results and individual hotel data
@@ -74,6 +80,7 @@ A modern, commission-free hotel booking platform for independent hotels, startin
 - **Real-Time Pricing**: Never caches rates to ensure fresh pricing data
 - **SerpAPI Integration**: Uses `google_hotels` engine with proper query parameters
 - **Consistent API Calls**: Aligned search and individual hotel API call formats for consistent rate extraction
+- **Search Prioritization**: Hotels with direct rates are prioritized in search results
 
 #### Premium Hotel Detail Pages (`/hotels/[slug]`)
 - **Brand-First Header**: Gradient header with hotel name, address, and InnstaStay branding
@@ -85,20 +92,22 @@ A modern, commission-free hotel booking platform for independent hotels, startin
 - **Mobile Sticky CTA**: Bottom-fixed booking button on mobile devices
 - **InnstaStay Branding**: Consistent branding throughout with "Powered by InnstaStay" messaging
 - **Professional Polish**: Premium design with shadows, gradients, and smooth transitions
-- **Dynamic Metadata**: SEO-optimized with dynamic title, description, and OpenGraph tags
+- **Dynamic Metadata**: SEO-optimized with unique title, description, and OpenGraph tags for each hotel
 - **JSON-LD Schema**: Structured data for better search engine visibility
+- **Hardcoded Booking Links**: Always uses direct hotel booking links with dynamic date parameters
+- **OTA Filtering**: Ensures only official hotel rates are displayed, no OTA prices
 
 ### Hotel Coverage (Toronto)
 
-Currently supports 8 Toronto hotels with enhanced descriptions:
-- Pantages Hotel Downtown Toronto
-- Town Inn Suites
-- One King West Hotel & Residence
-- The Omni King Edward Hotel
-- Chelsea Hotel, Toronto
-- The Anndore House - JDV by Hyatt
-- Sutton Place Hotel Toronto
-- Ace Hotel Toronto
+Currently supports 8 Toronto hotels with enhanced descriptions and hardcoded booking links:
+- **Pantages Hotel Downtown Toronto**: Direct booking via TravelClick
+- **Town Inn Suites**: Direct booking via Town Inn website
+- **One King West Hotel & Residence**: Direct booking via TravelClick
+- **The Omni King Edward Hotel**: Direct booking via hotel website
+- **Chelsea Hotel, Toronto**: Direct booking via hotel website
+- **The Anndore House - JDV by Hyatt**: Direct booking via hotel website
+- **Sutton Place Hotel Toronto**: Direct booking via TravelClick
+- **Ace Hotel Toronto**: Direct booking via hotel website
 
 ## 🎨 Design Philosophy
 
@@ -110,6 +119,7 @@ Currently supports 8 Toronto hotels with enhanced descriptions:
 - **Typography**: Modern geometric fonts with increased line height and letter spacing
 - **Brand Consistency**: InnstaStay logo properly scaled across all pages with CLS optimization
 - **Multi-Device Favicon**: Support for browser, iPhone, and Android favicon formats
+- **Enhanced Navigation**: Prominent month navigation arrows in date picker
 
 ## 🔧 Development
 
@@ -148,6 +158,13 @@ ClearStay/
 ├── app/
 │   ├── api/
 │   │   └── search/route.ts    # Unified API endpoint for search and individual hotels
+│   ├── components/
+│   │   ├── ProfessionalCalendar.tsx  # Enhanced date picker with prominent navigation
+│   │   ├── SearchBarWide.tsx         # Main search component
+│   │   ├── HomePageClient.tsx        # Client-side homepage logic
+│   │   ├── SearchPageClient.tsx      # Client-side search logic
+│   │   ├── AboutPageClient.tsx       # Client-side about page logic
+│   │   └── ...                       # Other UI components
 │   ├── hotels/
 │   │   ├── [slug]/page.tsx    # Premium hotel detail pages with enhanced design
 │   │   └── toronto-downtown/page.tsx  # Toronto Downtown landing page with attractions
@@ -165,7 +182,7 @@ ClearStay/
 │   └── hotel.ts              # TypeScript interfaces
 ├── lib/
 │   ├── hotels.ts             # Hotel data, utilities, and slug mappings
-│   └── hotelData.ts          # Centralized hotel data fetching logic
+│   └── hotelData.ts          # Centralized hotel data fetching logic with hardcoded links
 ├── raw.json/                 # Debug directory for SerpAPI responses
 ├── data/                     # Data files (gitignored)
 ├── .gitignore               # Git ignore rules
@@ -188,21 +205,23 @@ ClearStay/
    - Parses and caches hotel descriptions
    - Filters out generic room entries and entries without images
    - Saves raw JSON responses for debugging
-6. **Frontend Display**: 
+   - Prioritizes hotels with direct rates in search results
+6. **Hardcoded Booking Links**: Always uses direct hotel booking links with dynamic date parameters
+7. **Frontend Display**: 
    - Search results: Shows one rate per hotel with descriptions and enhanced styling
    - Hotel details: Premium layout with hero card, trust badges, and room grid
-7. **Direct Booking**: Seamless integration with hotel booking engines for commission-free bookings
+8. **Direct Booking**: Seamless integration with hotel booking engines for commission-free bookings
 
 ## 🚧 Current Status
 
 ### ✅ Completed
 - Next.js project setup with TypeScript and Tailwind CSS
-- **Modern Homepage**: Redesigned with Apple-style polish and Expedia-style search form
+- **Modern Homepage**: Redesigned with Apple-style polish and enhanced search form
 - **Enhanced Search Results**: Improved card design, typography, and user experience
 - **About Page**: New trust-building page with InnstaStay's mission and differentiators
 - **Premium Navigation**: Consistent navbar across all pages with enhanced styling
 - **Hotel Descriptions**: Parsed and displayed hotel descriptions with caching
-- **Date Picker Enhancement**: Single calendar view with integrated search button and intelligent month navigation
+- **Professional Date Picker**: Custom calendar component with prominent month navigation arrows
 - **Unified API Structure**: Single `/api/search` endpoint handles both search and individual hotel requests
 - **Premium Hotel Detail Pages**: Complete redesign with brand-first header, hero card, and polished room grid
 - **Enhanced Data Extraction**: Correctly extracts `extracted_before_taxes_fees` for accurate pricing
@@ -211,24 +230,25 @@ ClearStay/
 - **Static Metadata Caching**: Performance optimization with cached hotel metadata
 - **Trust-Building Elements**: Visual trust badges and InnstaStay branding throughout
 - **Mobile-First Design**: Responsive design with mobile-specific features like sticky CTAs
-- **Direct Booking Links**: Commission-free rates with dynamic parameters
-- **SerpAPI Integration**: Advanced data processing with correct API structure and debugging support
-- **Logo Implementation**: InnstaStay SVG logo properly scaled across all pages with CLS optimization
-- **SEO Optimization**: Dynamic metadata, OpenGraph tags, and JSON-LD schema for hotel pages
-- **Consistent Rate Display**: Aligned API calls between search and individual hotel pages
-- **Multi-Device Favicon**: Support for browser, iPhone, and Android favicon formats
-- **Navigation Consistency**: Unified navigation bar across all pages with proper styling
-- **Date Picker Fixes**: Resolved auto-search issues during month navigation
-- **Search Page Dual Functionality**: Displays search form or results based on URL parameters
-- **Toronto Downtown Page**: Comprehensive landing page with attractions and local SEO
-- **CLS Optimization**: Fixed Cumulative Layout Shift with explicit logo dimensions
-- **Core Web Vitals**: Improved performance metrics across all pages
+- **Hardcoded Booking Links**: Always uses direct hotel booking links with dynamic date parameters
+- **OTA Price Filtering**: Ensures only official hotel rates are displayed on slug pages
+- **Search Result Prioritization**: Hotels with direct rates are prioritized in search results
+- **SEO Optimization**: 
+  - Dynamic metadata for all pages with unique titles and descriptions
+  - Proper H1 heading structure across all pages
+  - Internal linking to resolve orphaned pages
+  - Server/client component separation for better SEO
+- **Navigation Improvements**: 
+  - Removed redundant search icon
+  - "Compare Rates" button properly links to search page
+  - Enhanced month navigation arrows in date picker
+- **Vercel Deployment**: Automatic deployments with Git integration
+- **TypeScript Safety**: Comprehensive type checking and error handling
 
 ### 🔄 In Progress
-- Environment variable configuration for API keys
-- Additional error handling and loading states
 - Performance optimization for large datasets
-- Testing and validation of updated SerpApi integration
+- Additional error handling and loading states
+- Testing and validation of booking link functionality
 
 ### 📋 Planned
 - Additional cities beyond Toronto
@@ -240,15 +260,17 @@ ClearStay/
 - Hotel image galleries and virtual tours
 - Guest review integration
 - Advanced room comparison features
+- Analytics and conversion tracking
 
 ## 🎯 Key Features
 
 ### Search Experience
-- **Single Calendar View**: Select both check-in and check-out dates in one interface
+- **Professional Date Picker**: Custom calendar with prominent month navigation arrows
 - **Intelligent Month Navigation**: Prevents auto-search during month browsing
 - **Traveler Selection**: Modal-based guest and room selector
 - **Real-Time Pricing**: Direct from hotel booking engines with `extracted_before_taxes_fees`
 - **Commission-Free Rates**: Only official hotel rates displayed
+- **Search Prioritization**: Hotels with direct rates appear first in results
 - **Consistent Rate Display**: Search and individual hotel pages show same rate information
 
 ### Premium Hotel Detail Pages
@@ -259,6 +281,8 @@ ClearStay/
 - **Mobile Sticky CTA**: Bottom-fixed booking button for mobile users
 - **InnstaStay Branding**: Consistent "Powered by InnstaStay" messaging
 - **SEO Optimization**: Dynamic metadata and structured data for search engines
+- **Hardcoded Booking Links**: Always uses direct hotel booking links with dynamic parameters
+- **OTA Filtering**: Ensures only official hotel rates are displayed
 
 ### Toronto Downtown Landing Page
 - **Local SEO Focus**: Comprehensive metadata and structured data for attractions
@@ -266,19 +290,22 @@ ClearStay/
 - **Value Proposition**: Clear messaging about commission-free booking
 - **Visual Design**: Hero gradient and 3-column benefit grid
 - **Google Integration**: Direct links to Google search for each attraction
+- **Unique Metadata**: Distinct title and description for SEO
 
 ### Trust & Transparency
 - **Hotel Descriptions**: Detailed information about each property
-- **Direct Booking**: Links go directly to hotel websites
+- **Direct Booking**: Links go directly to hotel websites via hardcoded URLs
 - **No Hidden Fees**: Transparent pricing with no markups
 - **Verified Hotels**: Only legitimate, verified properties
 - **Trust Badges**: Visual indicators for security and transparency
+- **OTA Filtering**: Ensures only official hotel rates are displayed
 
 ### User Experience
 - **Modern Design**: Clean, trustworthy interface with premium feel
 - **Responsive Layout**: Optimized for all devices with mobile-first approach
 - **Smooth Animations**: Subtle microinteractions and transitions
 - **Clear Navigation**: Intuitive site structure with consistent branding
+- **Enhanced Date Picker**: Professional calendar with prominent navigation arrows
 - **Detailed Hotel Pages**: Comprehensive information with room availability and amenities
 - **SEO-Friendly URLs**: Clean, descriptive hotel URLs for better discoverability
 - **Brand Consistency**: InnstaStay logo properly scaled across all pages
@@ -291,6 +318,8 @@ ClearStay/
 - **Unified API**: Single endpoint handles multiple use cases efficiently
 - **Centralized Data Logic**: `lib/hotelData.ts` for consistent data fetching
 - **Multi-Device Support**: Favicon support for all major platforms
+- **TypeScript Safety**: Comprehensive type checking and error handling
+- **Vercel Deployment**: Automatic deployments with Git integration
 
 ## 🤝 Contributing
 
