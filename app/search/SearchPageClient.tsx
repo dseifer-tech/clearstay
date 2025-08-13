@@ -373,37 +373,67 @@ export default function SearchPageClient() {
                 </p>
                 
                 {!checkin || !checkout ? (
-                  <div className="bg-white p-6 rounded-xl shadow-md">
-                    <h3 className="font-semibold text-gray-800 mb-4">Quick Search</h3>
-                    <div className="space-y-3">
-                      <button
-                        onClick={() => {
-                          const today = new Date();
-                          const tomorrow = addDays(today, 1);
-                          const nextWeek = addDays(today, 7);
-                          const nextWeekPlus1 = addDays(today, 8);
-                          
-                          router.push(`/search?checkin=${format(tomorrow, 'yyyy-MM-dd')}&checkout=${format(nextWeek, 'yyyy-MM-dd')}&adults=2&children=0`);
-                        }}
-                        className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                      >
-                        Next Week (7 nights)
-                      </button>
-                      
-                      <button
-                        onClick={() => {
-                          const today = new Date();
-                          const tomorrow = addDays(today, 1);
-                          const dayAfter = addDays(today, 2);
-                          
-                          router.push(`/search?checkin=${format(tomorrow, 'yyyy-MM-dd')}&checkout=${format(dayAfter, 'yyyy-MM-dd')}&adults=2&children=0`);
-                        }}
-                        className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
-                      >
-                        Tomorrow (1 night)
-                      </button>
+                  <>
+                    <div className="bg-white p-6 rounded-xl shadow-md mb-8">
+                      <h3 className="font-semibold text-gray-800 mb-4">Quick Search</h3>
+                      <div className="space-y-3">
+                        <button
+                          onClick={() => {
+                            const today = new Date();
+                            const tomorrow = addDays(today, 1);
+                            const nextWeek = addDays(today, 7);
+                            const nextWeekPlus1 = addDays(today, 8);
+                            
+                            router.push(`/search?checkin=${format(tomorrow, 'yyyy-MM-dd')}&checkout=${format(nextWeek, 'yyyy-MM-dd')}&adults=2&children=0`);
+                          }}
+                          className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                        >
+                          Next Week (7 nights)
+                        </button>
+                        
+                        <button
+                          onClick={() => {
+                            const today = new Date();
+                            const tomorrow = addDays(today, 1);
+                            const dayAfter = addDays(today, 2);
+                            
+                            router.push(`/search?checkin=${format(tomorrow, 'yyyy-MM-dd')}&checkout=${format(dayAfter, 'yyyy-MM-dd')}&adults=2&children=0`);
+                          }}
+                          className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                        >
+                          Tomorrow (1 night)
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                    
+                    {/* Hotel Directory */}
+                    <div className="bg-white p-6 rounded-xl shadow-md">
+                      <h3 className="font-semibold text-gray-800 mb-4">Featured Hotels in Toronto</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {[
+                          { name: "Pantages Hotel Downtown Toronto", slug: "pantages-hotel-downtown-toronto" },
+                          { name: "Town Inn Suites", slug: "town-inn-suites" },
+                          { name: "One King West Hotel & Residence", slug: "one-king-west-hotel-residence" },
+                          { name: "The Omni King Edward Hotel", slug: "the-omni-king-edward-hotel" },
+                          { name: "Chelsea Hotel, Toronto", slug: "chelsea-hotel-toronto" },
+                          { name: "The Anndore House - JDV by Hyatt", slug: "the-anndore-house-jdv" },
+                          { name: "Sutton Place Hotel Toronto", slug: "sutton-place-hotel-toronto" },
+                          { name: "Ace Hotel Toronto", slug: "ace-hotel-toronto" }
+                        ].map((hotel) => (
+                          <Link
+                            key={hotel.slug}
+                            href={`/hotels/${hotel.slug}`}
+                            className="block p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
+                          >
+                            <div className="font-medium text-gray-800 hover:text-blue-600 transition-colors">
+                              {hotel.name}
+                            </div>
+                            <div className="text-sm text-gray-500">Direct Booking</div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </>
                 ) : (
                   <button
                     onClick={() => router.push('/search')}

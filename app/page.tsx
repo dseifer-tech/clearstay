@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { format, addDays } from 'date-fns';
 import { Search, Shield, DollarSign, X, ArrowRight, CheckCircle, Building, Users, CreditCard, Calendar, Eye, Clock, Link, Star, Heart, Zap, User, Menu } from 'lucide-react';
 import { SearchParams } from '@/types/hotel';
+import { TORONTO_HOTELS, HOTEL_SLUG_MAP } from '@/lib/hotels';
 import SearchBarWide from '@/app/components/SearchBarWide';
 import ProfessionalCalendar from '@/app/components/ProfessionalCalendar';
 import StickyMobileCTA from '@/app/components/StickyMobileCTA';
@@ -436,6 +437,78 @@ export default function HomePage() {
               <h3 className="text-lg font-semibold text-neutral-800 mb-3">0% Commission</h3>
               <p className="text-neutral-600 text-sm leading-relaxed">No booking fees or commissions — ever</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Hotel Directory Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-6">
+              Featured Hotels in Toronto
+            </h2>
+            <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
+              Discover our curated selection of premium hotels in downtown Toronto. Each property offers direct booking with no commissions.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {TORONTO_HOTELS.map((hotel) => {
+              const slug = HOTEL_SLUG_MAP[hotel.token];
+              return (
+                <a
+                  key={hotel.token}
+                  href={`/hotels/${slug}`}
+                  className="group bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 border border-gray-100 overflow-hidden hover:border-blue-200"
+                >
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                        <span className="text-sm font-semibold text-gray-800">{hotel.rating}</span>
+                      </div>
+                      <Building className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                    </div>
+                    
+                    <h3 className="font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+                      {hotel.name}
+                    </h3>
+                    
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                      {hotel.address}
+                    </p>
+                    
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {hotel.amenities?.slice(0, 2).map((amenity: string, index: number) => (
+                        <span
+                          key={index}
+                          className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
+                        >
+                          {amenity}
+                        </span>
+                      ))}
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-blue-600 font-medium group-hover:text-blue-700 transition-colors">
+                        View Details →
+                      </span>
+                      <span className="text-xs text-gray-500">Direct Booking</span>
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+          
+          <div className="text-center mt-8">
+            <a 
+              href="/search" 
+              className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-sm font-semibold shadow hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
+            >
+              View All Hotels →
+            </a>
           </div>
         </div>
       </section>

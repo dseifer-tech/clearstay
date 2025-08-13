@@ -294,6 +294,69 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Hotel Directory Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-neutral-800 mb-6">
+              Our Featured Hotels
+            </h2>
+            <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
+              Discover our curated selection of premium hotels in downtown Toronto. Each property offers direct booking with no commissions.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[
+              { name: "Pantages Hotel Downtown Toronto", slug: "pantages-hotel-downtown-toronto", rating: "4.2" },
+              { name: "Town Inn Suites", slug: "town-inn-suites", rating: "4.0" },
+              { name: "One King West Hotel & Residence", slug: "one-king-west-hotel-residence", rating: "4.4" },
+              { name: "The Omni King Edward Hotel", slug: "the-omni-king-edward-hotel", rating: "4.3" },
+              { name: "Chelsea Hotel, Toronto", slug: "chelsea-hotel-toronto", rating: "4.1" },
+              { name: "The Anndore House - JDV by Hyatt", slug: "the-anndore-house-jdv", rating: "4.2" },
+              { name: "Sutton Place Hotel Toronto", slug: "sutton-place-hotel-toronto", rating: "4.0" },
+              { name: "Ace Hotel Toronto", slug: "ace-hotel-toronto", rating: "4.3" }
+            ].map((hotel) => (
+              <a
+                key={hotel.slug}
+                href={`/hotels/${hotel.slug}`}
+                className="group bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-200 border border-gray-100 overflow-hidden hover:border-blue-200"
+              >
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                      <span className="text-sm font-semibold text-gray-800">{hotel.rating}</span>
+                    </div>
+                    <Building className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                  </div>
+                  
+                  <h3 className="font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+                    {hotel.name}
+                  </h3>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-blue-600 font-medium group-hover:text-blue-700 transition-colors">
+                      View Details →
+                    </span>
+                    <span className="text-xs text-gray-500">Direct Booking</span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+          
+          <div className="text-center mt-8">
+            <a 
+              href="/search" 
+              className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-sm font-semibold shadow hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
+            >
+              View All Hotels →
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
