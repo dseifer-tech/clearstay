@@ -341,6 +341,7 @@ function SearchPageContent() {
                                 onClick={() => handleBookDirect(hotel.link, hotel.hotel)}
                                 disabled={!hotel.link}
                                 className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 sm:px-6 py-3 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:shadow-lg transform hover:-translate-y-0.5 text-sm sm:text-base"
+                                title={hotel.before_taxes ? "Book directly with the hotel" : "Check the hotel's direct booking site for availability and rates"}
                               >
                                 <ExternalLink className="w-4 h-4" />
                                 {hotel.before_taxes ? "Book Direct" : "Check Direct for Best Rate"}

@@ -236,19 +236,10 @@ export async function fetch_individual_hotel(slug: string, checkin: string, chec
       }
     }
 
-    // If no official price found, try to get any available price
-    if (!official_price && prices.length > 0) {
-      const firstPrice = prices[0];
-      official_price = {
-        source: firstPrice.source || "Hotel",
-        rate_per_night: firstPrice.rate_per_night?.extracted_before_taxes_fees || null,
-        total_rate: firstPrice.total_rate?.extracted_before_taxes_fees || null,
-        link: firstPrice.link || null,
-        free_cancellation: firstPrice.free_cancellation || false,
-        free_cancellation_until_date: firstPrice.free_cancellation_until_date || null,
-        remarks: firstPrice.remarks || [],
-        discount_remarks: firstPrice.discount_remarks || [],
-      };
+    // If no official price found, don't fall back to OTA prices
+    // Only show official hotel-direct pricing on individual hotel pages
+    if (!official_price) {
+      console.log(`No official price found for ${hotelName}, not showing any price`);
     }
 
     return {
@@ -376,7 +367,7 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
       
       let hotelResult = {
         hotel: hotel.name,
-        link,
+        link: link, // Always set the direct booking link
         before_taxes: null,
         source: "Official Site",
         address: getHotelAddress(hotel.name),
@@ -384,14 +375,31 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
         image: hotelImage,
         remarks: null,
         discount_remarks: null,
-        description: description
+        description: description,
+        hasDirectRate: false // Track if we have a direct rate from API
       };
 
       // Check featured_prices[] for official offers
       const featuredPrices = data?.featured_prices || [];
       console.log(`Featured prices for ${hotel.name}:`, featuredPrices);
       for (const offer of featuredPrices) {
-        if (offer.official === true) {
+        // Filter out OTAs even if they're marked as "official" by SerpAPI
+        const isOTA = offer.source && (
+          offer.source.toLowerCase().includes('trivago') ||
+          offer.source.toLowerCase().includes('booking.com') ||
+          offer.source.toLowerCase().includes('expedia') ||
+          offer.source.toLowerCase().includes('hotels.com') ||
+          offer.source.toLowerCase().includes('orbitz') ||
+          offer.source.toLowerCase().includes('priceline') ||
+          offer.source.toLowerCase().includes('kayak') ||
+          offer.source.toLowerCase().includes('tripadvisor')
+        );
+        
+        if (isOTA) {
+          console.log(`Filtering out OTA source for ${hotel.name}: ${offer.source}`);
+        }
+        
+        if (offer.official === true && !isOTA) {
           const rooms = offer.rooms || [];
           for (const room of rooms) {
             const beforeTaxes = room.rate_per_night?.extracted_before_taxes_fees || room.before_taxes?.extracted_before_taxes_fees || room.price_per_night?.extracted_before_taxes_fees;
@@ -401,7 +409,7 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
             if (beforeTaxes && (!hotelResult.before_taxes || beforeTaxes < hotelResult.before_taxes)) {
               hotelResult = {
                 hotel: hotel.name,
-                link,
+                link: link, // Only set link if we have a direct rate
                 before_taxes: beforeTaxes,
                 source: offer.source || "Official Site",
                 address: getHotelAddress(hotel.name),
@@ -409,7 +417,8 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
                 image: hotelImage,
                 remarks: room.remarks || null,
                 discount_remarks: room.discount_remarks || offer.remarks || null,
-                description: description
+                description: description,
+                hasDirectRate: true // Mark that we have a direct rate
               };
               console.log(`Updated ${hotel.name} with price:`, beforeTaxes);
             }
@@ -421,7 +430,23 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
       const prices = data?.prices || [];
       console.log(`Regular prices for ${hotel.name}:`, prices);
       for (const price of prices) {
-        if (price.official === true) {
+        // Filter out OTAs even if they're marked as "official" by SerpAPI
+        const isOTA = price.source && (
+          price.source.toLowerCase().includes('trivago') ||
+          price.source.toLowerCase().includes('booking.com') ||
+          price.source.toLowerCase().includes('expedia') ||
+          price.source.toLowerCase().includes('hotels.com') ||
+          price.source.toLowerCase().includes('orbitz') ||
+          price.source.toLowerCase().includes('priceline') ||
+          price.source.toLowerCase().includes('kayak') ||
+          price.source.toLowerCase().includes('tripadvisor')
+        );
+        
+        if (isOTA) {
+          console.log(`Filtering out OTA source for ${hotel.name}: ${price.source}`);
+        }
+        
+        if (price.official === true && !isOTA) {
           const beforeTaxes = price.rate_per_night?.extracted_before_taxes_fees;
           console.log(`Price for ${hotel.name}:`, beforeTaxes);
           
@@ -429,7 +454,7 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
           if (beforeTaxes && (!hotelResult.before_taxes || beforeTaxes < hotelResult.before_taxes)) {
             hotelResult = {
               hotel: hotel.name,
-              link,
+              link: link, // Only set link if we have a direct rate
               before_taxes: beforeTaxes,
               source: price.source || "Official Site",
               address: getHotelAddress(hotel.name),
@@ -437,12 +462,17 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
               image: hotelImage,
               remarks: price.remarks || null,
               discount_remarks: price.discount_remarks || null,
-              description: description
+              description: description,
+              hasDirectRate: true // Mark that we have a direct rate
             };
             console.log(`Updated ${hotel.name} with price:`, beforeTaxes);
           }
         }
       }
+      
+      // Always keep the direct booking link, even if no rate is available from API
+      // The hotel's direct site will handle availability and pricing
+      console.log(`Final result for ${hotel.name}: hasDirectRate=${hotelResult.hasDirectRate}, link=${hotelResult.link}`);
       
       return hotelResult;
       
@@ -474,10 +504,39 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
   const results = await Promise.all(hotelPromises);
   
   // Filter out null results and hotels without links
-  const finalResults = results.filter(hotel => hotel && hotel.link !== null);
+  const filteredResults = results.filter(hotel => hotel && hotel.link !== null);
   
-  console.log('Final hotel results:', finalResults);
-  console.log('Final results with images:', finalResults.map(hotel => ({ name: hotel?.hotel, image: hotel?.image })));
+  // Sort hotels to prioritize those with direct pricing for better engagement
+  const finalResults = filteredResults.sort((a, b) => {
+    // Type safety check
+    if (!a || !b) return 0;
+    
+    // First priority: hotels with direct pricing (hasDirectRate = true)
+    const aHasDirectRate = 'hasDirectRate' in a ? a.hasDirectRate : false;
+    const bHasDirectRate = 'hasDirectRate' in b ? b.hasDirectRate : false;
+    
+    if (aHasDirectRate && !bHasDirectRate) return -1;
+    if (!aHasDirectRate && bHasDirectRate) return 1;
+    
+    // Second priority: hotels with any pricing (before_taxes)
+    if (a.before_taxes && !b.before_taxes) return -1;
+    if (!a.before_taxes && b.before_taxes) return 1;
+    
+    // Third priority: hotels with higher ratings
+    if (a.rating && b.rating) {
+      return b.rating - a.rating;
+    }
+    
+    // Default: maintain original order
+    return 0;
+  });
+  
+  console.log('Final hotel results (sorted by direct pricing priority):', finalResults);
+  console.log('Final results with images:', finalResults.map(hotel => ({ 
+    name: hotel?.hotel, 
+    image: hotel?.image, 
+    before_taxes: hotel?.before_taxes 
+  })));
   
   return finalResults;
 }
