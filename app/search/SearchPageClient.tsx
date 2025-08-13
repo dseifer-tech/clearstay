@@ -119,11 +119,45 @@ export default function SearchPageClient() {
   const checkout = searchParams?.get('checkout');
   const adults = searchParams?.get('adults') || '2';
   const children = searchParams?.get('children') || '0';
+  const near = searchParams?.get('near');
+  const area = searchParams?.get('area');
+  const type = searchParams?.get('type');
+  const location = searchParams?.get('location');
 
   // Calculate nights
   const nights = checkin && checkout ? 
     Math.ceil((new Date(checkout).getTime() - new Date(checkin).getTime()) / (1000 * 60 * 60 * 24)) : 
     1;
+
+  // Create dynamic H1 based on search parameters
+  let h1Text = 'Toronto Hotels';
+  let subtitleText = 'Compare direct rates, book without middlemen';
+  
+  if (checkin && checkout) {
+    let locationText = 'Toronto';
+    if (near) {
+      locationText = `near ${near.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}`;
+    } else if (area) {
+      locationText = `${area.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}, Toronto`;
+    } else if (location) {
+      locationText = location.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    }
+    
+    h1Text = `${locationText} Hotels`;
+    subtitleText = `${nights} night stay • Direct booking • No fees`;
+  } else if (near) {
+    const nearText = near.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    h1Text = `Hotels near ${nearText}`;
+    subtitleText = 'Toronto • Direct rates • No middlemen';
+  } else if (area) {
+    const areaText = area.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    h1Text = `${areaText} Hotels`;
+    subtitleText = 'Toronto • Direct booking • No fees';
+  } else if (type) {
+    const typeText = type.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    h1Text = `${typeText} Hotels in Toronto`;
+    subtitleText = 'Direct rates • No middlemen • Commission-free';
+  }
 
   return (
     <>
@@ -208,8 +242,8 @@ export default function SearchPageClient() {
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold mb-2">Toronto Hotels</h1>
-                <p className="text-blue-100">Compare direct rates, book without middlemen</p>
+                <h1 className="text-2xl sm:text-3xl font-bold mb-2">{h1Text}</h1>
+                <p className="text-blue-100">{subtitleText}</p>
               </div>
               <div className="text-sm font-semibold text-left sm:text-right">
                 Powered by <span className="text-white">InnstaStay</span>
