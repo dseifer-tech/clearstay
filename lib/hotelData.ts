@@ -323,9 +323,8 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
     { name: "Ace Hotel Toronto", token: "ChkI2N-3xo2i371FGg0vZy8xMXJzYzM2X2hmEAE" }
   ];
 
-  const hotelResults: { [key: string]: any } = {};
-
-  for (const hotel of hotels) {
+  // Create an array of promises for parallel execution
+  const hotelPromises = hotels.map(async (hotel) => {
     try {
       console.log(`Fetching data for ${hotel.name}...`);
       const response = await fetch(
@@ -339,7 +338,7 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
       
       if (!response.ok) {
         console.error(`API Error for ${hotel.name}: ${response.status} ${response.statusText}`);
-        // Continue with fallback data
+        return null; // Return null for failed requests
       }
       
       const data = await response.json();
@@ -368,13 +367,14 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
           hotelImage = firstImage.original_image || firstImage.thumbnail || firstImage.url || firstImage.src || HOTEL_IMAGES[hotel.name];
         }
       }
-             console.log(`Setting image for ${hotel.name}:`, hotelImage);
-       console.log(`  - API images:`, data.images);
-       console.log(`  - API images[0]:`, data.images?.[0]);
-       console.log(`  - Fallback image:`, HOTEL_IMAGES[hotel.name]);
-       console.log(`  - Final image:`, hotelImage);
       
-      hotelResults[hotel.name] = {
+      console.log(`Setting image for ${hotel.name}:`, hotelImage);
+      console.log(`  - API images:`, data.images);
+      console.log(`  - API images[0]:`, data.images?.[0]);
+      console.log(`  - Fallback image:`, HOTEL_IMAGES[hotel.name]);
+      console.log(`  - Final image:`, hotelImage);
+      
+      let hotelResult = {
         hotel: hotel.name,
         link,
         before_taxes: null,
@@ -398,8 +398,8 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
             console.log(`Room ${room.name} price:`, beforeTaxes);
             
             // Only update if we have a valid before_taxes price and it's lower than current
-            if (beforeTaxes && (!hotelResults[hotel.name].before_taxes || beforeTaxes < hotelResults[hotel.name].before_taxes)) {
-              hotelResults[hotel.name] = {
+            if (beforeTaxes && (!hotelResult.before_taxes || beforeTaxes < hotelResult.before_taxes)) {
+              hotelResult = {
                 hotel: hotel.name,
                 link,
                 before_taxes: beforeTaxes,
@@ -426,8 +426,8 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
           console.log(`Price for ${hotel.name}:`, beforeTaxes);
           
           // Only update if we have a valid before_taxes price and it's lower than current
-          if (beforeTaxes && (!hotelResults[hotel.name].before_taxes || beforeTaxes < hotelResults[hotel.name].before_taxes)) {
-            hotelResults[hotel.name] = {
+          if (beforeTaxes && (!hotelResult.before_taxes || beforeTaxes < hotelResult.before_taxes)) {
+            hotelResult = {
               hotel: hotel.name,
               link,
               before_taxes: beforeTaxes,
@@ -444,17 +444,40 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
         }
       }
       
+      return hotelResult;
+      
     } catch (error) {
       console.error(`Error fetching data for ${hotel.name}:`, error);
-      // Keep the fallback data that was initialized above
+      // Return fallback data for this hotel
+      const base_link = HARDCODED_BOOKING_LINKS[hotel.name];
+      const link = base_link ? 
+        inject_parameters_into_url(base_link, checkin, checkout, adults, children) : 
+        null;
+      
+      return {
+        hotel: hotel.name,
+        link,
+        before_taxes: null,
+        source: "Official Site",
+        address: getHotelAddress(hotel.name),
+        rating: getHotelRating(hotel.name),
+        image: HOTEL_IMAGES[hotel.name],
+        remarks: null,
+        discount_remarks: null,
+        description: HOTEL_DESCRIPTIONS[hotel.name] || "A comfortable hotel in downtown Toronto with modern amenities and excellent service."
+      };
     }
-  }
+  });
 
-  console.log('Final hotel results:', hotelResults);
+  // Wait for all promises to resolve in parallel
+  console.log('Starting parallel API calls for all hotels...');
+  const results = await Promise.all(hotelPromises);
   
-  // Debug final results with images
-  const finalResults = Object.values(hotelResults).filter(hotel => hotel.link !== null);
-  console.log('Final results with images:', finalResults.map(hotel => ({ name: hotel.hotel, image: hotel.image })));
+  // Filter out null results and hotels without links
+  const finalResults = results.filter(hotel => hotel && hotel.link !== null);
+  
+  console.log('Final hotel results:', finalResults);
+  console.log('Final results with images:', finalResults.map(hotel => ({ name: hotel?.hotel, image: hotel?.image })));
   
   return finalResults;
 }
