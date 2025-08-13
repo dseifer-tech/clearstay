@@ -195,9 +195,9 @@ export default function ProfessionalCalendar({
             <button
               onClick={goToPreviousMonth}
               disabled={isBefore(subMonths(currentMonth, 1), startOfMonth(minDate))}
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200 hover:border-blue-300"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-6 h-6" />
             </button>
             <h4 className="text-lg font-semibold text-gray-900">
               {format(currentMonth, 'MMMM yyyy')}
@@ -205,9 +205,9 @@ export default function ProfessionalCalendar({
             <button
               onClick={goToNextMonth}
               disabled={isAfter(addMonths(currentMonth, 1), endOfMonth(maxDate))}
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-200 hover:border-blue-300"
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-6 h-6" />
             </button>
           </div>
 
