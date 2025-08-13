@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-
 import { Suspense } from 'react'
+
 import PageViewTracker from './components/PageViewTracker'
 import './globals.css'
 
@@ -130,15 +130,15 @@ export default function RootLayout({
             })
           }}
                  />
-         {/* Google Tag Manager (noscript) */}
+                  {/* Google Tag Manager (noscript) */}
          <noscript dangerouslySetInnerHTML={{
            __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T22LS2CW"
            height="0" width="0" style="display:none;visibility:hidden"></iframe>`
          }} />
          {/* End Google Tag Manager (noscript) */}
-        <Suspense fallback={null}>
-          <PageViewTracker />
-        </Suspense>
+         <Suspense fallback={null}>
+           <PageViewTracker />
+         </Suspense>
         {children}
         
         {/* Footer */}
