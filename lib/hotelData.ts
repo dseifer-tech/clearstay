@@ -41,6 +41,18 @@ const SLUG_TO_HOTEL_NAME: { [key: string]: string } = {
   "ace-hotel-toronto": "Ace Hotel Toronto"
 };
 
+// Fallback hotel images (placeholder URLs - you can replace these with actual hotel images)
+const HOTEL_IMAGES: { [key: string]: string } = {
+  "Pantages Hotel Downtown Toronto": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&auto=format",
+  "Town Inn Suites": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop&auto=format",
+  "One King West Hotel & Residence": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop&auto=format",
+  "The Omni King Edward Hotel": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop&auto=format",
+  "Chelsea Hotel, Toronto": "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400&h=300&fit=crop&auto=format",
+  "The Anndore House - JDV by Hyatt": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&auto=format",
+  "Sutton Place Hotel Toronto": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop&auto=format",
+  "Ace Hotel Toronto": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&auto=format"
+};
+
 function inject_parameters_into_url(base_url: string, checkin: string, checkout: string, adults: number, children: number): string {
   const date_in = checkin.replace("-", "/");
   const date_out = checkout.replace("-", "/");
@@ -271,7 +283,8 @@ function getFallbackHotelData(slug: string, hotelName: string, checkin: string, 
     phone: null,
     gps_coordinates: null,
     hotel_class: null,
-    images: [],
+    images: [HOTEL_IMAGES[hotelName]], // Add fallback image to images array
+    image: HOTEL_IMAGES[hotelName], // Add direct image property
     rating: getHotelRating(hotelName),
     reviews: null,
     official_price: link ? {
@@ -331,6 +344,7 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
       
       const data = await response.json();
       console.log(`API Response for ${hotel.name}:`, JSON.stringify(data, null, 2));
+      console.log(`Images for ${hotel.name}:`, data.images);
       
       // Parse hotel description
       const description = parseHotelDescription(data, hotel.name);
@@ -341,6 +355,25 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
         inject_parameters_into_url(base_link, checkin, checkout, adults, children) : 
         null;
 
+      // Use the same image logic as the slug pages - prioritize API images
+      // Handle different image formats from API
+      let hotelImage = HOTEL_IMAGES[hotel.name]; // Default to fallback
+      
+      if (data.images && data.images.length > 0) {
+        const firstImage = data.images[0];
+        if (typeof firstImage === 'string') {
+          hotelImage = firstImage;
+        } else if (firstImage && typeof firstImage === 'object') {
+          // Handle image objects with properties like original_image, thumbnail, etc.
+          hotelImage = firstImage.original_image || firstImage.thumbnail || firstImage.url || firstImage.src || HOTEL_IMAGES[hotel.name];
+        }
+      }
+             console.log(`Setting image for ${hotel.name}:`, hotelImage);
+       console.log(`  - API images:`, data.images);
+       console.log(`  - API images[0]:`, data.images?.[0]);
+       console.log(`  - Fallback image:`, HOTEL_IMAGES[hotel.name]);
+       console.log(`  - Final image:`, hotelImage);
+      
       hotelResults[hotel.name] = {
         hotel: hotel.name,
         link,
@@ -348,7 +381,7 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
         source: "Official Site",
         address: getHotelAddress(hotel.name),
         rating: getHotelRating(hotel.name),
-        image: data.images?.[0] || null,
+        image: hotelImage,
         remarks: null,
         discount_remarks: null,
         description: description
@@ -373,7 +406,7 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
                 source: offer.source || "Official Site",
                 address: getHotelAddress(hotel.name),
                 rating: getHotelRating(hotel.name),
-                image: data.images?.[0] || null,
+                image: hotelImage,
                 remarks: room.remarks || null,
                 discount_remarks: room.discount_remarks || offer.remarks || null,
                 description: description
@@ -401,7 +434,7 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
               source: price.source || "Official Site",
               address: getHotelAddress(hotel.name),
               rating: getHotelRating(hotel.name),
-              image: data.images?.[0] || null,
+              image: hotelImage,
               remarks: price.remarks || null,
               discount_remarks: price.discount_remarks || null,
               description: description
@@ -418,8 +451,12 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
   }
 
   console.log('Final hotel results:', hotelResults);
-  // Convert to array and filter out hotels without any data
-  return Object.values(hotelResults).filter(hotel => hotel.link !== null);
+  
+  // Debug final results with images
+  const finalResults = Object.values(hotelResults).filter(hotel => hotel.link !== null);
+  console.log('Final results with images:', finalResults.map(hotel => ({ name: hotel.hotel, image: hotel.image })));
+  
+  return finalResults;
 }
 
 function getHotelAddress(hotelName: string): string {
@@ -475,7 +512,7 @@ function getFallbackHotelDataForAllHotels(checkin: string, checkout: string, adu
       source: "Official Site",
       address: getHotelAddress(hotelName),
       rating: getHotelRating(hotelName),
-      image: null,
+      image: HOTEL_IMAGES[hotelName],
       remarks: null,
       discount_remarks: null,
       description: HOTEL_DESCRIPTIONS[hotelName] || "A comfortable hotel in downtown Toronto with modern amenities and excellent service."

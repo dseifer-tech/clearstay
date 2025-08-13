@@ -2,10 +2,17 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { format, addDays } from 'date-fns';
-import { Search, Shield, DollarSign, X, ArrowRight, CheckCircle, Building, Users, CreditCard, Calendar, Eye, Clock, Link, Star, Heart, Zap, User } from 'lucide-react';
+import { Search, Shield, DollarSign, X, ArrowRight, CheckCircle, Building, Users, CreditCard, Calendar, Eye, Clock, Link, Star, Heart, Zap, User, Menu } from 'lucide-react';
 import { SearchParams } from '@/types/hotel';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import SearchBarWide from '@/app/components/SearchBarWide';
+import ProfessionalCalendar from '@/app/components/ProfessionalCalendar';
+import StickyMobileCTA from '@/app/components/StickyMobileCTA';
+import FAQ from '@/app/components/FAQ';
+import MobileMenu from '@/app/components/MobileMenu';
+import StickySearchBar from '@/app/components/StickySearchBar';
+import SearchShortcuts from '@/app/components/SearchShortcuts';
+import SecondaryCTA from '@/app/components/SecondaryCTA';
+import LoadingSpinner from '@/app/components/LoadingSpinner';
 
 export default function HomePage() {
   const [searchParams, setSearchParams] = useState<SearchParams>({
@@ -22,39 +29,26 @@ export default function HomePage() {
   ]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTravelerModal, setShowTravelerModal] = useState(false);
-  const [hasSelectedDates, setHasSelectedDates] = useState(false);
-  const [isNavigatingMonths, setIsNavigatingMonths] = useState(false);
-  const datePickerRef = useRef<HTMLDivElement>(null);
-  const travelerModalRef = useRef<HTMLDivElement>(null);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
-  // Handle date range changes - this is the main onChange handler
-  const handleDateRangeChange = (dates: [Date | null, Date | null]) => {
-    // Prevent updates during month navigation
-    if (isNavigatingMonths) {
-      return;
-    }
-    
-    // Update the date range
-    setDateRange(dates);
-    
-    // Only mark as selected if both dates are chosen
-    if (dates[0] && dates[1]) {
-      setHasSelectedDates(true);
-    } else {
-      setHasSelectedDates(false);
-    }
+  // Handle date range changes
+  const handleDateRangeChange = (start: Date | null, end: Date | null) => {
+    setDateRange([start, end]);
   };
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSearching(true);
     
-    // Use the current dateRange values instead of searchParams
     const checkIn = dateRange[0] ? format(dateRange[0], 'yyyy-MM-dd') : searchParams.checkIn;
     const checkOut = dateRange[1] ? format(dateRange[1], 'yyyy-MM-dd') : searchParams.checkOut;
     
     const searchUrl = `/search?checkin=${checkIn}&checkout=${checkOut}&adults=${searchParams.adults}&children=${searchParams.children}`;
-    window.location.href = searchUrl;
+    
+    // Show loading spinner for a brief moment before redirecting
+    setTimeout(() => {
+      window.location.href = searchUrl;
+    }, 500);
   };
 
   const handleTravelerChange = (type: 'adults' | 'children', value: number) => {
@@ -69,22 +63,10 @@ export default function HomePage() {
     return `${total} traveler${total > 1 ? 's' : ''}, 1 room`;
   };
 
-  // Click outside handlers
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (datePickerRef.current && !datePickerRef.current.contains(event.target as Node)) {
-        setShowDatePicker(false);
-      }
-      if (travelerModalRef.current && !travelerModalRef.current.contains(event.target as Node)) {
-        setShowTravelerModal(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  // Show loading spinner when searching
+  if (isSearching) {
+    return <LoadingSpinner message="Preparing your search..." variant="search" />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#eef5ff] to-white">
@@ -105,31 +87,31 @@ export default function HomePage() {
                 <span className="text-xs text-blue-600 tracking-wide mt-1">Commission-Free Booking</span>
               </a>
               
-                             {/* Desktop Navigation Links */}
-               <div className="hidden md:flex items-center space-x-8">
-                 <ul className="flex space-x-8 text-md font-medium text-neutral-700">
-                   <li>
-                     <a href="/" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
-                       Home
-                     </a>
-                   </li>
-                   <li>
-                     <a href="/about" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
-                       About
-                     </a>
-                   </li>
-                   <li>
-                     <a href="/search" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
-                       Compare Rates
-                     </a>
-                   </li>
-                   <li>
-                     <a href="/hotels/toronto-downtown" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
-                       Downtown Hotels
-                     </a>
-                   </li>
-                 </ul>
-               </div>
+              {/* Desktop Navigation Links */}
+              <div className="hidden md:flex items-center space-x-8">
+                <ul className="flex space-x-8 text-md font-medium text-neutral-700">
+                  <li>
+                    <a href="/" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
+                      Home
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/about" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
+                      About
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/search" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
+                      Compare Rates
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/hotels/toronto-downtown" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
+                      Downtown Hotels
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
             
             {/* Right Side - Search Icon and CTA Button */}
@@ -148,7 +130,12 @@ export default function HomePage() {
               
               {/* Mobile Menu Button */}
               <div className="md:hidden">
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm">
+                <button 
+                  onClick={() => setShowMobileMenu(true)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm flex items-center gap-2"
+                  aria-label="Open mobile menu"
+                >
+                  <Menu className="w-4 h-4" />
                   Menu
                 </button>
               </div>
@@ -157,243 +144,141 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="animate-fade-in">
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-neutral-800 tracking-tight leading-tight">
-              Stay Downtown.
-              <br />
-              <span className="text-blue-600">Book Smarter with InnstaStay.</span>
-            </h1>
-            <p className="text-lg sm:text-xl text-neutral-600 mt-4 sm:mt-6 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0">
-              Compare real-time direct hotel rates in downtown Toronto.
-              <br />
-              InnstaStay shows you live prices from trusted local hotels — no middlemen, no fees, just direct booking made easy.
-            </p>
-          </div>
-          
-          {/* Search Form */}
-          <div className="mt-8 sm:mt-12 animate-fade-in-up">
-            <form onSubmit={handleSearch} className="bg-white shadow-xl rounded-xl px-4 sm:px-6 py-4 sm:py-6 flex flex-col md:flex-row items-center gap-3 sm:gap-4 max-w-4xl mx-auto">
-              
-              {/* Dates */}
-              <div className="relative w-full md:w-auto" ref={datePickerRef}>
-                <button
-                  type="button"
-                  onClick={() => setShowDatePicker(!showDatePicker)}
-                  className="flex items-center gap-3 border border-gray-200 rounded-lg px-4 py-3 w-full md:w-auto hover:ring-1 hover:ring-blue-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
-                >
-                  <Calendar className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                  <div className="text-left">
-                    <p className="text-xs text-neutral-500">Dates</p>
-                    <p className="text-sm font-medium text-neutral-800">
-                      {dateRange[0] && dateRange[1] 
-                        ? `${format(dateRange[0], 'MMM dd')} – ${format(dateRange[1], 'MMM dd')}`
-                        : 'Select dates'
-                      }
-                    </p>
-                  </div>
-                </button>
-                
-                {showDatePicker && (
-                  <div className="absolute top-full left-0 mt-2 z-50">
-                    <DatePicker
-                      selectsRange={true}
-                      startDate={dateRange[0]}
-                      endDate={dateRange[1]}
-                      onChange={handleDateRangeChange}
-                      minDate={new Date()}
-                      dateFormat="MMM dd"
-                      inline
-                      monthsShown={1}
-                      shouldCloseOnSelect={false}
-                      onMonthChange={(date) => {
-                        // Set navigation flag to prevent onChange
-                        setIsNavigatingMonths(true);
-                        // Reset after a short delay
-                        setTimeout(() => setIsNavigatingMonths(false), 100);
-                      }}
-                      onCalendarOpen={() => {
-                        // Reset selection state when calendar opens
-                        setHasSelectedDates(false);
-                        setIsNavigatingMonths(false);
-                      }}
-                      renderCustomHeader={({
-                        date,
-                        decreaseMonth,
-                        increaseMonth,
-                        prevMonthButtonDisabled,
-                        nextMonthButtonDisabled,
-                      }) => (
-                        <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                          <button
-                            onClick={decreaseMonth}
-                            disabled={prevMonthButtonDisabled}
-                            className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 transition-colors"
-                          >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                            </svg>
-                          </button>
-                          <span className="text-lg font-semibold text-gray-900">
-                            {date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                          </span>
-                          <button
-                            onClick={increaseMonth}
-                            disabled={nextMonthButtonDisabled}
-                            className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 transition-colors"
-                          >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </button>
-                        </div>
-                      )}
-                      calendarContainer={({ children, ...props }) => (
-                        <div {...props} className="bg-white rounded-xl shadow-2xl border border-gray-200">
-                          {children}
-                          {hasSelectedDates && dateRange[0] && dateRange[1] && (
-                            <div className="p-4 border-t border-gray-200">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setShowDatePicker(false);
-                                  handleSearch({ preventDefault: () => {} } as any);
-                                }}
-                                disabled={isSearching}
-                                className="w-full bg-blue-600 text-white py-3 px-4 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                              >
-                                {isSearching ? (
-                                  <>
-                                    <div className="inline w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                                    Searching...
-                                  </>
-                                ) : (
-                                  <>
-                                    <Search className="w-4 h-4 mr-2" />
-                                    Search Hotels
-                                  </>
-                                )}
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    />
-                  </div>
-                )}
-              </div>
+      {/* Hero Section - Center Stage */}
+      <section className="relative pt-14 pb-12 bg-gradient-to-b from-[#EFF5FF] to-white">
+        <div className="mx-auto max-w-6xl text-center px-6">
+          <h1 className="text-5xl md:text-6xl font-bold leading-tight">
+            Unlock the Best <span className="text-blue-600">Direct Hotel Deals</span>
+          </h1>
+          <p className="mt-4 text-lg text-gray-600">
+            No middlemen, no hidden fees — compare live rates in under 10 seconds.
+          </p>
+        </div>
 
-              {/* Travelers */}
-              <div className="relative w-full md:w-auto" ref={travelerModalRef}>
-                <button
-                  type="button"
-                  onClick={() => setShowTravelerModal(!showTravelerModal)}
-                  className="flex items-center gap-3 border border-gray-200 rounded-lg px-4 py-3 w-full md:w-auto hover:ring-1 hover:ring-blue-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
-                >
-                  <User className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                  <div className="text-left">
-                    <p className="text-xs text-neutral-500">Travelers</p>
-                    <p className="text-sm font-medium text-neutral-800">{getTravelerText()}</p>
-                  </div>
-                </button>
-                
-                {showTravelerModal && (
-                  <div className="absolute top-full left-0 mt-2 z-50 bg-white rounded-xl shadow-2xl border border-gray-200 p-4 min-w-[280px]">
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-neutral-800">Adults</p>
-                          <p className="text-xs text-neutral-500">Ages 13+</p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <button
-                            type="button"
-                            onClick={() => handleTravelerChange('adults', Math.max(1, searchParams.adults - 1))}
-                            className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
-                          >
-                            <span className="text-gray-600">−</span>
-                          </button>
-                          <span className="w-8 text-center font-medium">{searchParams.adults}</span>
-                          <button
-                            type="button"
-                            onClick={() => handleTravelerChange('adults', Math.min(6, searchParams.adults + 1))}
-                            className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
-                          >
-                            <span className="text-gray-600">+</span>
-                          </button>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-neutral-800">Children</p>
-                          <p className="text-xs text-neutral-500">Ages 0-12</p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <button
-                            type="button"
-                            onClick={() => handleTravelerChange('children', Math.max(0, searchParams.children - 1))}
-                            className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
-                          >
-                            <span className="text-gray-600">−</span>
-                          </button>
-                          <span className="w-8 text-center font-medium">{searchParams.children}</span>
-                          <button
-                            type="button"
-                            onClick={() => handleTravelerChange('children', Math.min(4, searchParams.children + 1))}
-                            className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
-                          >
-                            <span className="text-gray-600">+</span>
-                          </button>
-                        </div>
-                      </div>
-                      
-                      <button
-                        type="button"
-                        onClick={() => setShowTravelerModal(false)}
-                        className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-                      >
-                        Done
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
+        <div className="mt-6">
+          <SearchBarWide
+            dateLabel="Dates"
+            dateValue={dateRange[0] && dateRange[1] 
+              ? `${format(dateRange[0], 'MMM dd')} – ${format(dateRange[1], 'MMM dd')}`
+              : 'Select dates'
+            }
+            onOpenDates={() => setShowDatePicker(!showDatePicker)}
+            paxLabel="Travelers"
+            paxValue={getTravelerText()}
+            onOpenPax={() => setShowTravelerModal(!showTravelerModal)}
+            onSearch={() => handleSearch({ preventDefault: () => {} } as any)}
+          />
+        </div>
 
-              {/* Search Button */}
-              <button
-                type="submit"
-                disabled={isSearching}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg px-6 py-3 w-full md:w-auto transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-              >
-                {isSearching ? (
-                  <>
-                    <div className="inline w-4 h-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                    Searching...
-                  </>
-                ) : (
-                  <>
-                    <Search className="w-4 h-4" />
-                    Search Hotels
-                  </>
-                )}
-              </button>
-            </form>
-          </div>
+        {/* Trust chips - unified styling */}
+        <div className="mt-4 flex flex-wrap justify-center gap-3 px-6">
+          {["Google Verified", "8 Trusted Hotels", "0% Commission"].map((t) => (
+            <span key={t} className="px-3 py-1 rounded-full text-sm bg-white shadow-sm ring-1 ring-black/5">
+              {t}
+            </span>
+          ))}
         </div>
       </section>
 
-      {/* Why We Built ClearStay */}
+      {/* Search Shortcuts */}
+      <SearchShortcuts />
+
+      {/* Professional Calendar Modal */}
+      <ProfessionalCalendar
+        isOpen={showDatePicker}
+        onClose={() => setShowDatePicker(false)}
+        startDate={dateRange[0]}
+        endDate={dateRange[1]}
+        onDateRangeChange={handleDateRangeChange}
+        minDate={new Date()}
+        maxDate={addDays(new Date(), 365)}
+      />
+      
+      {/* Traveler Modal */}
+      {showTravelerModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Select Travelers</h3>
+              <button
+                onClick={() => setShowTravelerModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-neutral-800">Adults</p>
+                  <p className="text-xs text-neutral-500">Ages 13+</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => handleTravelerChange('adults', Math.max(1, searchParams.adults - 1))}
+                    className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                  >
+                    <span className="text-gray-600">−</span>
+                  </button>
+                  <span className="w-8 text-center font-medium">{searchParams.adults}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleTravelerChange('adults', Math.min(6, searchParams.adults + 1))}
+                    className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                  >
+                    <span className="text-gray-600">+</span>
+                  </button>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-neutral-800">Children</p>
+                  <p className="text-xs text-neutral-500">Ages 0-12</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => handleTravelerChange('children', Math.max(0, searchParams.children - 1))}
+                    className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                  >
+                    <span className="text-gray-600">−</span>
+                  </button>
+                  <span className="w-8 text-center font-medium">{searchParams.children}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleTravelerChange('children', Math.min(4, searchParams.children + 1))}
+                    className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                  >
+                    <span className="text-gray-600">+</span>
+                  </button>
+                </div>
+              </div>
+              
+              <button
+                type="button"
+                onClick={() => setShowTravelerModal(false)}
+                className="w-full bg-blue-600 text-white py-3 px-4 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Why We Built InnstaStay */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-6">
-              Why We Built InnstaStay
+              The Problem We're Solving
             </h2>
-            <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
-              Traditional booking platforms add 15-30% commission fees, driving up costs for both hotels and guests. We believe in transparency and fair pricing for everyone.
+            <p className="text-lg text-neutral-600 max-w-4xl mx-auto leading-relaxed">
+              Traditional booking platforms add <strong>15–30% commission fees</strong>, driving up costs for both hotels and guests. 
+              <br />
+              We believe in transparency and fair pricing for everyone.
             </p>
           </div>
           
@@ -418,6 +303,48 @@ export default function HomePage() {
               </div>
               <h3 className="text-xl font-semibold text-neutral-800 mb-3">Everyone Loses</h3>
               <p className="text-neutral-600 leading-relaxed">Except the middleman who takes commissions without providing real value to either party.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Solution Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-blue-50 to-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-6">
+              The InnstaStay Solution
+            </h2>
+            <p className="text-xl text-neutral-600 max-w-4xl mx-auto leading-relaxed">
+              We connect you directly to <strong>verified hotels</strong> with <strong>real-time pricing</strong> — 
+              <br />
+              no middlemen, no markups, just better stays.
+            </p>
+          </div>
+          
+          {/* Visual representation of the solution */}
+          <div className="bg-white rounded-2xl shadow-xl p-8 mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <X className="w-8 h-8 text-red-500" />
+                </div>
+                <h3 className="text-lg font-semibold text-neutral-800 mb-2">Traditional Booking</h3>
+                <p className="text-sm text-neutral-600">Hidden fees + 30% commission</p>
+              </div>
+              
+              <div className="flex justify-center">
+                <ArrowRight className="w-8 h-8 text-blue-500 hidden md:block" />
+                <ArrowRight className="w-8 h-8 text-blue-500 rotate-90 md:hidden" />
+              </div>
+              
+              <div className="text-center">
+                <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="w-8 h-8 text-green-500" />
+                </div>
+                <h3 className="text-lg font-semibold text-neutral-800 mb-2">InnstaStay</h3>
+                <p className="text-sm text-neutral-600">Direct booking + 0% commission</p>
+              </div>
             </div>
           </div>
         </div>
@@ -513,6 +440,9 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Secondary CTA */}
+      <SecondaryCTA />
+
       {/* Trust Badges */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-4xl mx-auto">
@@ -542,6 +472,9 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <FAQ />
+
       {/* Optional CTA Section */}
       <section className="py-16 bg-white border-t border-gray-100">
         <div className="max-w-5xl mx-auto px-4 text-center">
@@ -559,6 +492,12 @@ export default function HomePage() {
           </a>
         </div>
       </section>
+
+      {/* Sticky Mobile CTA */}
+      <StickyMobileCTA onClick={() => handleSearch({ preventDefault: () => {} } as any)} />
+
+      {/* Mobile Menu */}
+      <MobileMenu isOpen={showMobileMenu} onClose={() => setShowMobileMenu(false)} />
     </div>
   );
 } 

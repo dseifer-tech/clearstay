@@ -35,9 +35,25 @@ export default function DowntownTorontoPage() {
           <p className="text-lg text-gray-700 mb-4">
             Looking for a hotel in downtown Toronto? InnstaStay lets you compare real-time direct prices from trusted hotels near Yonge Street, Union Station, Eaton Centre, and more — with no markups, no commissions, and no fake discounts.
           </p>
-          <p className="text-gray-600 mb-8">
+          <p className="text-gray-600 mb-6">
             Whether you're here for business, concerts, or nightlife, we connect you to the best stays in the heart of the city. Book smart. Book direct.
           </p>
+          <p className="text-sm text-gray-500 mb-8">
+            Discover <a href="/search?type=boutique" className="text-blue-600 hover:underline">boutique hotels in downtown Toronto</a>, 
+            <a href="/search?near=union-station" className="text-blue-600 hover:underline"> hotels near Union Station</a> for easy transit access, 
+            and <a href="/search?area=financial-district" className="text-blue-600 hover:underline">business-friendly accommodations</a> in the Financial District.
+          </p>
+          
+          {/* Search Bar */}
+          <div className="mb-8">
+            <a
+              href="/search?location=toronto&area=downtown"
+              className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
+            >
+              Search Downtown Hotels
+            </a>
+          </div>
+          
           <a
             href="/search?location=toronto&area=downtown"
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-sm font-semibold shadow hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
@@ -221,13 +237,19 @@ export default function DowntownTorontoPage() {
                   className="w-28 h-28 rounded-lg object-cover flex-shrink-0"
                 />
                 <div className="flex-1">
-                  <a href={poi.link} target="_blank" rel="noreferrer">
+                  <a href={`/search?near=${poi.name.toLowerCase().replace(/\s+/g, '-')}`} className="block">
                     <h3 className="text-lg font-semibold text-blue-600 hover:underline">{poi.name}</h3>
                   </a>
                   <p className="text-sm text-gray-500 mb-1">
                     ⭐ {poi.rating} ({poi.reviews.toLocaleString()} reviews)
                   </p>
                   <p className="text-sm text-gray-700">{poi.description}</p>
+                  <a 
+                    href={`/search?near=${poi.name.toLowerCase().replace(/\s+/g, '-')}`}
+                    className="inline-block mt-2 text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    Find hotels near {poi.name} →
+                  </a>
                 </div>
               </div>
             ))}
@@ -248,62 +270,165 @@ export default function DowntownTorontoPage() {
               {
                 "@type": "Place",
                 "name": "CN Tower",
-                "url": "https://www.google.com/search?q=CN+Tower"
+                "url": "https://www.innstastay.com/search?near=cn-tower"
               },
               {
                 "@type": "Place",
                 "name": "Casa Loma",
-                "url": "https://www.google.com/search?q=Casa+Loma"
+                "url": "https://www.innstastay.com/search?near=casa-loma"
               },
               {
                 "@type": "Place",
                 "name": "St. Lawrence Market",
-                "url": "https://www.google.com/search?q=St.+Lawrence+Market"
+                "url": "https://www.innstastay.com/search?near=st-lawrence-market"
               },
               {
                 "@type": "Place",
                 "name": "Toronto Islands",
-                "url": "https://www.google.com/search?q=Toronto+Islands"
+                "url": "https://www.innstastay.com/search?near=toronto-islands"
               },
               {
                 "@type": "Place",
                 "name": "Hockey Hall of Fame",
-                "url": "https://www.google.com/search?q=Hockey+Hall+of+Fame"
+                "url": "https://www.innstastay.com/search?near=hockey-hall-of-fame"
               },
               {
                 "@type": "Place",
                 "name": "CF Toronto Eaton Centre",
-                "url": "https://www.google.com/search?q=CF+Toronto+Eaton+Centre"
+                "url": "https://www.innstastay.com/search?near=cf-toronto-eaton-centre"
               },
               {
                 "@type": "Place",
                 "name": "High Park",
-                "url": "https://www.google.com/search?q=High+Park"
+                "url": "https://www.innstastay.com/search?near=high-park"
               },
               {
                 "@type": "Place",
                 "name": "Nathan Phillips Square",
-                "url": "https://www.google.com/search?q=Nathan+Phillips+Square"
+                "url": "https://www.innstastay.com/search?near=nathan-phillips-square"
               },
               {
                 "@type": "Place",
                 "name": "Rogers Centre",
-                "url": "https://www.google.com/search?q=Rogers+Centre"
+                "url": "https://www.innstastay.com/search?near=rogers-centre"
               },
               {
                 "@type": "Place",
                 "name": "Evergreen Brick Works",
-                "url": "https://www.google.com/search?q=Evergreen+Brick+Works"
+                "url": "https://www.innstastay.com/search?near=evergreen-brick-works"
               },
               {
                 "@type": "Place",
                 "name": "EdgeWalk at the CN Tower",
-                "url": "https://www.google.com/search?q=EdgeWalk+at+the+CN+Tower"
+                "url": "https://www.innstastay.com/search?near=edgewalk-at-the-cn-tower"
               },
               {
                 "@type": "Place",
                 "name": "Sankofa Square",
-                "url": "https://www.google.com/search?q=Sankofa+Square"
+                "url": "https://www.innstastay.com/search?near=sankofa-square"
+              }
+            ]
+          })
+        }}
+      />
+      
+      {/* ItemList Schema for POIs */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "CN Tower",
+                "url": "https://www.innstastay.com/search?near=cn-tower"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Royal Ontario Museum",
+                "url": "https://www.innstastay.com/search?near=royal-ontario-museum"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Ripley's Aquarium of Canada",
+                "url": "https://www.innstastay.com/search?near=ripleys-aquarium-of-canada"
+              },
+              {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "Art Gallery of Ontario",
+                "url": "https://www.innstastay.com/search?near=art-gallery-of-ontario"
+              },
+              {
+                "@type": "ListItem",
+                "position": 5,
+                "name": "Casa Loma",
+                "url": "https://www.innstastay.com/search?near=casa-loma"
+              },
+              {
+                "@type": "ListItem",
+                "position": 6,
+                "name": "St. Lawrence Market",
+                "url": "https://www.innstastay.com/search?near=st-lawrence-market"
+              },
+              {
+                "@type": "ListItem",
+                "position": 7,
+                "name": "Toronto Islands",
+                "url": "https://www.innstastay.com/search?near=toronto-islands"
+              },
+              {
+                "@type": "ListItem",
+                "position": 8,
+                "name": "Hockey Hall of Fame",
+                "url": "https://www.innstastay.com/search?near=hockey-hall-of-fame"
+              },
+              {
+                "@type": "ListItem",
+                "position": 9,
+                "name": "CF Toronto Eaton Centre",
+                "url": "https://www.innstastay.com/search?near=cf-toronto-eaton-centre"
+              },
+              {
+                "@type": "ListItem",
+                "position": 10,
+                "name": "High Park",
+                "url": "https://www.innstastay.com/search?near=high-park"
+              },
+              {
+                "@type": "ListItem",
+                "position": 11,
+                "name": "Nathan Phillips Square",
+                "url": "https://www.innstastay.com/search?near=nathan-phillips-square"
+              },
+              {
+                "@type": "ListItem",
+                "position": 12,
+                "name": "Rogers Centre",
+                "url": "https://www.innstastay.com/search?near=rogers-centre"
+              },
+              {
+                "@type": "ListItem",
+                "position": 13,
+                "name": "Evergreen Brick Works",
+                "url": "https://www.innstastay.com/search?near=evergreen-brick-works"
+              },
+              {
+                "@type": "ListItem",
+                "position": 14,
+                "name": "EdgeWalk at the CN Tower",
+                "url": "https://www.innstastay.com/search?near=edgewalk-at-the-cn-tower"
+              },
+              {
+                "@type": "ListItem",
+                "position": 15,
+                "name": "Sankofa Square",
+                "url": "https://www.innstastay.com/search?near=sankofa-square"
               }
             ]
           })
