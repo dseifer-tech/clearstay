@@ -7,13 +7,13 @@ const descriptionCache: { [key: string]: string } = {};
 const globalCache = (global as any)._hotelStaticCache ||= {};
 
 const HARDCODED_BOOKING_LINKS: { [key: string]: string } = {
-  "Pantages Hotel Downtown Toronto": "https://bookings.travelclick.com/102298?Adults={adults}&Children={children}&DateIn={checkin}&DateOut={checkout}&domain=pantageshotel.com&identifier=#/accommodation/room",
+  "Pantages Hotel Downtown Toronto": "https://bookings.travelclick.com/102298?Adults={adults}&Children={children}&DateIn={checkin_slash}&DateOut={checkout_slash}&domain=pantageshotel.com&identifier=#/accommodation/room",
   "Town Inn Suites": "https://bookings.travelclick.com/104140?Adults={adults}&Children={children}&DateIn={checkin}&DateOut={checkout}&domain=towninn.com&identifier=#/accommodation/room",
-  "One King West Hotel & Residence": "https://bookings.travelclick.com/95964?&DateIn={checkin}&DateOut={checkout}&domain=www.onekingwest.com#/accommodation/room",
+  "One King West Hotel & Residence": "https://bookings.travelclick.com/95964?&DateIn={checkin_slash}&DateOut={checkout_slash}&domain=www.onekingwest.com#/accommodation/room",
   "The Omni King Edward Hotel": "https://bookings.omnihotels.com/rates-room1?hotel=110052&arrival={checkin_dash}&departure={checkout_dash}&nights=1&rooms=1&adults[1]={adults}&children[1]={children}&ratePlanCategory=&language=en-us",
   "Chelsea Hotel, Toronto": "https://reservation.brilliantbylangham.com/?a&adult={adults}&arrive={checkin_dash}&chain=10316&child={children}&config=brilliant&currency=CAD&depart={checkout_dash}&hotel=59052&level=hotel&locale=en-US&productcurrency=CAD&rooms=1&theme=brilliant",
   "The Anndore House - JDV by Hyatt": "https://www.hyatt.com/shop/rooms/torjd?rooms=1&checkinDate={checkin_dash}&checkoutDate={checkout_dash}",
-  "Sutton Place Hotel Toronto": "https://reservations.suttonplace.com/114627?&adults={adults}&datein={checkin}&dateout={checkout}&domain=www.suttonplace.com&languageid=1&rooms=1#/datesofstay",
+  "Sutton Place Hotel Toronto": "https://reservations.suttonplace.com/114627?&adults={adults}&datein={checkin_slash}&dateout={checkout_slash}&domain=www.suttonplace.com&languageid=1&rooms=1#/accommodation/room",
   "Ace Hotel Toronto": "https://reservations.acehotel.com/?adult={adults}&arrive={checkin_dash}&chain=7231&child={children}&currency=CAD&depart={checkout_dash}&dest=ACE&hotel=36680&level=hotel&locale=en-US&productcurrency=CAD&rooms=1"
 };
 
@@ -59,11 +59,17 @@ function inject_parameters_into_url(base_url: string, checkin: string, checkout:
   const checkin_dash = checkin;
   const checkout_dash = checkout;
   
+  // Format for Sutton Place: YYYY/MM-DD (e.g., 2025/08-26)
+  const checkin_slash = checkin.replace("-", "/");
+  const checkout_slash = checkout.replace("-", "/");
+  
   return base_url
     .replace("{checkin}", date_in)
     .replace("{checkout}", date_out)
     .replace("{checkin_dash}", checkin_dash)
     .replace("{checkout_dash}", checkout_dash)
+    .replace("{checkin_slash}", checkin_slash)
+    .replace("{checkout_slash}", checkout_slash)
     .replace("{adults}", adults.toString())
     .replace("{children}", children.toString());
 }
@@ -172,7 +178,13 @@ export async function fetch_individual_hotel(slug: string, checkin: string, chec
 
     const metadata = globalCache[token];
 
-    // Grab direct pricing — prefer featured, fallback to regular prices
+    // Always use hardcoded booking links for consistency and reliability
+    const base_link = HARDCODED_BOOKING_LINKS[hotelName];
+    const hardcoded_link = base_link ? 
+      inject_parameters_into_url(base_link, checkin, checkout, adults, children) : 
+      null;
+
+    // Grab pricing information from API for display purposes only
     const featuredPrices = data.featured_prices || [];
     const prices = data.prices || [];
 
@@ -189,7 +201,7 @@ export async function fetch_individual_hotel(slug: string, checkin: string, chec
         source: selectedOffer.source,
         rate_per_night: selectedOffer.rate_per_night?.extracted_before_taxes_fees || null,
         total_rate: selectedOffer.total_rate?.extracted_before_taxes_fees || null,
-        link: selectedOffer.link,
+        link: hardcoded_link, // Always use hardcoded link
         free_cancellation: selectedOffer.free_cancellation || false,
         free_cancellation_until_date: selectedOffer.free_cancellation_until_date || null,
         remarks: selectedOffer.remarks || [],
@@ -230,16 +242,22 @@ export async function fetch_individual_hotel(slug: string, checkin: string, chec
             rate_per_night: room.rate_per_night?.extracted_before_taxes_fees || null,
             total_rate: room.total_rate?.extracted_before_taxes_fees || null,
             images: room.images || [],
-            link: room.link || null,
+            link: hardcoded_link, // Always use hardcoded link for room bookings too
             num_guests: room.num_guests || null,
           }));
       }
-    }
-
-    // If no official price found, don't fall back to OTA prices
-    // Only show official hotel-direct pricing on individual hotel pages
-    if (!official_price) {
-      console.log(`No official price found for ${hotelName}, not showing any price`);
+    } else if (hardcoded_link) {
+      // If no API pricing found, still show the hardcoded booking link
+      official_price = {
+        source: "Official Site",
+        rate_per_night: null,
+        total_rate: null,
+        link: hardcoded_link,
+        free_cancellation: false,
+        free_cancellation_until_date: null,
+        remarks: [],
+        discount_remarks: [],
+      };
     }
 
     return {
