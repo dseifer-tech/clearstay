@@ -57,7 +57,7 @@
 ### **3. Analytics Configuration** ✅ DONE
 ```bash
 # ✅ Configured Google Tag Manager with privacy-friendly settings
-- ✅ GTM Container ID: GTM-K7ZC8SDT
+- ✅ GTM Container ID: GTM-T22LS2CW
 - ✅ Privacy-friendly configuration in code
 - ✅ Route tracking for SPA navigation
 - ✅ Custom events for hotel searches and bookings
