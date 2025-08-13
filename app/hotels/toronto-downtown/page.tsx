@@ -1,15 +1,15 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Downtown Toronto Hotels | Book Direct with InnstaStay',
+  title: 'Downtown Toronto Hotels - Direct Booking & Rates | InnstaStay',
   description:
-    'Compare real-time hotel rates in downtown Toronto. Book direct with top hotels near CN Tower, Casa Loma, Eaton Centre, Ripley\'s Aquarium, and more. No commissions, no markups.',
+    'Find and compare direct hotel rates in downtown Toronto. Book with top hotels near CN Tower, Casa Loma, Eaton Centre, Ripley\'s Aquarium, and more. No commissions, no markups.',
   openGraph: {
-    title: 'Downtown Toronto Hotels | InnstaStay',
+    title: 'Downtown Toronto Hotels - Direct Booking',
     description:
       'Find verified hotel rates near top downtown Toronto attractions like the CN Tower, Royal Ontario Museum, and St. Lawrence Market — all commission-free.',
     url: 'https://innstastay.com/hotels/toronto-downtown',
-    images: ['/innstastay-logo.png'],
+    images: ['/innstastay-logo.svg'],
   },
   keywords: [
     'Downtown Toronto hotels',

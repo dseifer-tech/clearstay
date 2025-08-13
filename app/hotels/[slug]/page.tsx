@@ -1,20 +1,42 @@
 import type { Metadata } from 'next';
-import { SLUG_TO_TOKEN } from '@/lib/hotels';
+import { SLUG_TO_TOKEN, TORONTO_HOTELS } from '@/lib/hotels';
 import { Star, MapPin, Wifi, Coffee, Car, Dumbbell, Users, Building, Shield, CheckCircle, Search } from 'lucide-react';
 import Link from 'next/link';
 import NearbyPlacesSection from './NearbyPlacesSection';
 import HotelPageTracker from '@/app/components/HotelPageTracker';
 
+// Create a mapping from slug to hotel name for metadata
+const SLUG_TO_HOTEL_NAME: Record<string, string> = {
+  "pantages-hotel-downtown-toronto": "Pantages Hotel Downtown Toronto",
+  "town-inn-suites": "Town Inn Suites",
+  "one-king-west-hotel-residence": "One King West Hotel & Residence",
+  "the-omni-king-edward-hotel": "The Omni King Edward Hotel",
+  "chelsea-hotel-toronto": "Chelsea Hotel, Toronto",
+  "the-anndore-house-jdv": "The Anndore House - JDV by Hyatt",
+  "sutton-place-hotel-toronto": "Sutton Place Hotel Toronto",
+  "ace-hotel-toronto": "Ace Hotel Toronto"
+};
+
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const name = params.slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  const hotelName = SLUG_TO_HOTEL_NAME[params.slug] || params.slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  
+  // Create unique, descriptive titles for each hotel
+  const title = `${hotelName} - Direct Booking & Rates | InnstaStay`;
+  const description = `Book ${hotelName} directly with no commissions. Compare real-time rates, amenities, and get the best price guaranteed.`;
+  
   return {
-    title: `${name} | Book Direct on InnstaStay`,
-    description: `Compare real-time direct rates for ${name}. No commissions. Always book direct with InnstaStay.`,
+    title,
+    description,
     openGraph: {
-      title: `${name} | InnstaStay`,
-      description: `Verified hotel. Live pricing from the hotel website.`,
+      title: `${hotelName} - Direct Booking`,
+      description: `Book ${hotelName} directly. No middlemen, no fees.`,
       url: `https://innstastay.com/hotels/${params.slug}`,
       images: ['/innstastay-logo.svg']
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${hotelName} - Direct Booking`,
+      description: `Book ${hotelName} directly. No middlemen, no fees.`
     },
     robots: 'index, follow'
   };
