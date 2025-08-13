@@ -110,17 +110,12 @@ export default function HomePageClient() {
               </div>
             </div>
             
-            {/* Right Side - Search Icon and CTA Button */}
+            {/* Right Side - CTA Button */}
             <div className="flex items-center gap-4">
-              {/* Search Icon */}
-              <button className="hidden md:block hover:text-blue-600 transition-colors duration-200 p-2">
-                <Search className="w-5 h-5" />
-              </button>
-              
               {/* Desktop CTA Button */}
               <div className="hidden md:block">
                 <a href="/search" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                  Search Hotels
+                  Compare Rates
                 </a>
               </div>
               
