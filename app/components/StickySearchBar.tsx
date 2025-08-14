@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from 'react';
-import { format, addDays } from 'date-fns';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { format, addDays, parseISO } from 'date-fns';
 import { Search, Calendar, User } from 'lucide-react';
 import SearchBarWide from './SearchBarWide';
 import ProfessionalCalendar from './ProfessionalCalendar';
@@ -12,8 +13,11 @@ interface StickySearchBarProps {
 }
 
 export default function StickySearchBar({ className = "" }: StickySearchBarProps) {
+  const urlSearchParams = useSearchParams();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTravelerModal, setShowTravelerModal] = useState(false);
+  
+  // Initialize with URL parameters or defaults
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
     addDays(new Date(), 1),
     addDays(new Date(), 2)
@@ -22,6 +26,33 @@ export default function StickySearchBar({ className = "" }: StickySearchBarProps
     adults: 2,
     children: 0
   });
+
+  // Update state when URL parameters change
+  useEffect(() => {
+    const checkin = urlSearchParams?.get('checkin');
+    const checkout = urlSearchParams?.get('checkout');
+    const adults = urlSearchParams?.get('adults');
+    const children = urlSearchParams?.get('children');
+
+    if (checkin && checkout) {
+      try {
+        const checkinDate = parseISO(checkin);
+        const checkoutDate = parseISO(checkout);
+        setDateRange([checkinDate, checkoutDate]);
+      } catch (error) {
+        console.error('Error parsing dates from URL:', error);
+        // Fallback to defaults if parsing fails
+        setDateRange([addDays(new Date(), 1), addDays(new Date(), 2)]);
+      }
+    }
+
+    if (adults) {
+      setSearchParams(prev => ({ ...prev, adults: parseInt(adults) || 2 }));
+    }
+    if (children) {
+      setSearchParams(prev => ({ ...prev, children: parseInt(children) || 0 }));
+    }
+  }, [urlSearchParams]);
 
   const handleDateRangeChange = (start: Date | null, end: Date | null) => {
     setDateRange([start, end]);
