@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 import SearchPageClient from '@/app/search/SearchPageClient';
 
 // Dynamic metadata generation
@@ -78,5 +79,9 @@ export async function generateMetadata({ searchParams }: { searchParams: { [key:
 }
 
 export default function SearchPage() {
-  return <SearchPageClient />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchPageClient />
+    </Suspense>
+  );
 } 
