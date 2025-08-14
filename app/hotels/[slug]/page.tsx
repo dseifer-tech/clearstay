@@ -99,6 +99,8 @@ export default async function HotelSlugPage({
   params: { slug: string };
   searchParams: { checkin?: string; checkout?: string; adults?: string; children?: string };
 }) {
+  // Get hotel name for use in component
+  const hotelName = SLUG_TO_HOTEL_NAME[params.slug] || params.slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   const checkin = searchParams.checkin;
   const checkout = searchParams.checkout;
   const adults = searchParams.adults || "2";

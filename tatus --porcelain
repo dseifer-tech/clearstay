@@ -1,0 +1,5 @@
+[33m5ac11d2[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fix TypeScript error: update handleSearch function signature to match SearchBarWide component
+[33mfe7cb59[m Add hero images: homepage, about, and toronto-downtown
+[33mb4020e5[m Add hero image system with components, utilities, and comprehensive guide
+[33mb934627[m Fix critical SEO issues: add canonicals, fix metadata, update structured data, and improve social sharing
+[33m1e2a356[m Fix SearchBarWide props mismatch and add missing modals for date picker and traveler selection
