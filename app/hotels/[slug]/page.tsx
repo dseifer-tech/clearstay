@@ -93,7 +93,7 @@ export default async function HotelSlugPage({
   const hotelImage = HOTEL_IMAGES[hotel.name] || hotel.image_url;
 
   // Check if we have search parameters for dynamic data
-  const hasSearchParams = searchParams.checkin && searchParams.checkout && searchParams.adults && searchParams.children;
+  const hasSearchParams = Boolean(searchParams.checkin && searchParams.checkout && searchParams.adults && searchParams.children);
 
   return (
     <>
