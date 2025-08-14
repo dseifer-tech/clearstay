@@ -76,16 +76,30 @@ export default function AboutPageClient() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="py-20 bg-white text-center">
-        <div className="max-w-5xl mx-auto px-6">
-          <h1 className="text-4xl font-bold mb-4">Why We Built InnstaStay</h1>
-          <p className="text-lg text-gray-600 leading-relaxed">
-            We were tired of watching travelers overpay while hotels lost revenue to middlemen. 
-            We believe in direct, honest hotel booking — no commissions, no inflated rates, no hidden fees.
-          </p>
-        </div>
-      </section>
+             {/* Hero Section with Background Image */}
+       <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
+         {/* Background Image */}
+         <img
+           src="/hero/about.jpg"
+           alt="About InnstaStay - Commission-free hotel booking"
+           className="absolute inset-0 w-full h-full object-cover"
+         />
+         
+         {/* Gradient Overlay */}
+         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 to-blue-600/50"></div>
+         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+         
+         {/* Content */}
+         <div className="relative z-10 max-w-4xl mx-auto text-center px-6">
+           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+             Why We Built InnstaStay
+           </h1>
+           <p className="text-lg md:text-xl text-blue-100 leading-relaxed max-w-3xl mx-auto">
+             We were tired of watching travelers overpay while hotels lost revenue to middlemen. 
+             We believe in direct, honest hotel booking — no commissions, no inflated rates, no hidden fees.
+           </p>
+         </div>
+       </section>
 
       {/* Problem Section */}
       <section className="py-20 bg-gray-50">

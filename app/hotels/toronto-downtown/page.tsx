@@ -37,26 +37,33 @@ export const metadata: Metadata = {
 export default function DowntownTorontoPage() {
   return (
     <div>
-      {/* Hero Section with Background Gradient */}
-      <div className="bg-gradient-to-b from-blue-50 to-white py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+      {/* Hero Section with Background Image */}
+      <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
+        {/* Background Image */}
+        <img
+          src="/hero/toronto-downtown.jpg"
+          alt="Downtown Toronto skyline with CN Tower"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 to-blue-600/50"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+        
+        {/* Content */}
+        <div className="relative z-10 max-w-4xl mx-auto text-center px-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Downtown Toronto Hotels
           </h1>
-          <p className="text-lg text-gray-700 mb-4">
+          <p className="text-lg md:text-xl text-blue-100 mb-6 max-w-3xl mx-auto">
             Looking for a hotel in downtown Toronto? InnstaStay lets you compare real-time direct prices from trusted hotels near Yonge Street, Union Station, Eaton Centre, and more — with no markups, no commissions, and no fake discounts.
           </p>
-          <p className="text-gray-600 mb-6">
+          <p className="text-blue-200 mb-8 max-w-2xl mx-auto">
             Whether you're here for business, concerts, or nightlife, we connect you to the best stays in the heart of the city. Book smart. Book direct.
           </p>
-          <p className="text-sm text-gray-500 mb-8">
-            Discover <a href="/search?type=boutique" className="text-blue-600 hover:underline">boutique hotels in downtown Toronto</a>, 
-            <a href="/search?near=union-station" className="text-blue-600 hover:underline"> hotels near Union Station</a> for easy transit access, 
-            and <a href="/search?area=financial-district" className="text-blue-600 hover:underline">business-friendly accommodations</a> in the Financial District.
-          </p>
           
-          {/* Search Bar */}
-          <div className="mb-8">
+          {/* Search Button */}
+          <div className="mb-6">
             <a
               href="/search?location=toronto&area=downtown"
               className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
@@ -65,14 +72,14 @@ export default function DowntownTorontoPage() {
             </a>
           </div>
           
-          <a
-            href="/search?location=toronto&area=downtown"
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-sm font-semibold shadow hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
-          >
-            Search Downtown Hotels →
-          </a>
+          {/* Trust Badges */}
+          <div className="flex flex-wrap justify-center gap-6 text-sm text-blue-200">
+            <span>📍 Downtown Toronto</span>
+            <span>⚡ Live Direct Rates</span>
+            <span>🟢 No Platform Fees</span>
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* Why Downtown Toronto Icons Section */}
       <section className="bg-white py-12 px-4">
