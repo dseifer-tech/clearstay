@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { SLUG_TO_TOKEN, TORONTO_HOTELS } from '@/lib/hotels';
+import { HOTEL_SLUG_MAP, TORONTO_HOTELS } from '@/lib/hotels';
 import { Star, MapPin, Wifi, Coffee, Car, Dumbbell, Users, Building, Shield, CheckCircle, Search, Menu } from 'lucide-react';
 import Link from 'next/link';
 import NearbyPlacesSection from './NearbyPlacesSection';
@@ -70,7 +70,7 @@ export default async function HotelSlugPage({
   
   // Find the hotel data from TORONTO_HOTELS array
   const hotel = TORONTO_HOTELS.find(h => {
-    const hotelSlug = SLUG_TO_TOKEN[h.token];
+    const hotelSlug = HOTEL_SLUG_MAP[h.token];
     return hotelSlug === params.slug;
   });
 
