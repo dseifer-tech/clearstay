@@ -197,11 +197,7 @@ export default function SearchPageClient() {
                       About
                     </a>
                   </li>
-                  <li>
-                    <a href="/search" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
-                      Toronto Hotels
-                    </a>
-                  </li>
+
                 </ul>
               </div>
             </div>

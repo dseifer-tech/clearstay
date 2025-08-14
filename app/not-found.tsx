@@ -45,9 +45,7 @@ export default function NotFound() {
         <div className="mt-12 pt-8 border-t border-gray-200">
           <p className="text-sm text-gray-500 mb-4">Popular pages:</p>
           <div className="flex flex-wrap justify-center gap-2">
-            <Link href="/hotels/toronto-downtown" className="text-blue-600 hover:text-blue-700 text-sm">
-              Downtown Hotels
-            </Link>
+
             <span className="text-gray-300">•</span>
             <Link href="/about" className="text-blue-600 hover:text-blue-700 text-sm">
               About Us
