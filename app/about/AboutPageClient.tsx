@@ -76,25 +76,29 @@ export default function AboutPageClient() {
         </div>
       </nav>
 
-             {/* Hero Section with Background Image */}
-       <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
-         {/* Background Image */}
-         <img
-           src="/hero/about.jpg"
-           alt="About InnstaStay - Commission-free hotel booking"
-           className="absolute inset-0 w-full h-full object-cover"
-         />
+             {/* Hero Section with Background Image - Same size as homepage */}
+       <section className="hero">
+         <picture className="hero-media">
+           <img
+             src="/hero/about.jpg"
+             alt="About InnstaStay - Commission-free hotel booking"
+             className="hero-img"
+             width="1920" 
+             height="800"
+             loading="eager" 
+             fetchPriority="high"
+             decoding="async"
+           />
+         </picture>
          
-         {/* Gradient Overlay */}
-         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 to-blue-600/50"></div>
-         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+         {/* Gradient overlays */}
+         <div className="hero-overlay hero-overlay-dark"></div>
+         <div className="hero-overlay hero-overlay-fade"></div>
          
          {/* Content */}
-         <div className="relative z-10 max-w-4xl mx-auto text-center px-6">
-           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-             Why We Built InnstaStay
-           </h1>
-           <p className="text-lg md:text-xl text-blue-100 leading-relaxed max-w-3xl mx-auto">
+         <div className="hero-content" role="region" aria-label="About InnstaStay - Commission-free hotel booking">
+           <h1 className="hero-title">Why We Built InnstaStay</h1>
+           <p className="hero-sub">
              We were tired of watching travelers overpay while hotels lost revenue to middlemen. 
              We believe in direct, honest hotel booking — no commissions, no inflated rates, no hidden fees.
            </p>
