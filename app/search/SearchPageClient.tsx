@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Star, ExternalLink, Eye, Search, Menu } from 'lucide-react';
 import Link from 'next/link';
-import { HOTEL_SLUG_MAP } from '@/lib/hotels';
+import { HOTEL_SLUG_MAP, TORONTO_HOTELS } from '@/lib/hotels';
 import { format, addDays } from 'date-fns';
 import StickySearchBar from '@/app/components/StickySearchBar';
 import MobileMenu from '@/app/components/MobileMenu';
@@ -31,6 +31,12 @@ export default function SearchPageClient() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  // Create a mapping from hotel names to slugs
+  const hotelNameToSlug = TORONTO_HOTELS.reduce((acc, hotel) => {
+    acc[hotel.name] = HOTEL_SLUG_MAP[hotel.token];
+    return acc;
+  }, {} as Record<string, string>);
 
   // Fetch hotels when search parameters are present
   useEffect(() => {
@@ -344,7 +350,7 @@ export default function SearchPageClient() {
                         </button>
                         
                         <Link
-                          href={`/hotels/${HOTEL_SLUG_MAP[hotel.hotel]}?checkin=${checkin}&checkout=${checkout}&adults=${adults}&children=${children}`}
+                          href={`/hotels/${hotelNameToSlug[hotel.hotel] || hotel.hotel.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}?checkin=${checkin}&checkout=${checkout}&adults=${adults}&children=${children}`}
                           className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center"
                         >
                           <Eye className="w-4 h-4" />
