@@ -90,37 +90,23 @@ export default function DynamicHotelData({ slug, searchParams, hotel, hasSearchP
         {/* Main Hotel Card with Lead Rate */}
         {dynamicHotelData.official_price?.rate_per_night && (
           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-2xl p-6 shadow-sm">
-            <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6">
-              {/* Hotel Image */}
-              {dynamicHotelData.images && dynamicHotelData.images.length > 0 && (
-                <div className="w-full lg:w-64 h-48 lg:h-40 flex-shrink-0">
-                  <img 
-                    src={dynamicHotelData.images[0]} 
-                    alt={hotel.name}
-                    className="w-full h-full object-cover rounded-xl shadow-md"
-                  />
-                </div>
-              )}
+            <div className="text-center lg:text-left">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{hotel.name}</h3>
+              <p className="text-gray-600 mb-4">Best Available Rate</p>
               
-              {/* Hotel Info and Lead Rate */}
-              <div className="flex-1 text-center lg:text-left">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{hotel.name}</h3>
-                <p className="text-gray-600 mb-4">Best Available Rate</p>
-                
-                <div className="text-4xl font-bold text-green-600 mb-2">
-                  ${dynamicHotelData.official_price.rate_per_night} CAD
-                </div>
-                <div className="text-sm text-gray-500 mb-4">per night</div>
-                
-                <a 
-                  href={dynamicHotelData.official_price.link || hotel.booking_url} 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:-translate-y-0.5 shadow-lg"
-                >
-                  Book Best Rate
-                </a>
+              <div className="text-4xl font-bold text-green-600 mb-2">
+                ${dynamicHotelData.official_price.rate_per_night} CAD
               </div>
+              <div className="text-sm text-gray-500 mb-4">per night</div>
+              
+              <a 
+                href={dynamicHotelData.official_price.link || hotel.booking_url} 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:-translate-y-0.5 shadow-lg"
+              >
+                Book Best Rate
+              </a>
             </div>
           </div>
         )}
@@ -192,19 +178,7 @@ export default function DynamicHotelData({ slug, searchParams, hotel, hasSearchP
           </div>
         )}
         
-        {/* Fallback Booking Button if no rooms */}
-        {(!dynamicHotelData.rooms || dynamicHotelData.rooms.length === 0) && (
-          <div className="text-center">
-            <a 
-              href={dynamicHotelData.official_price?.link || hotel.booking_url} 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-xl shadow-lg text-sm font-semibold transition-all duration-200 transform hover:-translate-y-0.5"
-            >
-              Book Direct Now
-            </a>
-          </div>
-        )}
+
         
         {/* Dynamic Remarks - only show if there are any */}
         {(dynamicHotelData.official_price?.remarks?.length > 0 || dynamicHotelData.official_price?.discount_remarks?.length > 0) && (
