@@ -16,16 +16,12 @@ interface DynamicHotelDataProps {
 }
 
 export default function DynamicHotelData({ slug, searchParams, hotel, hasSearchParams }: DynamicHotelDataProps) {
-  console.log('🔍 DynamicHotelData component loaded');
-  console.log('🔍 Props:', { slug, searchParams, hotel: hotel.name, hasSearchParams });
-  
   const [dynamicHotelData, setDynamicHotelData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!hasSearchParams) {
-      console.log('🔍 No search parameters, using static data');
       return;
     }
 
@@ -34,27 +30,17 @@ export default function DynamicHotelData({ slug, searchParams, hotel, hasSearchP
         setLoading(true);
         setError(null);
         
-        console.log('🔍 Fetching dynamic data for slug:', slug);
-        console.log('🔍 Search params:', searchParams);
-        
         const apiUrl = `/api/search?checkin=${searchParams.checkin}&checkout=${searchParams.checkout}&adults=${searchParams.adults}&children=${searchParams.children}&slug=${slug}`;
-        console.log('🔍 API URL:', apiUrl);
         
         const response = await fetch(apiUrl);
         
-        console.log('🔍 Response status:', response.status);
-        
         if (response.ok) {
           const data = await response.json();
-          console.log('🔍 API Response data:', data);
           setDynamicHotelData(data);
-          console.log('🔍 Set dynamicHotelData:', data);
         } else {
-          console.error('🔍 API Error:', response.status, response.statusText);
           setError(`API Error: ${response.status} ${response.statusText}`);
         }
       } catch (error) {
-        console.error('🔍 Error fetching dynamic hotel data:', error);
         setError('Failed to fetch dynamic data');
       } finally {
         setLoading(false);
@@ -202,16 +188,11 @@ export default function DynamicHotelData({ slug, searchParams, hotel, hasSearchP
 
   // Show static fallback
   return (
-    <div className="space-y-2">
-      <div className="text-xs text-blue-500 bg-blue-50 p-1 rounded">
-        Component loaded - No search params or no data
-      </div>
-      <a 
-        href="/search" 
-        className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-200 transform hover:-translate-y-0.5 w-full sm:w-auto"
-      >
-        Check Direct Rates
-      </a>
-    </div>
+    <a 
+      href="/search" 
+      className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-200 transform hover:-translate-y-0.5 w-full sm:w-auto"
+    >
+      Check Direct Rates
+    </a>
   );
 }

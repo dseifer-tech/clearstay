@@ -75,11 +75,7 @@ export default async function HotelSlugPage({
     return hotelSlug === params.slug;
   });
 
-  // Debug: Log what hotel was found
-  console.log('🔍 Hotel lookup debug:');
-  console.log('🔍 params.slug:', params.slug);
-  console.log('🔍 found hotel:', hotel?.name);
-  console.log('🔍 hotel token:', hotel?.token);
+
 
   if (!hotel) {
     return (
@@ -251,19 +247,6 @@ export default async function HotelSlugPage({
             </div>
             
             <div className="mt-4">
-              {/* Debug info */}
-              <div className="text-xs text-red-500 mb-2">
-                Debug: hasSearchParams = {hasSearchParams ? 'YES' : 'NO'}
-                <br />
-                Search Params: {JSON.stringify(searchParams)}
-                <br />
-                Slug: {params.slug}
-              </div>
-              
-              {/* Use client component for dynamic data */}
-              <div className="text-xs text-green-500 mb-2">
-                About to render DynamicHotelData component...
-              </div>
               <DynamicHotelData 
                 slug={params.slug}
                 searchParams={searchParams}
