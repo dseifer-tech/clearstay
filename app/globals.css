@@ -196,7 +196,7 @@
   display: grid;
   place-items: center;
   overflow: clip;
-  background: #fff;
+  background: transparent;
 }
 
 @media (max-width: 1024px) { .hero { height: 500px; } }
@@ -267,11 +267,11 @@
 .search-shell {
   margin: 14px auto 18px;
   width: min(920px, 96vw);
-  background: rgba(255, 255, 255, 0.90);
-  backdrop-filter: saturate(1.2) blur(6px);
-  border: 1px solid rgba(16, 24, 40, 0.06);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: saturate(1.2) blur(8px);
+  border: 1px solid rgba(16, 24, 40, 0.08);
   border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(16, 24, 40, 0.20);
+  box-shadow: 0 10px 30px rgba(16, 24, 40, 0.15);
   padding: 12px;
 }
 
