@@ -50,16 +50,16 @@ const SLUG_TO_HOTEL_NAME: { [key: string]: string } = {
   "ace-hotel-toronto": "Ace Hotel Toronto"
 };
 
-// Fallback hotel images (using more reliable placeholder URLs)
+// Real hotel images from Google Maps and Hotelbeds
 const HOTEL_IMAGES: { [key: string]: string } = {
-  "Pantages Hotel Downtown Toronto": "https://via.placeholder.com/400x300/4F46E5/FFFFFF?text=Pantages+Hotel",
-  "Town Inn Suites": "https://via.placeholder.com/400x300/059669/FFFFFF?text=Town+Inn+Suites",
-  "One King West Hotel & Residence": "https://via.placeholder.com/400x300/DC2626/FFFFFF?text=One+King+West",
-  "The Omni King Edward Hotel": "https://via.placeholder.com/400x300/7C3AED/FFFFFF?text=Omni+King+Edward",
-  "Chelsea Hotel, Toronto": "https://via.placeholder.com/400x300/F59E0B/FFFFFF?text=Chelsea+Hotel",
-  "The Anndore House - JDV by Hyatt": "https://via.placeholder.com/400x300/EC4899/FFFFFF?text=Anndore+House",
-  "Sutton Place Hotel Toronto": "https://via.placeholder.com/400x300/10B981/FFFFFF?text=Sutton+Place",
-  "Ace Hotel Toronto": "https://via.placeholder.com/400x300/6366F1/FFFFFF?text=Ace+Hotel"
+  "Pantages Hotel Downtown Toronto": "https://lh5.googleusercontent.com/p/AF1QipMt1ZolVWnJTgIMqogAUCjh9EldFh8vSDHY5TU=s10000",
+  "Town Inn Suites": "https://lh5.googleusercontent.com/p/AF1QipN2HhQs9GSWKldSNWx_1o4EC3ojDlzgG9UVxgV1=s10000",
+  "One King West Hotel & Residence": "https://lh5.googleusercontent.com/p/AF1QipPI-2hASi1fH2dzw3hOyxjk2UV9CVV9P3sKUYuX=s10000",
+  "The Omni King Edward Hotel": "https://lh5.googleusercontent.com/p/AF1QipMvGKOVckX0M2FfmY-77Mt9eykQw6pHyHgmK067=s10000",
+  "Chelsea Hotel, Toronto": "https://photos.hotelbeds.com/giata/original/04/049472/049472a_hb_f_004.JPG",
+  "The Anndore House - JDV by Hyatt": "https://lh5.googleusercontent.com/p/AF1QipOh__jl8gimUkhS0FUaJSr1ft0-WORdu7KieteX=s10000",
+  "Sutton Place Hotel Toronto": "https://lh5.googleusercontent.com/p/AF1QipPFImvLwmvVatoeTOPO-h4UCI53SGoH1ITu0BbY=s10000",
+  "Ace Hotel Toronto": "https://lh5.googleusercontent.com/p/AF1QipNGix9dVAg06s82e08vaUXkAhqFlV2XPyTByWkj=s10000"
 };
 
 function inject_parameters_into_url(base_url: string, checkin: string, checkout: string, adults: number, children: number): string {
