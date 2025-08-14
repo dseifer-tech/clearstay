@@ -71,6 +71,15 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                   Downtown Hotels
                 </a>
               </li>
+              <li>
+                <a 
+                  href="/contact" 
+                  className="block text-lg font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                  onClick={onClose}
+                >
+                  Contact
+                </a>
+              </li>
             </ul>
           </nav>
 

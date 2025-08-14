@@ -105,6 +105,11 @@ export default function HomePageClient() {
                       Downtown Hotels
                     </a>
                   </li>
+                  <li>
+                    <a href="/contact" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
+                      Contact
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>
