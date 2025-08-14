@@ -484,14 +484,7 @@ export default function SearchPageClient() {
         <QuickSearch onSearch={handleQuickSearch} />
       ) : null}
 
-      {/* Sticky Search Bar for Results */}
-      {checkin && checkout && (
-        <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-zinc-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
-            <StickySearchBar />
-          </div>
-        </div>
-      )}
+      
 
       {/* Search Results */}
       {hotels.length > 0 ? (
