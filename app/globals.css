@@ -195,7 +195,7 @@
   height: 520px;
   display: grid;
   place-items: center;
-  overflow: clip;
+  overflow: hidden;
   background: transparent;
 }
 
@@ -235,7 +235,8 @@
 
 .hero-overlay-fade {
   z-index: -1;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 70%, #ffffff 100%);
+  /* fade later and softer */
+  background: linear-gradient(to bottom, rgba(255,255,255,0) 82%, #ffffff 100%);
 }
 
 /* Hero content */
@@ -263,16 +264,21 @@
   line-height: 1.5;
 }
 
-/* Search box wrapper */
+/* Search box wrapper - neutralized */
 .search-shell {
-  margin: 14px auto 18px;
-  width: min(920px, 96vw);
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: saturate(1.2) blur(8px);
-  border: 1px solid rgba(16, 24, 40, 0.08);
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(16, 24, 40, 0.15);
-  padding: 12px;
+  width: min(980px, 96vw);
+  margin: 12px auto 18px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+/* belt-and-suspenders: if the inner component adds its own shell */
+#search-widget > * {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
 }
 
 @media (max-width: 768px) {

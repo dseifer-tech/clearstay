@@ -156,7 +156,10 @@ export default function HomePageClient() {
           <h1 className="hero-title">Downtown Toronto Hotels — Book Direct</h1>
           <p className="hero-sub">Live rates from verified downtown hotels. No middlemen, no extra fees.</p>
 
-          <div id="search-widget" className="search-shell">
+          <div
+            id="search-widget"
+            className="mx-auto w-[min(980px,96vw)] p-0 bg-transparent border-0 shadow-none"
+          >
             <SearchBarWide 
               dateLabel="Dates"
               dateValue={dateRange[0] && dateRange[1] 
@@ -188,7 +191,7 @@ export default function HomePageClient() {
               How InnstaStay Works
             </h2>
             <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
-              We connect you directly with hotels, eliminating the middlemen who add 15-30% to your bill.
+              Book direct with verified hotels—clear prices, no surprises.
             </p>
           </div>
           
