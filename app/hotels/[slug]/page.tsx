@@ -101,17 +101,25 @@ export default async function HotelSlugPage({
 }) {
   // Get hotel name for use in component
   const hotelName = SLUG_TO_HOTEL_NAME[params.slug] || params.slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-  const checkin = searchParams.checkin;
-  const checkout = searchParams.checkout;
+  
+  // Provide default values if search parameters are missing
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+  const dayAfterTomorrow = new Date(today);
+  dayAfterTomorrow.setDate(today.getDate() + 2);
+  
+  const checkin = searchParams.checkin || tomorrow.toISOString().split('T')[0];
+  const checkout = searchParams.checkout || dayAfterTomorrow.toISOString().split('T')[0];
   const adults = searchParams.adults || "2";
   const children = searchParams.children || "0";
 
-  if (!checkin || !checkout || !params.slug) {
+  if (!params.slug) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-red-600 mb-4">Error</h1>
-          <p className="text-gray-600 mb-4">Missing required parameters</p>
+          <p className="text-gray-600 mb-4">Hotel not found</p>
           <Link href="/search" className="text-blue-600 hover:underline">
             ← Back to Search
           </Link>
@@ -291,12 +299,17 @@ export default async function HotelSlugPage({
                 src={hotel.images[0]} 
                 alt={hotel.hotel} 
                 className="w-full h-full object-cover rounded-lg border"
+                onError={(e) => {
+                  // Fallback to placeholder if image fails to load
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  target.nextElementSibling?.classList.remove('hidden');
+                }}
               />
-            ) : (
-              <div className="w-full h-full bg-gray-200 rounded-lg border flex items-center justify-center">
-                <Building className="w-12 h-12 text-gray-400" />
-              </div>
-            )}
+            ) : null}
+            <div className={`w-full h-full bg-gray-200 rounded-lg border flex items-center justify-center ${hotel.images && hotel.images.length > 0 ? 'hidden' : ''}`}>
+              <Building className="w-12 h-12 text-gray-400" />
+            </div>
           </div>
           
           <div className="flex-1 text-center sm:text-left">
@@ -356,12 +369,17 @@ export default async function HotelSlugPage({
                         src={room.images[0]} 
                         alt={room.name || `Room ${i + 1}`} 
                         className="rounded-lg h-full w-full object-cover"
+                        onError={(e) => {
+                          // Fallback to placeholder if image fails to load
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.nextElementSibling?.classList.remove('hidden');
+                        }}
                       />
-                    ) : (
-                      <div className="rounded-lg h-full w-full bg-gray-200 flex items-center justify-center">
-                        <Building className="w-8 h-8 text-gray-400" />
-                      </div>
-                    )}
+                    ) : null}
+                    <div className={`rounded-lg h-full w-full bg-gray-200 flex items-center justify-center ${room.images && room.images.length > 0 ? 'hidden' : ''}`}>
+                      <Building className="w-8 h-8 text-gray-400" />
+                    </div>
                   </div>
                   
                   <h3 className="font-medium text-gray-800 text-sm mb-1 line-clamp-2">

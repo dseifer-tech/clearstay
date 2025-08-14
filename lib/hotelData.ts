@@ -50,16 +50,16 @@ const SLUG_TO_HOTEL_NAME: { [key: string]: string } = {
   "ace-hotel-toronto": "Ace Hotel Toronto"
 };
 
-// Fallback hotel images (placeholder URLs - you can replace these with actual hotel images)
+// Fallback hotel images (using more reliable placeholder URLs)
 const HOTEL_IMAGES: { [key: string]: string } = {
-  "Pantages Hotel Downtown Toronto": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&auto=format",
-  "Town Inn Suites": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop&auto=format",
-  "One King West Hotel & Residence": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop&auto=format",
-  "The Omni King Edward Hotel": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop&auto=format",
-  "Chelsea Hotel, Toronto": "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400&h=300&fit=crop&auto=format",
-  "The Anndore House - JDV by Hyatt": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&auto=format",
-  "Sutton Place Hotel Toronto": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop&auto=format",
-  "Ace Hotel Toronto": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&auto=format"
+  "Pantages Hotel Downtown Toronto": "https://via.placeholder.com/400x300/4F46E5/FFFFFF?text=Pantages+Hotel",
+  "Town Inn Suites": "https://via.placeholder.com/400x300/059669/FFFFFF?text=Town+Inn+Suites",
+  "One King West Hotel & Residence": "https://via.placeholder.com/400x300/DC2626/FFFFFF?text=One+King+West",
+  "The Omni King Edward Hotel": "https://via.placeholder.com/400x300/7C3AED/FFFFFF?text=Omni+King+Edward",
+  "Chelsea Hotel, Toronto": "https://via.placeholder.com/400x300/F59E0B/FFFFFF?text=Chelsea+Hotel",
+  "The Anndore House - JDV by Hyatt": "https://via.placeholder.com/400x300/EC4899/FFFFFF?text=Anndore+House",
+  "Sutton Place Hotel Toronto": "https://via.placeholder.com/400x300/10B981/FFFFFF?text=Sutton+Place",
+  "Ace Hotel Toronto": "https://via.placeholder.com/400x300/6366F1/FFFFFF?text=Ace+Hotel"
 };
 
 function inject_parameters_into_url(base_url: string, checkin: string, checkout: string, adults: number, children: number): string {
