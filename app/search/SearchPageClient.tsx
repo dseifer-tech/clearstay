@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Star, ExternalLink, Eye, Search, Menu } from 'lucide-react';
+import { Star, ExternalLink, Eye, Search, Menu, Shield, CheckCircle, Zap, Calendar, Clock, CreditCard, Building, Users, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { HOTEL_SLUG_MAP, TORONTO_HOTELS } from '@/lib/hotels';
 import { format, addDays } from 'date-fns';
@@ -24,6 +24,151 @@ interface HotelRoom {
   description: string;
 }
 
+// Quick Search Component
+function QuickSearch({ onSearch }: { onSearch: (checkin: string, checkout: string) => void }) {
+  const options = [
+    { id: 'week', label: 'Next Week (7 nights)', icon: Calendar, days: 7 },
+    { id: 'tomorrow', label: 'Tomorrow (1 night)', icon: Clock, days: 1 },
+    { id: 'weekend', label: 'This Weekend', icon: Calendar, days: 3 },
+    { id: 'nextMonth', label: 'Next Month', icon: Calendar, days: 30 },
+  ];
+
+  const handleQuickSearch = (days: number) => {
+    const today = new Date();
+    const tomorrow = addDays(today, 1);
+    const checkout = addDays(today, 1 + days);
+    
+    onSearch(
+      format(tomorrow, 'yyyy-MM-dd'),
+      format(checkout, 'yyyy-MM-dd')
+    );
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+      <div className="flex flex-wrap gap-2 overflow-x-auto">
+        {options.map(({ id, label, icon: Icon, days }) => (
+          <button
+            key={id}
+            className="inline-flex items-center gap-2 rounded-full border border-zinc-200 px-4 py-2 text-sm
+                       hover:shadow-sm hover:bg-white transition whitespace-nowrap"
+            onClick={() => handleQuickSearch(days)}
+          >
+            <Icon className="h-4 w-4" />
+            {label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// View Toggle Component
+function ViewToggle({ view, setView }: { view: 'list' | 'map'; setView: (v: 'list' | 'map') => void }) {
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-4 mb-2 flex items-center justify-between">
+      <div className="text-sm text-zinc-600">Showing results for Toronto</div>
+      <div className="inline-flex rounded-xl border border-zinc-200 p-1">
+        <button
+          className={`px-3 py-1.5 text-sm rounded-lg transition ${view === 'list' ? 'bg-white shadow-sm' : 'hover:bg-zinc-50'}`}
+          onClick={() => setView('list')}
+        >
+          List
+        </button>
+        <button
+          className={`px-3 py-1.5 text-sm rounded-lg transition ${view === 'map' ? 'bg-white shadow-sm' : 'hover:bg-zinc-50'}`}
+          onClick={() => setView('map')}
+        >
+          Map
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// Why Book Direct Section
+function WhyDirect() {
+  const items = [
+    { icon: Building, title: 'Hotel-Direct Rates', desc: 'Book straight with the property. No OTA markups.' },
+    { icon: CreditCard, title: 'Transparent Pricing', desc: 'No hidden fees. What you see is what you pay.' },
+    { icon: Users, title: 'Better Support', desc: 'Changes handled by the hotel, fast and flexible.' },
+  ];
+  
+  return (
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+      <h2 className="text-xl font-semibold text-zinc-900">Why book direct on InnstaStay?</h2>
+      <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {items.map(({ icon: Icon, title, desc }) => (
+          <div key={title} className="rounded-2xl border border-zinc-200 p-5 bg-white">
+            <Icon className="h-5 w-5 mb-3 text-blue-600" />
+            <div className="font-medium">{title}</div>
+            <p className="text-sm text-zinc-600 mt-1">{desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// Attractions Section
+function Attractions() {
+  const pois = [
+    { name: 'CN Tower', min: '8 min', img: 'https://lh5.googleusercontent.com/p/AF1QipMt1ZolVWnJTgIMqogAUCjh9EldFh8vSDHY5TU=s10000' },
+    { name: 'Royal Ontario Museum', min: '10 min', img: 'https://lh5.googleusercontent.com/p/AF1QipPI-2hASi1fH2dzw3hOyxjk2UV9CVV9P3sKUYuX=s10000' },
+    { name: 'Ripley\'s Aquarium', min: '9 min', img: 'https://lh5.googleusercontent.com/p/AF1QipMvGKOVckX0M2FfmY-77Mt9eykQw6pHyHgmK067=s10000' },
+  ];
+  
+  return (
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <h3 className="text-lg font-semibold">Top attractions in Toronto</h3>
+      <div className="mt-4 flex gap-3 overflow-x-auto pb-2">
+        {pois.map(p => (
+          <div key={p.name} className="min-w-[220px] rounded-2xl overflow-hidden border border-zinc-200 bg-white">
+            <div className="h-32 w-full bg-zinc-100">
+              <img src={p.img} alt={p.name} className="h-full w-full object-cover" />
+            </div>
+            <div className="p-3">
+              <div className="font-medium">{p.name}</div>
+              <div className="text-xs text-zinc-600">{p.min} from downtown</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// Hotel Categories Component
+function Categories({ onChange }: { onChange: (k: string) => void }) {
+  const tabs = ['All', 'Luxury', 'Budget-Friendly', 'Family', 'Extended Stay'];
+  const [active, setActive] = useState('All');
+  
+  const handleChange = (tab: string) => {
+    setActive(tab);
+    onChange(tab);
+  };
+  
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-2 mb-6">
+      <div className="flex flex-wrap gap-2">
+        {tabs.map(t => (
+          <button
+            key={t}
+            onClick={() => handleChange(t)}
+            className={`px-3 py-1.5 rounded-full border text-sm transition ${
+              active === t 
+                ? 'bg-white shadow-sm border-zinc-200' 
+                : 'border-zinc-200 hover:bg-white'
+            }`}
+          >
+            {t}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function SearchPageClient() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -31,6 +176,7 @@ export default function SearchPageClient() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [view, setView] = useState<'list' | 'map'>('list');
 
   // Create a mapping from hotel names to slugs
   const hotelNameToSlug = TORONTO_HOTELS.reduce((acc, hotel) => {
@@ -97,28 +243,14 @@ export default function SearchPageClient() {
     }
   };
 
-  // Show loading spinner if loading
-  if (loading) {
-    return <LoadingSpinner message="Searching for hotels..." variant="search" />;
-  }
+  const handleQuickSearch = (checkin: string, checkout: string) => {
+    router.push(`/search?checkin=${checkin}&checkout=${checkout}&adults=2&children=0`);
+  };
 
-  // Show error if there's an error
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Error</h1>
-          <p className="text-gray-600 mb-4">{error}</p>
-          <button 
-            onClick={() => window.location.reload()} 
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const handleCategoryChange = (category: string) => {
+    // Filter hotels based on category (implement filtering logic)
+    console.log('Category changed to:', category);
+  };
 
   // Get current search parameters
   const checkin = searchParams?.get('checkin');
@@ -136,8 +268,8 @@ export default function SearchPageClient() {
     1;
 
   // Create dynamic H1 based on search parameters
-  let h1Text = 'Toronto Hotels';
-  let subtitleText = 'Compare direct rates, book without middlemen';
+  let h1Text = 'Book Direct. Save More.';
+  let subtitleText = 'Compare direct rates from Toronto hotels—no middlemen, no commission.';
   
   if (checkin && checkout) {
     let locationText = 'Toronto';
@@ -165,8 +297,31 @@ export default function SearchPageClient() {
     subtitleText = 'Direct rates • No middlemen • Commission-free';
   }
 
+  // Show loading spinner if loading
+  if (loading) {
+    return <LoadingSpinner message="Searching for hotels..." variant="search" />;
+  }
+
+  // Show error if there's an error
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Error</h1>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <>
+    <div className="min-h-screen">
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-zinc-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5">
@@ -237,220 +392,227 @@ export default function SearchPageClient() {
       {/* Mobile Menu */}
       <MobileMenu isOpen={showMobileMenu} onClose={() => setShowMobileMenu(false)} />
 
-      {/* Sticky Search Bar */}
-      <StickySearchBar />
+      {/* HERO SECTION */}
+      <section className="relative insta-hero-gradient">
+        <div className="absolute inset-0 backdrop-blur-[1px]"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+          <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900">
+            {h1Text}
+          </h1>
+          <p className="mt-2 text-zinc-600">
+            {subtitleText}
+          </p>
 
-      <div className="min-h-screen bg-gray-50">
-        {/* Hero Section */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-400 text-white p-6 sm:p-8 rounded-b-xl shadow-md">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold mb-2">{h1Text}</h1>
-                <p className="text-blue-100">{subtitleText}</p>
-              </div>
-              <div className="text-sm font-semibold text-left sm:text-right">
-                Powered by <span className="text-white">InnstaStay</span>
-              </div>
-            </div>
+          {/* Search bar */}
+          <div className="mt-6">
+            <StickySearchBar />
+          </div>
+
+          {/* Trust signals */}
+          <div className="mt-5 flex flex-wrap items-center gap-3 text-sm text-zinc-600">
+            <span className="inline-flex items-center gap-1">
+              <Shield className="h-4 w-4" /> SSL Secure
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <CheckCircle className="h-4 w-4" /> Verified Rates
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Zap className="h-4 w-4" /> No Hidden Fees
+            </span>
+            <span className="ml-auto text-xs text-zinc-500">Powered by InnstaStay</span>
           </div>
         </div>
+      </section>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          {/* Search Results */}
-          {hotels.length > 0 ? (
-            <div className="space-y-4">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold text-gray-800">
-                  {hotels.length} Hotel{hotels.length !== 1 ? 's' : ''} Found
-                </h2>
-                <div className="text-sm text-gray-600">
-                  {nights} night{nights !== 1 ? 's' : ''} • {adults} adult{parseInt(adults) !== 1 ? 's' : ''}
-                  {parseInt(children) > 0 && ` • ${children} child${parseInt(children) !== 1 ? 'ren' : ''}`}
-                </div>
+      {/* Quick Search */}
+      {!checkin || !checkout ? (
+        <QuickSearch onSearch={handleQuickSearch} />
+      ) : null}
+
+      {/* Sticky Search Bar for Results */}
+      {checkin && checkout && (
+        <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-zinc-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
+            <StickySearchBar />
+          </div>
+        </div>
+      )}
+
+      {/* Search Results */}
+      {hotels.length > 0 ? (
+        <>
+          {/* View Toggle */}
+          <ViewToggle view={view} setView={setView} />
+          
+          {/* Hotel Categories */}
+          <Categories onChange={handleCategoryChange} />
+
+          {/* Results Grid */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold text-gray-800">
+                {hotels.length} Hotel{hotels.length !== 1 ? 's' : ''} Found
+              </h2>
+              <div className="text-sm text-gray-600">
+                {nights} night{nights !== 1 ? 's' : ''} • {adults} adult{parseInt(adults) !== 1 ? 's' : ''}
+                {parseInt(children) > 0 && ` • ${children} child${parseInt(children) !== 1 ? 'ren' : ''}`}
               </div>
+            </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {hotels.map((hotel, index) => (
-                  <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
-                    {/* Hotel Image */}
-                    <div className="h-48 w-full relative">
-                      {hotel.image ? (
-                        <img 
-                          src={hotel.image} 
-                          alt={hotel.hotel} 
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                          <span className="text-gray-400">No image available</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {hotels.map((hotel, index) => (
+                <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
+                  {/* Hotel Image */}
+                  <div className="h-48 w-full relative">
+                    {hotel.image ? (
+                      <img 
+                        src={hotel.image} 
+                        alt={hotel.hotel} 
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <span className="text-gray-400">No image available</span>
+                      </div>
+                    )}
+                    
+                    {/* Rating Badge */}
+                    {hotel.rating && (
+                      <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
+                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                        <span className="text-sm font-semibold text-gray-800">{hotel.rating}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Hotel Info */}
+                  <div className="p-4">
+                    <h3 className="font-semibold text-lg text-gray-800 mb-2 line-clamp-2">
+                      {hotel.hotel}
+                    </h3>
+                    
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-1">
+                      {hotel.address}
+                    </p>
+
+                    {/* Price */}
+                    <div className="flex items-center justify-between mb-3">
+                      {hotel.before_taxes ? (
+                        <div>
+                          <span className="text-2xl font-bold text-green-600">
+                            ${hotel.before_taxes} CAD
+                          </span>
+                          <span className="text-sm text-gray-500 ml-2">per night</span>
                         </div>
+                      ) : (
+                        <span className="text-lg font-semibold text-gray-600">Price on request</span>
                       )}
                       
-                      {/* Rating Badge */}
-                      {hotel.rating && (
-                        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
-                          <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                          <span className="text-sm font-semibold text-gray-800">{hotel.rating}</span>
-                        </div>
-                      )}
+                      <div className="text-xs text-gray-500 text-right">
+                        <div>Direct booking</div>
+                        <div>No fees</div>
+                      </div>
                     </div>
 
-                    {/* Hotel Info */}
-                    <div className="p-4">
-                      <h3 className="font-semibold text-lg text-gray-800 mb-2 line-clamp-2">
-                        {hotel.hotel}
-                      </h3>
+                    {/* Remarks */}
+                    {hotel.remarks && (
+                      <div className="text-xs text-blue-600 mb-3 bg-blue-50 p-2 rounded">
+                        {hotel.remarks}
+                      </div>
+                    )}
+
+                    {/* Discount Remarks */}
+                    {hotel.discount_remarks && (
+                      <div className="text-xs text-green-600 mb-3 bg-green-50 p-2 rounded">
+                        {hotel.discount_remarks}
+                      </div>
+                    )}
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleBookDirect(hotel.link, hotel.hotel)}
+                        className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center gap-2"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        Book Direct
+                      </button>
                       
-                      <p className="text-sm text-gray-600 mb-3 line-clamp-1">
-                        {hotel.address}
-                      </p>
-
-                      {/* Price */}
-                      <div className="flex items-center justify-between mb-3">
-                        {hotel.before_taxes ? (
-                          <div>
-                            <span className="text-2xl font-bold text-green-600">
-                              ${hotel.before_taxes} CAD
-                            </span>
-                            <span className="text-sm text-gray-500 ml-2">per night</span>
-                          </div>
-                        ) : (
-                          <span className="text-lg font-semibold text-gray-600">Price on request</span>
-                        )}
-                        
-                        <div className="text-xs text-gray-500 text-right">
-                          <div>Direct booking</div>
-                          <div>No fees</div>
-                        </div>
-                      </div>
-
-                      {/* Remarks */}
-                      {hotel.remarks && (
-                        <div className="text-xs text-blue-600 mb-3 bg-blue-50 p-2 rounded">
-                          {hotel.remarks}
-                        </div>
-                      )}
-
-                      {/* Discount Remarks */}
-                      {hotel.discount_remarks && (
-                        <div className="text-xs text-green-600 mb-3 bg-green-50 p-2 rounded">
-                          {hotel.discount_remarks}
-                        </div>
-                      )}
-
-                      {/* Action Buttons */}
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleBookDirect(hotel.link, hotel.hotel)}
-                          className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center gap-2"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                          Book Direct
-                        </button>
-                        
-                        <Link
-                          href={`/hotels/${hotelNameToSlug[hotel.hotel] || hotel.hotel.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`}
-                          className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Link>
-                      </div>
+                      <Link
+                        href={`/hotels/${hotelNameToSlug[hotel.hotel] || hotel.hotel.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`}
+                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Link>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-          ) : (
-            // No search parameters or no results
-            <div className="text-center py-12">
-              <div className="max-w-md mx-auto">
-                <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h2 className="text-xl font-semibold text-gray-800 mb-2">
-                  {checkin && checkout ? 'No hotels found' : 'Search for hotels'}
-                </h2>
-                <p className="text-gray-600 mb-6">
-                  {checkin && checkout 
-                    ? 'Try adjusting your search criteria or dates.'
-                    : 'Enter your travel dates to find available hotels in Toronto.'
-                  }
-                </p>
-                
-                {!checkin || !checkout ? (
-                  <>
-                    <div className="bg-white p-6 rounded-xl shadow-md mb-8">
-                      <h3 className="font-semibold text-gray-800 mb-4">Quick Search</h3>
-                      <div className="space-y-3">
-                        <button
-                          onClick={() => {
-                            const today = new Date();
-                            const tomorrow = addDays(today, 1);
-                            const nextWeek = addDays(today, 7);
-                            const nextWeekPlus1 = addDays(today, 8);
-                            
-                            router.push(`/search?checkin=${format(tomorrow, 'yyyy-MM-dd')}&checkout=${format(nextWeek, 'yyyy-MM-dd')}&adults=2&children=0`);
-                          }}
-                          className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                        >
-                          Next Week (7 nights)
-                        </button>
-                        
-                        <button
-                          onClick={() => {
-                            const today = new Date();
-                            const tomorrow = addDays(today, 1);
-                            const dayAfter = addDays(today, 2);
-                            
-                            router.push(`/search?checkin=${format(tomorrow, 'yyyy-MM-dd')}&checkout=${format(dayAfter, 'yyyy-MM-dd')}&adults=2&children=0`);
-                          }}
-                          className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
-                        >
-                          Tomorrow (1 night)
-                        </button>
-                      </div>
-                    </div>
-                    
-                    {/* Hotel Directory */}
-                    <div className="bg-white p-6 rounded-xl shadow-md">
-                      <h3 className="font-semibold text-gray-800 mb-4">Featured Hotels in Toronto</h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {[
-                          { name: "Pantages Hotel Downtown Toronto", slug: "pantages-hotel-downtown-toronto" },
-                          { name: "Town Inn Suites", slug: "town-inn-suites" },
-                          { name: "One King West Hotel & Residence", slug: "one-king-west-hotel-residence" },
-                          { name: "The Omni King Edward Hotel", slug: "the-omni-king-edward-hotel" },
-                          { name: "Chelsea Hotel, Toronto", slug: "chelsea-hotel-toronto" },
-                          { name: "The Anndore House - JDV by Hyatt", slug: "the-anndore-house-jdv" },
-                          { name: "Sutton Place Hotel Toronto", slug: "sutton-place-hotel-toronto" },
-                          { name: "Ace Hotel Toronto", slug: "ace-hotel-toronto" }
-                        ].map((hotel) => (
-                          <Link
-                            key={hotel.slug}
-                            href={`/hotels/${hotel.slug}`}
-                            className="block p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
-                          >
-                            <div className="font-medium text-gray-800 hover:text-blue-600 transition-colors">
-                              {hotel.name}
-                            </div>
-                            <div className="text-sm text-gray-500">Direct Booking</div>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <button
-                    onClick={() => router.push('/search')}
-                    className="bg-blue-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                  >
-                    New Search
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
+          </div>
+        </>
+      ) : (
+        // No search parameters or no results
+        <div className="text-center py-12">
+          <div className="max-w-md mx-auto">
+            <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">
+              {checkin && checkout ? 'No hotels found' : 'Search for hotels'}
+            </h2>
+            <p className="text-gray-600 mb-6">
+              {checkin && checkout 
+                ? 'Try adjusting your search criteria or dates.'
+                : 'Enter your travel dates to find available hotels in Toronto.'
+              }
+            </p>
+            
+            {!checkin || !checkout ? (
+              <>
+                {/* Hotel Directory */}
+                <div className="bg-white p-6 rounded-xl shadow-md">
+                  <h3 className="font-semibold text-gray-800 mb-4">Featured Hotels in Toronto</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {[
+                      { name: "Pantages Hotel Downtown Toronto", slug: "pantages-hotel-downtown-toronto" },
+                      { name: "Town Inn Suites", slug: "town-inn-suites" },
+                      { name: "One King West Hotel & Residence", slug: "one-king-west-hotel-residence" },
+                      { name: "The Omni King Edward Hotel", slug: "the-omni-king-edward-hotel" },
+                      { name: "Chelsea Hotel, Toronto", slug: "chelsea-hotel-toronto" },
+                      { name: "The Anndore House - JDV by Hyatt", slug: "the-anndore-house-jdv" },
+                      { name: "Sutton Place Hotel Toronto", slug: "sutton-place-hotel-toronto" },
+                      { name: "Ace Hotel Toronto", slug: "ace-hotel-toronto" }
+                    ].map((hotel) => (
+                      <Link
+                        key={hotel.slug}
+                        href={`/hotels/${hotel.slug}`}
+                        className="block p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
+                      >
+                        <div className="font-medium text-gray-800 hover:text-blue-600 transition-colors">
+                          {hotel.name}
+                        </div>
+                        <div className="text-sm text-gray-500">Direct Booking</div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <button
+                onClick={() => router.push('/search')}
+                className="bg-blue-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              >
+                New Search
+              </button>
+            )}
+          </div>
         </div>
-      </div>
-    </>
+      )}
+
+      {/* Why Book Direct Section */}
+      <WhyDirect />
+
+      {/* Attractions Section */}
+      <Attractions />
+    </div>
   );
 }

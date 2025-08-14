@@ -307,4 +307,17 @@
   border-radius: 999px;
   padding: 5px 10px;
   box-shadow: 0 2px 6px rgba(16, 24, 40, 0.06);
+}
+
+/* Animated gradient for search page */
+@keyframes instaGradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.insta-hero-gradient {
+  background: linear-gradient(-45deg, #eef5ff, #cce0ff, #f5faff, #eef5ff);
+  background-size: 400% 400%;
+  animation: instaGradientShift 20s ease-in-out infinite;
 } 
