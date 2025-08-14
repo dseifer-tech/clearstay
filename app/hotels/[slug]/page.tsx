@@ -75,6 +75,12 @@ export default async function HotelSlugPage({
     return hotelSlug === params.slug;
   });
 
+  // Debug: Log what hotel was found
+  console.log('🔍 Hotel lookup debug:');
+  console.log('🔍 params.slug:', params.slug);
+  console.log('🔍 found hotel:', hotel?.name);
+  console.log('🔍 hotel token:', hotel?.token);
+
   if (!hotel) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
