@@ -221,23 +221,9 @@ export default async function HotelSlugPage({
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Hero Card with Main Image and Check Direct Rates Button */}
-        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md mt-4 flex flex-col sm:flex-row gap-4 sm:gap-6 items-center">
-          <div className="w-full sm:w-48 h-36">
-            {hotelImage ? (
-              <img 
-                src={hotelImage} 
-                alt={hotel.name} 
-                className="w-full h-full object-cover rounded-lg border"
-              />
-            ) : (
-              <div className="w-full h-full bg-gray-200 rounded-lg border flex items-center justify-center">
-                <Building className="w-12 h-12 text-gray-400" />
-              </div>
-            )}
-          </div>
-          
-          <div className="flex-1 text-center sm:text-left">
+        {/* Hero Card with Check Direct Rates Button */}
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md mt-4">
+          <div className="text-center sm:text-left">
             <div className="flex items-center justify-center sm:justify-start mb-3">
               <div className="flex items-center gap-1">
                 <Star className="w-4 h-4 text-yellow-500 fill-current" />
