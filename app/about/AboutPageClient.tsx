@@ -5,6 +5,7 @@ import { Search, Shield, DollarSign, X, ArrowRight, CheckCircle, Building, Users
 import FAQ from '@/app/components/FAQ';
 import MobileMenu from '@/app/components/MobileMenu';
 import SecondaryCTA from '@/app/components/SecondaryCTA';
+import { TORONTO_HOTELS, HOTEL_SLUG_MAP } from '@/lib/hotels';
 
 export default function AboutPageClient() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -260,53 +261,55 @@ export default function AboutPageClient() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { name: "Pantages Hotel Downtown Toronto", slug: "pantages-hotel-downtown-toronto", rating: 4.2, address: "200 Victoria St, Toronto" },
-              { name: "Town Inn Suites", slug: "town-inn-suites", rating: 4.0, address: "620 Church St, Toronto" },
-              { name: "One King West Hotel & Residence", slug: "one-king-west-hotel-residence", rating: 4.3, address: "1 King St W, Toronto" },
-              { name: "The Omni King Edward Hotel", slug: "the-omni-king-edward-hotel", rating: 4.4, address: "37 King St E, Toronto" },
-              { name: "Chelsea Hotel, Toronto", slug: "chelsea-hotel-toronto", rating: 4.1, address: "33 Gerrard St W, Toronto" },
-              { name: "The Anndore House - JDV by Hyatt", slug: "the-anndore-house-jdv", rating: 4.2, address: "15 Charles St E, Toronto" },
-              { name: "Sutton Place Hotel Toronto", slug: "sutton-place-hotel-toronto", rating: 4.3, address: "955 Bay St, Toronto" },
-              { name: "Ace Hotel Toronto", slug: "ace-hotel-toronto", rating: 4.0, address: "51 Camden St, Toronto" }
-            ].map((hotel) => (
-              <div key={hotel.slug} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
-                {/* Hotel Image */}
-                <div className="h-48 w-full relative">
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-400">Hotel Image</span>
+            {TORONTO_HOTELS.map((hotel) => {
+              const slug = HOTEL_SLUG_MAP[hotel.token];
+              return (
+                <div key={hotel.token} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
+                  {/* Hotel Image */}
+                  <div className="h-48 w-full relative">
+                    {hotel.image_url ? (
+                      <img 
+                        src={hotel.image_url} 
+                        alt={hotel.name} 
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <span className="text-gray-400">Hotel Image</span>
+                      </div>
+                    )}
+                    
+                    {/* Rating Badge */}
+                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
+                      <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                      <span className="text-sm font-semibold text-gray-800">{hotel.rating}</span>
+                    </div>
                   </div>
-                  
-                  {/* Rating Badge */}
-                  <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
-                    <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                    <span className="text-sm font-semibold text-gray-800">{hotel.rating}</span>
+
+                  {/* Hotel Info */}
+                  <div className="p-4">
+                    <h3 className="font-semibold text-lg text-gray-800 mb-2 line-clamp-2">
+                      {hotel.name}
+                    </h3>
+                    
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-1">
+                      {hotel.address}
+                    </p>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      <a
+                        href={`/hotels/${slug}`}
+                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center gap-2"
+                      >
+                        <Eye className="w-4 h-4" />
+                        View Hotel
+                      </a>
+                    </div>
                   </div>
                 </div>
-
-                {/* Hotel Info */}
-                <div className="p-4">
-                  <h3 className="font-semibold text-lg text-gray-800 mb-2 line-clamp-2">
-                    {hotel.name}
-                  </h3>
-                  
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-1">
-                    {hotel.address}
-                  </p>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-2">
-                    <a
-                      href={`/hotels/${hotel.slug}`}
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center gap-2"
-                    >
-                      <Eye className="w-4 h-4" />
-                      View Hotel
-                    </a>
-                  </div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           
           <div className="text-center mt-8">

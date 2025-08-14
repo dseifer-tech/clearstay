@@ -289,18 +289,26 @@ export default function HomePageClient() {
                const slug = HOTEL_SLUG_MAP[hotel.token];
                return (
                  <div key={hotel.token} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
-                   {/* Hotel Image */}
-                   <div className="h-48 w-full relative">
-                     <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                       <span className="text-gray-400">Hotel Image</span>
-                     </div>
-                     
-                     {/* Rating Badge */}
-                     <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
-                       <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                       <span className="text-sm font-semibold text-gray-800">{hotel.rating}</span>
-                     </div>
-                   </div>
+                                       {/* Hotel Image */}
+                    <div className="h-48 w-full relative">
+                      {hotel.image_url ? (
+                        <img 
+                          src={hotel.image_url} 
+                          alt={hotel.name} 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                          <span className="text-gray-400">Hotel Image</span>
+                        </div>
+                      )}
+                      
+                      {/* Rating Badge */}
+                      <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
+                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                        <span className="text-sm font-semibold text-gray-800">{hotel.rating}</span>
+                      </div>
+                    </div>
 
                    {/* Hotel Info */}
                    <div className="p-4">
