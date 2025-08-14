@@ -105,11 +105,8 @@ export default async function HotelSlugPage({
       
       if (response.ok) {
         const data = await response.json();
-        // Find the specific hotel in the results
-        dynamicHotelData = data.find((h: any) => {
-          const hotelSlug = HOTEL_SLUG_MAP[hotel.token];
-          return hotelSlug === params.slug;
-        });
+        // The API returns a single hotel object when slug is provided
+        dynamicHotelData = data;
       }
     } catch (error) {
       console.error('Error fetching dynamic hotel data:', error);
