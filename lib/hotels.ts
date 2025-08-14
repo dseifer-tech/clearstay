@@ -24,7 +24,7 @@ export const TORONTO_HOTELS: Hotel[] = [
     rating: 4.2,
     address: "200 Victoria Street, Toronto, ON M5B 1V8",
     amenities: ["Free WiFi", "Restaurant", "Fitness Center", "Business Center"],
-    image_url: "https://via.placeholder.com/400x300/4F46E5/FFFFFF?text=Pantages+Hotel"
+    image_url: "https://picsum.photos/400/300?random=1"
   },
   {
     name: "Town Inn Suites",
@@ -33,7 +33,7 @@ export const TORONTO_HOTELS: Hotel[] = [
     rating: 4.0,
     address: "620 Church Street, Toronto, ON M4Y 2G2",
     amenities: ["Free WiFi", "Kitchen", "Free Breakfast", "Pool"],
-    image_url: "https://via.placeholder.com/400x300/059669/FFFFFF?text=Town+Inn+Suites"
+    image_url: "https://picsum.photos/400/300?random=2"
   },
   {
     name: "One King West Hotel & Residence",
@@ -42,7 +42,7 @@ export const TORONTO_HOTELS: Hotel[] = [
     rating: 4.4,
     address: "1 King Street West, Toronto, ON M5H 1A1",
     amenities: ["Free WiFi", "Restaurant", "Spa", "Concierge"],
-    image_url: "https://via.placeholder.com/400x300/DC2626/FFFFFF?text=One+King+West"
+    image_url: "https://picsum.photos/400/300?random=3"
   },
   {
     name: "The Omni King Edward Hotel",
@@ -51,7 +51,7 @@ export const TORONTO_HOTELS: Hotel[] = [
     rating: 4.3,
     address: "37 King Street East, Toronto, ON M5C 1E9",
     amenities: ["Free WiFi", "Restaurant", "Spa", "Historic Building"],
-    image_url: "https://via.placeholder.com/400x300/7C3AED/FFFFFF?text=Omni+King+Edward"
+    image_url: "https://picsum.photos/400/300?random=4"
   },
   {
     name: "Chelsea Hotel, Toronto",
@@ -60,7 +60,7 @@ export const TORONTO_HOTELS: Hotel[] = [
     rating: 4.1,
     address: "33 Gerrard Street West, Toronto, ON M5G 1Z4",
     amenities: ["Free WiFi", "Restaurant", "Pool", "Kids Club"],
-    image_url: "https://via.placeholder.com/400x300/F59E0B/FFFFFF?text=Chelsea+Hotel"
+    image_url: "https://picsum.photos/400/300?random=5"
   },
   {
     name: "The Anndore House - JDV by Hyatt",
@@ -69,7 +69,7 @@ export const TORONTO_HOTELS: Hotel[] = [
     rating: 4.2,
     address: "15 Charles Street East, Toronto, ON M4Y 1S1",
     amenities: ["Free WiFi", "Restaurant", "Bar", "Boutique Hotel"],
-    image_url: "https://via.placeholder.com/400x300/EC4899/FFFFFF?text=Anndore+House"
+    image_url: "https://picsum.photos/400/300?random=6"
   },
   {
     name: "Sutton Place Hotel Toronto",
@@ -78,7 +78,7 @@ export const TORONTO_HOTELS: Hotel[] = [
     rating: 4.0,
     address: "955 Bay Street, Toronto, ON M5S 2A2",
     amenities: ["Free WiFi", "Restaurant", "Fitness Center", "Downtown Location"],
-    image_url: "https://via.placeholder.com/400x300/10B981/FFFFFF?text=Sutton+Place"
+    image_url: "https://picsum.photos/400/300?random=7"
   },
   {
     name: "Ace Hotel Toronto",
@@ -87,7 +87,7 @@ export const TORONTO_HOTELS: Hotel[] = [
     rating: 4.3,
     address: "51 Camden Street, Toronto, ON M5V 1V2",
     amenities: ["Free WiFi", "Restaurant", "Bar", "Art Gallery"],
-    image_url: "https://via.placeholder.com/400x300/6366F1/FFFFFF?text=Ace+Hotel"
+    image_url: "https://picsum.photos/400/300?random=8"
   }
 ];
 
