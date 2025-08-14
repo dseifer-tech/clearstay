@@ -591,10 +591,10 @@ export default function SearchPageClient() {
                         Book Direct
                       </button>
                       
-                      <Link
-                        href={`/hotels/${hotelNameToSlug[hotel.hotel] || hotel.hotel.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`}
-                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center"
-                      >
+                                                      <Link
+                                  href={`/hotels/${hotelNameToSlug[hotel.hotel] || hotel.hotel.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}?checkin=${checkin}&checkout=${checkout}&adults=${adults}&children=${children}`}
+                                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center"
+                                >
                         <Eye className="w-4 h-4" />
                       </Link>
                     </div>
