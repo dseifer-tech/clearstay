@@ -299,17 +299,12 @@ export default async function HotelSlugPage({
                 src={hotel.images[0]} 
                 alt={hotel.hotel} 
                 className="w-full h-full object-cover rounded-lg border"
-                onError={(e) => {
-                  // Fallback to placeholder if image fails to load
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  target.nextElementSibling?.classList.remove('hidden');
-                }}
               />
-            ) : null}
-            <div className={`w-full h-full bg-gray-200 rounded-lg border flex items-center justify-center ${hotel.images && hotel.images.length > 0 ? 'hidden' : ''}`}>
-              <Building className="w-12 h-12 text-gray-400" />
-            </div>
+            ) : (
+              <div className="w-full h-full bg-gray-200 rounded-lg border flex items-center justify-center">
+                <Building className="w-12 h-12 text-gray-400" />
+              </div>
+            )}
           </div>
           
           <div className="flex-1 text-center sm:text-left">
@@ -369,17 +364,12 @@ export default async function HotelSlugPage({
                         src={room.images[0]} 
                         alt={room.name || `Room ${i + 1}`} 
                         className="rounded-lg h-full w-full object-cover"
-                        onError={(e) => {
-                          // Fallback to placeholder if image fails to load
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          target.nextElementSibling?.classList.remove('hidden');
-                        }}
                       />
-                    ) : null}
-                    <div className={`rounded-lg h-full w-full bg-gray-200 flex items-center justify-center ${room.images && room.images.length > 0 ? 'hidden' : ''}`}>
-                      <Building className="w-8 h-8 text-gray-400" />
-                    </div>
+                    ) : (
+                      <div className="rounded-lg h-full w-full bg-gray-200 flex items-center justify-center">
+                        <Building className="w-8 h-8 text-gray-400" />
+                      </div>
+                    )}
                   </div>
                   
                   <h3 className="font-medium text-gray-800 text-sm mb-1 line-clamp-2">
