@@ -27,10 +27,10 @@ interface HotelRoom {
 // Quick Search Component
 function QuickSearch({ onSearch }: { onSearch: (checkin: string, checkout: string) => void }) {
   const options = [
-    { id: 'week', label: 'Next Week (7 nights)', icon: Calendar, days: 7 },
-    { id: 'tomorrow', label: 'Tomorrow (1 night)', icon: Clock, days: 1 },
-    { id: 'weekend', label: 'This Weekend', icon: Calendar, days: 3 },
-    { id: 'nextMonth', label: 'Next Month', icon: Calendar, days: 30 },
+    { id: 'week', label: 'Next Week (7 nights)', icon: Calendar, days: 7, emoji: '📅' },
+    { id: 'tomorrow', label: 'Tomorrow (1 night)', icon: Clock, days: 1, emoji: '⚡' },
+    { id: 'weekend', label: 'This Weekend', icon: Calendar, days: 3, emoji: '🎒' },
+    { id: 'nextMonth', label: 'Next Month', icon: Calendar, days: 30, emoji: '🗓️' },
   ];
 
   const handleQuickSearch = (days: number) => {
@@ -47,13 +47,14 @@ function QuickSearch({ onSearch }: { onSearch: (checkin: string, checkout: strin
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
       <div className="flex flex-wrap gap-2 overflow-x-auto">
-        {options.map(({ id, label, icon: Icon, days }) => (
+        {options.map(({ id, label, icon: Icon, days, emoji }) => (
           <button
             key={id}
-            className="inline-flex items-center gap-2 rounded-full border border-zinc-200 px-4 py-2 text-sm
-                       hover:shadow-sm hover:bg-white transition whitespace-nowrap"
+            className="quick-search-pill inline-flex items-center gap-2 rounded-full border border-zinc-200 px-4 py-2 text-sm
+                       hover:bg-white transition whitespace-nowrap"
             onClick={() => handleQuickSearch(days)}
           >
+            <span className="text-base">{emoji}</span>
             <Icon className="h-4 w-4" />
             {label}
           </button>
@@ -89,22 +90,43 @@ function ViewToggle({ view, setView }: { view: 'list' | 'map'; setView: (v: 'lis
 // Why Book Direct Section
 function WhyDirect() {
   const items = [
-    { icon: Building, title: 'Hotel-Direct Rates', desc: 'Book straight with the property. No OTA markups.' },
-    { icon: CreditCard, title: 'Transparent Pricing', desc: 'No hidden fees. What you see is what you pay.' },
-    { icon: Users, title: 'Better Support', desc: 'Changes handled by the hotel, fast and flexible.' },
+    { 
+      icon: Building, 
+      title: 'Hotel-Direct Rates', 
+      desc: 'Book straight with the property. No OTA markups.',
+      benefit: 'Save up to 20% compared to OTAs'
+    },
+    { 
+      icon: CreditCard, 
+      title: 'Transparent Pricing', 
+      desc: 'No hidden fees. What you see is what you pay.',
+      benefit: '100% Secure Booking'
+    },
+    { 
+      icon: Users, 
+      title: 'Better Support', 
+      desc: 'Changes handled by the hotel, fast and flexible.',
+      benefit: '24/7 Direct Support'
+    },
   ];
   
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-      <h2 className="text-xl font-semibold text-zinc-900">Why book direct on InnstaStay?</h2>
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {items.map(({ icon: Icon, title, desc }) => (
-          <div key={title} className="rounded-2xl border border-zinc-200 p-5 bg-white">
-            <Icon className="h-5 w-5 mb-3 text-blue-600" />
-            <div className="font-medium">{title}</div>
-            <p className="text-sm text-zinc-600 mt-1">{desc}</p>
-          </div>
-        ))}
+    <section className="bg-gradient-to-br from-blue-50 to-indigo-50 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <h2 className="text-xl font-semibold text-zinc-900 mb-2">Why book direct on InnstaStay?</h2>
+        <p className="text-zinc-600 mb-8">Experience the difference of booking directly with hotels</p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {items.map(({ icon: Icon, title, desc, benefit }) => (
+            <div key={title} className="fade-in-up rounded-2xl border border-zinc-200 p-6 bg-white card-hover-lift">
+              <Icon className="h-6 w-6 mb-4 text-blue-600 icon-hover-scale" />
+              <div className="font-semibold text-lg mb-2">{title}</div>
+              <p className="text-sm text-zinc-600 mb-3">{desc}</p>
+              <div className="text-sm font-medium text-green-600 bg-green-50 px-3 py-1 rounded-full inline-block">
+                {benefit}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -113,23 +135,54 @@ function WhyDirect() {
 // Attractions Section
 function Attractions() {
   const pois = [
-    { name: 'CN Tower', min: '8 min', img: 'https://lh5.googleusercontent.com/p/AF1QipMt1ZolVWnJTgIMqogAUCjh9EldFh8vSDHY5TU=s10000' },
-    { name: 'Royal Ontario Museum', min: '10 min', img: 'https://lh5.googleusercontent.com/p/AF1QipPI-2hASi1fH2dzw3hOyxjk2UV9CVV9P3sKUYuX=s10000' },
-    { name: 'Ripley\'s Aquarium', min: '9 min', img: 'https://lh5.googleusercontent.com/p/AF1QipMvGKOVckX0M2FfmY-77Mt9eykQw6pHyHgmK067=s10000' },
+    { 
+      name: 'CN Tower', 
+      min: '8 min', 
+      img: 'https://lh5.googleusercontent.com/p/AF1QipMt1ZolVWnJTgIMqogAUCjh9EldFh8vSDHY5TU=s10000',
+      rating: 4.5,
+      type: 'Landmark'
+    },
+    { 
+      name: 'Royal Ontario Museum', 
+      min: '10 min', 
+      img: 'https://lh5.googleusercontent.com/p/AF1QipPI-2hASi1fH2dzw3hOyxjk2UV9CVV9P3sKUYuX=s10000',
+      rating: 4.3,
+      type: 'Museum'
+    },
+    { 
+      name: 'Ripley\'s Aquarium', 
+      min: '9 min', 
+      img: 'https://lh5.googleusercontent.com/p/AF1QipMvGKOVckX0M2FfmY-77Mt9eykQw6pHyHgmK067=s10000',
+      rating: 4.4,
+      type: 'Aquarium'
+    },
   ];
   
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <h3 className="text-lg font-semibold">Top attractions in Toronto</h3>
-      <div className="mt-4 flex gap-3 overflow-x-auto pb-2">
+      <h3 className="text-lg font-semibold mb-2">Top attractions in Toronto</h3>
+      <p className="text-zinc-600 mb-6">Explore the best of Toronto during your stay</p>
+      <div className="flex gap-4 overflow-x-auto pb-4">
         {pois.map(p => (
-          <div key={p.name} className="min-w-[220px] rounded-2xl overflow-hidden border border-zinc-200 bg-white">
-            <div className="h-32 w-full bg-zinc-100">
+          <div key={p.name} className="fade-in-up min-w-[280px] rounded-2xl overflow-hidden border border-zinc-200 bg-white card-hover-lift shadow-sm">
+            <div className="h-40 w-full bg-zinc-100 image-hover-zoom relative">
               <img src={p.img} alt={p.name} className="h-full w-full object-cover" />
+              <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1">
+                <MapPin className="h-4 w-4 text-blue-600" />
+              </div>
             </div>
-            <div className="p-3">
-              <div className="font-medium">{p.name}</div>
-              <div className="text-xs text-zinc-600">{p.min} from downtown</div>
+            <div className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="font-semibold text-lg">{p.name}</div>
+                <div className="flex items-center gap-1">
+                  <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                  <span className="text-sm font-medium">{p.rating}</span>
+                </div>
+              </div>
+              <div className="text-sm text-zinc-600 mb-2">{p.min} from downtown</div>
+              <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full inline-block">
+                {p.type}
+              </div>
             </div>
           </div>
         ))}
@@ -405,21 +458,23 @@ export default function SearchPageClient() {
 
           {/* Search bar */}
           <div className="mt-6">
-            <StickySearchBar />
+            <div className="enhanced-search-bar">
+              <StickySearchBar />
+            </div>
           </div>
 
           {/* Trust signals */}
           <div className="mt-5 flex flex-wrap items-center gap-3 text-sm text-zinc-600">
-            <span className="inline-flex items-center gap-1">
+            <span className="trust-icon inline-flex items-center gap-1">
               <Shield className="h-4 w-4" /> SSL Secure
             </span>
-            <span className="inline-flex items-center gap-1">
+            <span className="trust-icon inline-flex items-center gap-1">
               <CheckCircle className="h-4 w-4" /> Verified Rates
             </span>
-            <span className="inline-flex items-center gap-1">
+            <span className="trust-icon inline-flex items-center gap-1">
               <Zap className="h-4 w-4" /> No Hidden Fees
             </span>
-            <span className="ml-auto text-xs text-zinc-500">Powered by InnstaStay</span>
+            <span className="trust-icon ml-auto text-xs text-zinc-500">Powered by InnstaStay</span>
           </div>
         </div>
       </section>
@@ -459,31 +514,31 @@ export default function SearchPageClient() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {hotels.map((hotel, index) => (
-                <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
-                  {/* Hotel Image */}
-                  <div className="h-48 w-full relative">
-                    {hotel.image ? (
-                      <img 
-                        src={hotel.image} 
-                        alt={hotel.hotel} 
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                        <span className="text-gray-400">No image available</span>
-                      </div>
-                    )}
-                    
-                    {/* Rating Badge */}
-                    {hotel.rating && (
-                      <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="text-sm font-semibold text-gray-800">{hotel.rating}</span>
-                      </div>
-                    )}
-                  </div>
+                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+               {hotels.map((hotel, index) => (
+                 <div key={index} className="fade-in-up bg-white rounded-xl shadow-md overflow-hidden card-hover-lift">
+                   {/* Hotel Image */}
+                   <div className="h-48 w-full relative image-hover-zoom">
+                     {hotel.image ? (
+                       <img 
+                         src={hotel.image} 
+                         alt={hotel.hotel} 
+                         className="w-full h-full object-cover"
+                       />
+                     ) : (
+                       <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                         <span className="text-gray-400">No image available</span>
+                       </div>
+                     )}
+                     
+                     {/* Rating Badge */}
+                     {hotel.rating && (
+                       <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
+                         <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                         <span className="text-sm font-semibold text-gray-800">{hotel.rating}</span>
+                       </div>
+                     )}
+                   </div>
 
                   {/* Hotel Info */}
                   <div className="p-4">
@@ -568,33 +623,46 @@ export default function SearchPageClient() {
             
             {!checkin || !checkout ? (
               <>
-                {/* Hotel Directory */}
-                <div className="bg-white p-6 rounded-xl shadow-md">
-                  <h3 className="font-semibold text-gray-800 mb-4">Featured Hotels in Toronto</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {[
-                      { name: "Pantages Hotel Downtown Toronto", slug: "pantages-hotel-downtown-toronto" },
-                      { name: "Town Inn Suites", slug: "town-inn-suites" },
-                      { name: "One King West Hotel & Residence", slug: "one-king-west-hotel-residence" },
-                      { name: "The Omni King Edward Hotel", slug: "the-omni-king-edward-hotel" },
-                      { name: "Chelsea Hotel, Toronto", slug: "chelsea-hotel-toronto" },
-                      { name: "The Anndore House - JDV by Hyatt", slug: "the-anndore-house-jdv" },
-                      { name: "Sutton Place Hotel Toronto", slug: "sutton-place-hotel-toronto" },
-                      { name: "Ace Hotel Toronto", slug: "ace-hotel-toronto" }
-                    ].map((hotel) => (
-                      <Link
-                        key={hotel.slug}
-                        href={`/hotels/${hotel.slug}`}
-                        className="block p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
-                      >
-                        <div className="font-medium text-gray-800 hover:text-blue-600 transition-colors">
-                          {hotel.name}
-                        </div>
-                        <div className="text-sm text-gray-500">Direct Booking</div>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
+                                 {/* Hotel Directory */}
+                 <div className="bg-white p-6 rounded-xl shadow-md">
+                   <h3 className="font-semibold text-gray-800 mb-4">Featured Hotels in Toronto</h3>
+                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                     {[
+                       { name: "Pantages Hotel Downtown Toronto", slug: "pantages-hotel-downtown-toronto", img: "https://lh5.googleusercontent.com/p/AF1QipMt1ZolVWnJTgIMqogAUCjh9EldFh8vSDHY5TU=s10000" },
+                       { name: "Town Inn Suites", slug: "town-inn-suites", img: "https://lh5.googleusercontent.com/p/AF1QipN2HhQs9GSWKldSNWx_1o4EC3ojDlzgG9UVxgV1=s10000" },
+                       { name: "One King West Hotel & Residence", slug: "one-king-west-hotel-residence", img: "https://lh5.googleusercontent.com/p/AF1QipPI-2hASi1fH2dzw3hOyxjk2UV9CVV9P3sKUYuX=s10000" },
+                       { name: "The Omni King Edward Hotel", slug: "the-omni-king-edward-hotel", img: "https://lh5.googleusercontent.com/p/AF1QipMvGKOVckX0M2FfmY-77Mt9eykQw6pHyHgmK067=s10000" },
+                       { name: "Chelsea Hotel, Toronto", slug: "chelsea-hotel-toronto", img: "https://photos.hotelbeds.com/giata/original/04/049472/049472a_hb_f_004.JPG" },
+                       { name: "The Anndore House - JDV by Hyatt", slug: "the-anndore-house-jdv", img: "https://lh5.googleusercontent.com/p/AF1QipOh__jl8gimUkhS0FUaJSr1ft0-WORdu7KieteX=s10000" },
+                       { name: "Sutton Place Hotel Toronto", slug: "sutton-place-hotel-toronto", img: "https://lh5.googleusercontent.com/p/AF1QipPFImvLwmvVatoeTOPO-h4UCI53SGoH1ITu0BbY=s10000" },
+                       { name: "Ace Hotel Toronto", slug: "ace-hotel-toronto", img: "https://lh5.googleusercontent.com/p/AF1QipNGix9dVAg06s82e08vaUXkAhqFlV2XPyTByWkj=s10000" }
+                     ].map((hotel) => (
+                       <Link
+                         key={hotel.slug}
+                         href={`/hotels/${hotel.slug}`}
+                         className="card-hover-lift block p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-white transition-all duration-200"
+                       >
+                         <div className="flex items-center gap-3">
+                           <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                             <img 
+                               src={hotel.img} 
+                               alt={hotel.name} 
+                               className="w-full h-full object-cover"
+                             />
+                           </div>
+                           <div className="flex-1">
+                             <div className="font-medium text-gray-800 hover:text-blue-600 transition-colors">
+                               {hotel.name}
+                             </div>
+                             <div className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full inline-block mt-1">
+                               Direct Booking
+                             </div>
+                           </div>
+                         </div>
+                       </Link>
+                     ))}
+                   </div>
+                 </div>
               </>
             ) : (
               <button
@@ -608,11 +676,17 @@ export default function SearchPageClient() {
         </div>
       )}
 
-      {/* Why Book Direct Section */}
-      <WhyDirect />
+             {/* Section Divider */}
+       <div className="section-divider"></div>
 
-      {/* Attractions Section */}
-      <Attractions />
+       {/* Why Book Direct Section */}
+       <WhyDirect />
+
+       {/* Section Divider */}
+       <div className="section-divider"></div>
+
+       {/* Attractions Section */}
+       <Attractions />
     </div>
   );
 }

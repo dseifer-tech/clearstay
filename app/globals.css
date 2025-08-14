@@ -317,7 +317,118 @@
 }
 
 .insta-hero-gradient {
-  background: linear-gradient(-45deg, #eef5ff, #cce0ff, #f5faff, #eef5ff);
+  background: linear-gradient(-45deg, #e6f3ff, #b3d9ff, #f0f8ff, #e6f3ff);
   background-size: 400% 400%;
   animation: instaGradientShift 20s ease-in-out infinite;
+  position: relative;
+}
+
+.insta-hero-gradient::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 200' fill='white' opacity='0.1'%3E%3Cpath d='M0,200 L0,150 Q300,100 600,150 T1200,150 L1200,200 Z'/%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+/* Enhanced search bar styling */
+.enhanced-search-bar {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+}
+
+/* Trust icons animation */
+@keyframes fadeInStagger {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.trust-icon {
+  animation: fadeInStagger 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.trust-icon:nth-child(1) { animation-delay: 0.1s; }
+.trust-icon:nth-child(2) { animation-delay: 0.2s; }
+.trust-icon:nth-child(3) { animation-delay: 0.3s; }
+.trust-icon:nth-child(4) { animation-delay: 0.4s; }
+
+/* Enhanced quick search pills */
+.quick-search-pill {
+  transition: all 0.2s ease;
+}
+
+.quick-search-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  border-color: #3b82f6;
+}
+
+/* Section dividers */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
+  margin: 2rem 0;
+}
+
+/* Fade in animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+/* Image hover effects */
+.image-hover-zoom {
+  transition: transform 0.3s ease;
+  overflow: hidden;
+}
+
+.image-hover-zoom:hover img {
+  transform: scale(1.05);
+}
+
+/* Icon hover animations */
+.icon-hover-scale {
+  transition: transform 0.2s ease;
+}
+
+.icon-hover-scale:hover {
+  transform: scale(1.1);
+}
+
+/* Card hover effects */
+.card-hover-lift {
+  transition: all 0.2s ease;
+}
+
+.card-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 } 
