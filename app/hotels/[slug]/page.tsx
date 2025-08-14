@@ -83,7 +83,7 @@ export default async function HotelSlugPage({
         <div className="text-center">
           <h1 className="text-2xl font-bold text-red-600 mb-4">Error</h1>
           <p className="text-gray-600 mb-4">Hotel not found</p>
-          <Link href="/search" className="text-blue-600 hover:underline">
+          <Link href={`/search?checkin=${searchParams.checkin || ''}&checkout=${searchParams.checkout || ''}&adults=${searchParams.adults || ''}&children=${searchParams.children || ''}`} className="text-blue-600 hover:underline">
             ← Back to Search
           </Link>
         </div>
@@ -183,14 +183,14 @@ export default async function HotelSlugPage({
             <div className="flex items-center gap-4">
               {/* Desktop CTA Button */}
               <div className="hidden md:block">
-                <a href="/search" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                <a href={`/search?checkin=${searchParams.checkin || ''}&checkout=${searchParams.checkout || ''}&adults=${searchParams.adults || ''}&children=${searchParams.children || ''}`} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                   Search Hotels
                 </a>
               </div>
               
               {/* Mobile Menu Button */}
               <div className="md:hidden">
-                <a href="/search" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm">
+                <a href={`/search?checkin=${searchParams.checkin || ''}&checkout=${searchParams.checkout || ''}&adults=${searchParams.adults || ''}&children=${searchParams.children || ''}`} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm">
                   Search
                 </a>
               </div>
@@ -204,12 +204,12 @@ export default async function HotelSlugPage({
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
             <div>
-              <Link 
-                href="/search" 
-                className="text-blue-100 hover:text-white flex items-center text-sm mb-2"
-              >
-                ← Back to Search
-              </Link>
+                        <Link 
+            href={`/search?checkin=${searchParams.checkin || ''}&checkout=${searchParams.checkout || ''}&adults=${searchParams.adults || ''}&children=${searchParams.children || ''}`}
+            className="text-blue-100 hover:text-white flex items-center text-sm mb-2"
+          >
+            ← Back to Search
+          </Link>
               <h1 className="text-2xl sm:text-3xl font-bold">{hotel.name}</h1>
               <p className="text-sm text-blue-100">{hotel.address}</p>
             </div>

@@ -74,7 +74,7 @@ export default function DynamicHotelData({ slug, searchParams, hotel, hasSearchP
           Error: {error}
         </div>
         <a 
-          href="/search" 
+          href={`/search?checkin=${searchParams.checkin || ''}&checkout=${searchParams.checkout || ''}&adults=${searchParams.adults || ''}&children=${searchParams.children || ''}`}
           className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-200 transform hover:-translate-y-0.5 w-full sm:w-auto"
         >
           Check Direct Rates
@@ -217,7 +217,7 @@ export default function DynamicHotelData({ slug, searchParams, hotel, hasSearchP
   // Show static fallback
   return (
     <a 
-      href="/search" 
+      href={`/search?checkin=${searchParams.checkin || ''}&checkout=${searchParams.checkout || ''}&adults=${searchParams.adults || ''}&children=${searchParams.children || ''}`}
       className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-200 transform hover:-translate-y-0.5 w-full sm:w-auto"
     >
       Check Direct Rates
