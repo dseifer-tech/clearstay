@@ -98,19 +98,30 @@ export default async function HotelSlugPage({
   let dynamicHotelData = null;
   if (hasSearchParams) {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search?checkin=${searchParams.checkin}&checkout=${searchParams.checkout}&adults=${searchParams.adults}&children=${searchParams.children}&slug=${params.slug}`,
-        { cache: 'no-store' }
-      );
+      console.log('🔍 Fetching dynamic data for slug:', params.slug);
+      console.log('🔍 Search params:', searchParams);
+      
+      const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search?checkin=${searchParams.checkin}&checkout=${searchParams.checkout}&adults=${searchParams.adults}&children=${searchParams.children}&slug=${params.slug}`;
+      console.log('🔍 API URL:', apiUrl);
+      
+      const response = await fetch(apiUrl, { cache: 'no-store' });
+      
+      console.log('🔍 Response status:', response.status);
       
       if (response.ok) {
         const data = await response.json();
+        console.log('🔍 API Response data:', data);
         // The API returns a single hotel object when slug is provided
         dynamicHotelData = data;
+        console.log('🔍 Set dynamicHotelData:', dynamicHotelData);
+      } else {
+        console.error('🔍 API Error:', response.status, response.statusText);
       }
     } catch (error) {
-      console.error('Error fetching dynamic hotel data:', error);
+      console.error('🔍 Error fetching dynamic hotel data:', error);
     }
+  } else {
+    console.log('🔍 No search parameters, using static data');
   }
 
   return (
@@ -263,6 +274,12 @@ export default async function HotelSlugPage({
             </div>
             
             <div className="mt-4">
+              {/* Debug info */}
+              <div className="text-xs text-red-500 mb-2">
+                Debug: dynamicHotelData = {dynamicHotelData ? 'EXISTS' : 'NULL'} | 
+                hasSearchParams = {hasSearchParams ? 'YES' : 'NO'}
+              </div>
+              
               {dynamicHotelData ? (
                 <div className="space-y-3">
                   {/* Dynamic Price Display */}
