@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import SearchPageClient from './SearchPageClient';
+import SearchPageClient from '@/app/search/SearchPageClient';
 
 // Dynamic metadata generation
 export async function generateMetadata({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }): Promise<Metadata> {
@@ -41,20 +41,27 @@ export async function generateMetadata({ searchParams }: { searchParams: { [key:
     title = `${typeText} Hotels in Toronto | Direct Rates | InnstaStay`;
   }
 
+  // Determine if this is a search with parameters (should be noindex) or just the search page
+  const hasSearchParams = checkin || checkout || adults || children || near || area || type || location;
+  
   return {
     title,
     description: `Find and compare direct hotel rates in ${location || 'Toronto'}. No middlemen, no fees—book direct and save with InnstaStay.`,
+    robots: hasSearchParams ? 'noindex, follow' : 'index, follow',
+    alternates: {
+      canonical: hasSearchParams ? 'https://www.innstastay.com/search' : 'https://www.innstastay.com/search',
+    },
     openGraph: {
       title,
       description: `Find and compare direct hotel rates in ${location || 'Toronto'}. No middlemen, no fees—book direct and save with InnstaStay.`,
-      url: `https://www.innstastay.com/search${searchParams ? '?' + new URLSearchParams(searchParams as Record<string, string>).toString() : ''}`,
+      url: hasSearchParams ? 'https://www.innstastay.com/search' : 'https://www.innstastay.com/search',
       siteName: 'InnstaStay',
       images: [
         {
-          url: '/innstastay-logo.svg',
+          url: '/og/search-1200x630.jpg',
           width: 1200,
           height: 630,
-          alt: 'InnstaStay - Commission-Free Hotel Booking',
+          alt: 'InnstaStay - Hotel Search',
         },
       ],
       locale: 'en_US',
@@ -62,9 +69,10 @@ export async function generateMetadata({ searchParams }: { searchParams: { [key:
     },
     twitter: {
       card: 'summary_large_image',
+      site: '@innstastay',
       title,
       description: `Find and compare direct hotel rates in ${location || 'Toronto'}. No middlemen, no fees—book direct and save with InnstaStay.`,
-      images: ['/innstastay-logo.svg'],
+      images: ['/og/search-1200x630.jpg'],
     },
   };
 }

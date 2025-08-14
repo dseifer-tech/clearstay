@@ -8,9 +8,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Compare Direct Hotel Rates in Toronto – InnstaStay Commission-Free Booking',
-  description: 'Compare real-time direct hotel rates in downtown Toronto. No middlemen, no fees—book direct and save with InnstaStay.',
-  keywords: 'InnstaStay, Toronto hotels, downtown Toronto hotels, book direct, no commission, transparent hotel prices, direct hotel booking, Toronto accommodation',
+  title: 'InnstaStay - Commission-Free Hotel Booking in Toronto | Book Direct & Save',
+  description: 'Compare real-time direct hotel rates in downtown Toronto. No middlemen, no fees—book direct and save with InnstaStay. Find the best prices on verified hotels.',
   metadataBase: new URL('https://www.innstastay.com'),
   icons: {
     icon: '/browser.png',
@@ -24,14 +23,17 @@ export const metadata: Metadata = {
     },
   },
   robots: 'index, follow',
+  alternates: {
+    canonical: 'https://www.innstastay.com/',
+  },
   openGraph: {
-    title: 'Compare Direct Hotel Rates in Toronto – InnstaStay Commission-Free Booking',
-    description: 'Compare real-time direct hotel rates in downtown Toronto. No middlemen, no fees—book direct and save with InnstaStay.',
+    title: 'InnstaStay - Commission-Free Hotel Booking in Toronto',
+    description: 'Compare real-time direct hotel rates in downtown Toronto. No middlemen, no fees—book direct and save.',
     url: 'https://www.innstastay.com',
     siteName: 'InnstaStay',
     images: [
       {
-        url: '/innstastay-logo.svg',
+        url: '/og/homepage-1200x630.jpg',
         width: 1200,
         height: 630,
         alt: 'InnstaStay - Commission-Free Hotel Booking',
@@ -42,9 +44,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Compare Direct Hotel Rates in Toronto – InnstaStay Commission-Free Booking',
-    description: 'Compare real-time direct hotel rates in downtown Toronto. No middlemen, no fees—book direct and save with InnstaStay.',
-    images: ['/innstastay-logo.svg'],
+    site: '@innstastay',
+    title: 'InnstaStay - Commission-Free Hotel Booking in Toronto',
+    description: 'Compare real-time direct hotel rates in downtown Toronto. No middlemen, no fees—book direct and save.',
+    images: ['/og/homepage-1200x630.jpg'],
   },
 }
 
@@ -107,9 +110,15 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
+              "@id": "https://www.innstastay.com/#organization",
               "name": "InnstaStay",
-              "url": "https://www.innstastay.com",
-              "logo": "https://www.innstastay.com/innstastay-logo.svg",
+              "url": "https://www.innstastay.com/",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.innstastay.com/brand/logo-600x200.png",
+                "width": 600,
+                "height": 200
+              },
               "description": "Commission-free hotel booking platform connecting travelers directly with verified hotels in downtown Toronto.",
               "foundingDate": "2024",
               "address": {
@@ -129,7 +138,28 @@ export default function RootLayout({
               ]
             })
           }}
-                 />
+        />
+        
+        {/* WebSite Schema with SearchAction */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "InnstaStay",
+              "url": "https://www.innstastay.com/",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://www.innstastay.com/search?checkin={checkin}&checkout={checkout}&adults={adults}&children={children}"
+                },
+                "query-input": "required name=checkin name=checkout name=adults name=children"
+              }
+            })
+          }}
+        />
                   {/* Google Tag Manager (noscript) */}
          <noscript dangerouslySetInnerHTML={{
            __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T22LS2CW"

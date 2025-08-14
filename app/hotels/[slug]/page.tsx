@@ -27,16 +27,31 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   return {
     title,
     description,
+    alternates: {
+      canonical: `https://www.innstastay.com/hotels/${params.slug}`,
+    },
     openGraph: {
       title: `${hotelName} - Direct Booking`,
       description: `Book ${hotelName} directly. No middlemen, no fees.`,
-      url: `https://innstastay.com/hotels/${params.slug}`,
-      images: ['/innstastay-logo.svg']
+      url: `https://www.innstastay.com/hotels/${params.slug}`,
+      siteName: 'InnstaStay',
+      images: [
+        {
+          url: `/og/${params.slug}-1200x630.jpg`,
+          width: 1200,
+          height: 630,
+          alt: `${hotelName} - Direct Booking`,
+        },
+      ],
+      locale: 'en_US',
+      type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
+      site: '@innstastay',
       title: `${hotelName} - Direct Booking`,
-      description: `Book ${hotelName} directly. No middlemen, no fees.`
+      description: `Book ${hotelName} directly. No middlemen, no fees.`,
+      images: [`/og/${params.slug}-1200x630.jpg`],
     },
     robots: 'index, follow'
   };
@@ -387,6 +402,34 @@ export default async function HotelSlugPage({
         <div className="mt-12 text-center text-sm text-gray-400">
           Built for travelers who book smart. Powered by <span className="text-blue-600 font-semibold">InnstaStay</span>.
         </div>
+        
+        {/* Hotel Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Hotel",
+              "@id": `https://www.innstastay.com/hotels/${params.slug}#hotel`,
+              "name": hotelName,
+              "url": `https://www.innstastay.com/hotels/${params.slug}`,
+              "image": `https://www.innstastay.com/og/${params.slug}-1200x630.jpg`,
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Toronto",
+                "addressRegion": "ON",
+                "addressCountry": "CA"
+              },
+              "brand": hotelName.split(' ').slice(-2).join(' '), // Extract brand from hotel name
+              "amenityFeature": [
+                {
+                  "@type": "LocationFeatureSpecification",
+                  "name": "Free Wi-Fi"
+                }
+              ]
+            })
+          }}
+        />
       </div>
 
       {/* Mobile Sticky CTA */}

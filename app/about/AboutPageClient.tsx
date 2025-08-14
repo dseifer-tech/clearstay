@@ -317,6 +317,25 @@ export default function AboutPageClient() {
       {/* FAQ Section */}
       <FAQ />
 
+      {/* AboutPage Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "AboutPage",
+            "name": "About InnstaStay",
+            "description": "Learn how InnstaStay eliminates middlemen to provide direct hotel booking in Toronto. No commissions, no markups, just the hotel's actual price.",
+            "url": "https://www.innstastay.com/about",
+            "mainEntity": {
+              "@type": "Organization",
+              "name": "InnstaStay",
+              "description": "Commission-free hotel booking platform connecting travelers directly with verified hotels in downtown Toronto."
+            }
+          })
+        }}
+      />
+
       {/* Mobile Menu */}
       <MobileMenu isOpen={showMobileMenu} onClose={() => setShowMobileMenu(false)} />
     </div>
