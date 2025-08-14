@@ -152,11 +152,10 @@ export default function HomePageClient() {
         <div className="hero-overlay hero-overlay-fade"></div>
 
         {/* Content */}
-        <div className="hero-content" role="region" aria-label="Compare hotel rates">
-          <h1 className="hero-title">Without Middlemen</h1>
-          <p className="hero-sub">Compare real-time direct rates from Toronto's top hotels. No commissions, no markups, no hidden fees — just the hotel's actual price.</p>
+        <div className="hero-content" role="region" aria-label="Find direct hotel rates in downtown Toronto">
+          <h1 className="hero-title">Downtown Toronto Hotels — Book Direct</h1>
+          <p className="hero-sub">Live rates from verified downtown hotels. No middlemen, no extra fees.</p>
 
-          {/* Search widget mount */}
           <div id="search-widget" className="search-shell">
             <SearchBarWide 
               dateLabel="Dates"
@@ -172,11 +171,10 @@ export default function HomePageClient() {
             />
           </div>
 
-          {/* Trust badges */}
-          <ul className="trust">
-            <li>✅ No Booking Fees</li>
-            <li>🏨 Verified Hotels</li>
-            <li>🔗 Direct Rates</li>
+          <ul className="trust" aria-label="Reasons to book direct in downtown Toronto">
+            <li>📍 Downtown Toronto</li>
+            <li>⚡ Live Direct Rates</li>
+            <li>🟢 No Platform Fees</li>
           </ul>
         </div>
       </section>

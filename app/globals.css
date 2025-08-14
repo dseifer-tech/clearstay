@@ -192,15 +192,14 @@
 .hero {
   position: relative;
   isolation: isolate;
-  height: 560px;
+  height: 520px;
   display: grid;
   place-items: center;
   overflow: clip;
   background: #fff;
 }
 
-@media (max-width: 1024px) { .hero { height: 520px; } }
-@media (max-width: 768px)  { .hero { height: 480px; } }
+@media (max-width: 1024px) { .hero { height: 500px; } }
 
 .hero-media {
   position: absolute;
@@ -248,19 +247,19 @@
 }
 
 .hero-title {
-  font-size: clamp(32px, 5vw, 48px);
+  font-size: clamp(30px, 4.6vw, 44px);
   font-weight: 800;
   letter-spacing: -0.02em;
   text-shadow: 0 2px 18px rgba(0, 0, 0, 0.25);
-  margin: 8px 0 10px;
+  margin: 4px 0 6px;
 }
 
 .hero-sub {
   color: #eef2ff;
   opacity: .95;
-  font-size: clamp(16px, 2.1vw, 18px);
-  max-width: 820px;
-  margin: 0 auto 18px;
+  font-size: clamp(15px, 1.9vw, 17px);
+  max-width: 640px;
+  margin: 0 auto 14px;
   line-height: 1.5;
 }
 
@@ -283,19 +282,19 @@
 /* Trust badges */
 .trust {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   justify-content: center;
-  margin: 10px 0 0;
+  margin: 8px 0 0;
   padding: 0;
   list-style: none;
 }
 
 .trust li {
-  font-size: 13.5px;
+  font-size: 12.5px;
   color: #102a56;
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.85);
   border: 1px solid rgba(16, 24, 40, 0.06);
   border-radius: 999px;
-  padding: 6px 10px;
-  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.08);
+  padding: 5px 10px;
+  box-shadow: 0 2px 6px rgba(16, 24, 40, 0.06);
 } 
