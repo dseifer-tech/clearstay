@@ -264,12 +264,14 @@ export default async function HotelSlugPage({
           <div className="mt-6">
             <h4 className="font-semibold text-gray-800 mb-3">Hotel Amenities</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {hotel.amenities.map((amenity, index) => (
+              {hotel.amenities?.map((amenity, index) => (
                 <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
                   <CheckCircle className="w-4 h-4 text-green-500" />
                   {amenity}
                 </div>
-              ))}
+              )) || (
+                <div className="text-sm text-gray-500">Amenities information not available</div>
+              )}
             </div>
           </div>
         </div>
