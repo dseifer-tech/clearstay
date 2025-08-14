@@ -16,6 +16,9 @@ interface DynamicHotelDataProps {
 }
 
 export default function DynamicHotelData({ slug, searchParams, hotel, hasSearchParams }: DynamicHotelDataProps) {
+  console.log('🔍 DynamicHotelData component loaded');
+  console.log('🔍 Props:', { slug, searchParams, hotel: hotel.name, hasSearchParams });
+  
   const [dynamicHotelData, setDynamicHotelData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -136,11 +139,16 @@ export default function DynamicHotelData({ slug, searchParams, hotel, hasSearchP
 
   // Show static fallback
   return (
-    <a 
-      href="/search" 
-      className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-200 transform hover:-translate-y-0.5 w-full sm:w-auto"
-    >
-      Check Direct Rates
-    </a>
+    <div className="space-y-2">
+      <div className="text-xs text-blue-500 bg-blue-50 p-1 rounded">
+        Component loaded - No search params or no data
+      </div>
+      <a 
+        href="/search" 
+        className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-200 transform hover:-translate-y-0.5 w-full sm:w-auto"
+      >
+        Check Direct Rates
+      </a>
+    </div>
   );
 }
