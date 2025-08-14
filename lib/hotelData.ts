@@ -51,7 +51,7 @@ const SLUG_TO_HOTEL_NAME: { [key: string]: string } = {
 };
 
 // Real hotel images from Google Maps and Hotelbeds
-const HOTEL_IMAGES: { [key: string]: string } = {
+export const HOTEL_IMAGES: { [key: string]: string } = {
   "Pantages Hotel Downtown Toronto": "https://lh5.googleusercontent.com/p/AF1QipMt1ZolVWnJTgIMqogAUCjh9EldFh8vSDHY5TU=s10000",
   "Town Inn Suites": "https://lh5.googleusercontent.com/p/AF1QipN2HhQs9GSWKldSNWx_1o4EC3ojDlzgG9UVxgV1=s10000",
   "One King West Hotel & Residence": "https://lh5.googleusercontent.com/p/AF1QipPI-2hASi1fH2dzw3hOyxjk2UV9CVV9P3sKUYuX=s10000",
