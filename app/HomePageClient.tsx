@@ -157,7 +157,7 @@ export default function HomePageClient() {
               </p>
               
               {/* Value Propositions */}
-              <div className="flex flex-wrap justify-center gap-4 mb-8">
+              <div className="flex flex-wrap justify-center gap-4">
                 <div className="flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm font-medium">
                   <CheckCircle className="w-4 h-4" />
                   No Booking Fees
@@ -171,24 +171,42 @@ export default function HomePageClient() {
                   Direct Rates
                 </div>
               </div>
-
-              {/* Search Bar */}
-              <SearchBarWide 
-                dateLabel="Dates"
-                dateValue={dateRange[0] && dateRange[1] 
-                  ? `${format(dateRange[0], 'MMM dd')} – ${format(dateRange[1], 'MMM dd')}`
-                  : 'Select dates'
-                }
-                onOpenDates={() => setShowDatePicker(!showDatePicker)}
-                paxLabel="Travelers"
-                paxValue={getTravelerText()}
-                onOpenPax={() => setShowTravelerModal(!showTravelerModal)}
-                onSearch={handleSearch}
-              />
-
-              {/* Search Shortcuts */}
-              <SearchShortcuts />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Search Section */}
+      <section className="py-12 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-neutral-800 mb-4">
+              Find Your Perfect Stay
+            </h2>
+            <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
+              Enter your travel dates to compare direct hotel rates in Toronto
+            </p>
+          </div>
+          
+          {/* Search Bar */}
+          <div className="max-w-4xl mx-auto">
+            <SearchBarWide 
+              dateLabel="Dates"
+              dateValue={dateRange[0] && dateRange[1] 
+                ? `${format(dateRange[0], 'MMM dd')} – ${format(dateRange[1], 'MMM dd')}`
+                : 'Select dates'
+              }
+              onOpenDates={() => setShowDatePicker(!showDatePicker)}
+              paxLabel="Travelers"
+              paxValue={getTravelerText()}
+              onOpenPax={() => setShowTravelerModal(!showTravelerModal)}
+              onSearch={handleSearch}
+            />
+          </div>
+
+          {/* Search Shortcuts */}
+          <div className="mt-8">
+            <SearchShortcuts />
           </div>
         </div>
       </section>
