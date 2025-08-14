@@ -39,8 +39,7 @@ export default function HomePageClient() {
     setDateRange([start, end]);
   };
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSearch = async () => {
     setIsSearching(true);
     
     const checkIn = dateRange[0] ? format(dateRange[0], 'yyyy-MM-dd') : searchParams.checkIn;
@@ -486,7 +485,7 @@ export default function HomePageClient() {
       )}
 
       {/* Sticky Mobile CTA */}
-      <StickyMobileCTA onClick={() => handleSearch({ preventDefault: () => {} } as any)} />
+      <StickyMobileCTA onClick={handleSearch} />
 
       {/* Mobile Menu */}
       <MobileMenu isOpen={showMobileMenu} onClose={() => setShowMobileMenu(false)} />
