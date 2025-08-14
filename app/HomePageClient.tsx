@@ -14,8 +14,6 @@ import StickySearchBar from '@/app/components/StickySearchBar';
 import SearchShortcuts from '@/app/components/SearchShortcuts';
 import SecondaryCTA from '@/app/components/SecondaryCTA';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
-import HeroImage from '@/app/components/HeroImage';
-import { getHeroImage, getHeroAltText } from '@/lib/heroImages';
 
 export default function HomePageClient() {
   const [searchParams, setSearchParams] = useState<SearchParams>({
@@ -134,64 +132,55 @@ export default function HomePageClient() {
         </div>
       </nav>
 
-      {/* Hero Section with Background Image */}
-      <section className="relative">
-        {/* Hero Background Image */}
-        <HeroImage 
-          src={getHeroImage('homepage')}
-          alt={getHeroAltText('homepage')}
-          priority={true}
-          className="h-96 md:h-[500px] lg:h-[600px]"
-        />
-        
-        {/* Hero Content Overlay */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-xl max-w-4xl mx-auto">
-              <h1 className="text-4xl md:text-6xl font-bold text-neutral-800 mb-6 leading-tight">
-                Book Hotels
-                <span className="text-blue-600 block">Without Middlemen</span>
-              </h1>
-              <p className="text-xl text-neutral-600 max-w-3xl mx-auto leading-relaxed mb-8">
-                Compare real-time direct rates from Toronto's top hotels. No commissions, no markups, no hidden fees—just the hotel's actual price.
-              </p>
-              
-              {/* Value Propositions */}
-              <div className="flex flex-wrap justify-center gap-4 mb-8">
-                <div className="flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm font-medium">
-                  <CheckCircle className="w-4 h-4" />
-                  No Booking Fees
-                </div>
-                <div className="flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium">
-                  <Shield className="w-4 h-4" />
-                  Verified Hotels
-                </div>
-                <div className="flex items-center gap-2 bg-purple-50 text-purple-700 px-4 py-2 rounded-full text-sm font-medium">
-                  <DollarSign className="w-4 h-4" />
-                  Direct Rates
-                </div>
-              </div>
+      {/* HERO START */}
+      <section id="hero" className="hero">
+        <picture className="hero-media">
+          <img
+            src="/hero/homepage.jpg"
+            alt="Toronto skyline with CN Tower at golden hour"
+            className="hero-img"
+            width="1920" 
+            height="800"
+            loading="eager" 
+            fetchPriority="high"
+            decoding="async"
+          />
+        </picture>
 
-              {/* Search Bar */}
-              <SearchBarWide 
-                dateLabel="Dates"
-                dateValue={dateRange[0] && dateRange[1] 
-                  ? `${format(dateRange[0], 'MMM dd')} – ${format(dateRange[1], 'MMM dd')}`
-                  : 'Select dates'
-                }
-                onOpenDates={() => setShowDatePicker(!showDatePicker)}
-                paxLabel="Travelers"
-                paxValue={getTravelerText()}
-                onOpenPax={() => setShowTravelerModal(!showTravelerModal)}
-                onSearch={handleSearch}
-              />
+        {/* Gradient overlays */}
+        <div className="hero-overlay hero-overlay-dark"></div>
+        <div className="hero-overlay hero-overlay-fade"></div>
 
-              {/* Search Shortcuts */}
-              <SearchShortcuts />
-            </div>
+        {/* Content */}
+        <div className="hero-content" role="region" aria-label="Compare hotel rates">
+          <h1 className="hero-title">Without Middlemen</h1>
+          <p className="hero-sub">Compare real-time direct rates from Toronto's top hotels. No commissions, no markups, no hidden fees — just the hotel's actual price.</p>
+
+          {/* Search widget mount */}
+          <div id="search-widget" className="search-shell">
+            <SearchBarWide 
+              dateLabel="Dates"
+              dateValue={dateRange[0] && dateRange[1] 
+                ? `${format(dateRange[0], 'MMM dd')} – ${format(dateRange[1], 'MMM dd')}`
+                : 'Select dates'
+              }
+              onOpenDates={() => setShowDatePicker(!showDatePicker)}
+              paxLabel="Travelers"
+              paxValue={getTravelerText()}
+              onOpenPax={() => setShowTravelerModal(!showTravelerModal)}
+              onSearch={handleSearch}
+            />
           </div>
+
+          {/* Trust badges */}
+          <ul className="trust">
+            <li>✅ No Booking Fees</li>
+            <li>🏨 Verified Hotels</li>
+            <li>🔗 Direct Rates</li>
+          </ul>
         </div>
       </section>
+      {/* HERO END */}
 
       {/* How It Works Section */}
       <section className="py-20 bg-white">
