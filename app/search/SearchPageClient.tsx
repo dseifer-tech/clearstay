@@ -229,9 +229,7 @@ export default function SearchPageClient() {
       </nav>
 
       {/* Mobile Menu */}
-      {showMobileMenu && (
-        <MobileMenu onClose={() => setShowMobileMenu(false)} />
-      )}
+      <MobileMenu isOpen={showMobileMenu} onClose={() => setShowMobileMenu(false)} />
 
       {/* Sticky Search Bar */}
       <StickySearchBar />
