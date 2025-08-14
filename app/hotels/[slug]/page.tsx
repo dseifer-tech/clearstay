@@ -5,6 +5,7 @@ import Link from 'next/link';
 import NearbyPlacesSection from './NearbyPlacesSection';
 import HotelPageTracker from '@/app/components/HotelPageTracker';
 import { HOTEL_IMAGES } from '@/lib/hotelData';
+import DynamicHotelData from './DynamicHotelData';
 
 // Create a mapping from slug to hotel name for metadata
 const SLUG_TO_HOTEL_NAME: Record<string, string> = {
@@ -93,36 +94,6 @@ export default async function HotelSlugPage({
 
   // Check if we have search parameters for dynamic data
   const hasSearchParams = searchParams.checkin && searchParams.checkout && searchParams.adults && searchParams.children;
-  
-  // Fetch dynamic hotel data if search parameters are present
-  let dynamicHotelData = null;
-  if (hasSearchParams) {
-    try {
-      console.log('🔍 Fetching dynamic data for slug:', params.slug);
-      console.log('🔍 Search params:', searchParams);
-      
-      const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search?checkin=${searchParams.checkin}&checkout=${searchParams.checkout}&adults=${searchParams.adults}&children=${searchParams.children}&slug=${params.slug}`;
-      console.log('🔍 API URL:', apiUrl);
-      
-      const response = await fetch(apiUrl, { cache: 'no-store' });
-      
-      console.log('🔍 Response status:', response.status);
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('🔍 API Response data:', data);
-        // The API returns a single hotel object when slug is provided
-        dynamicHotelData = data;
-        console.log('🔍 Set dynamicHotelData:', dynamicHotelData);
-      } else {
-        console.error('🔍 API Error:', response.status, response.statusText);
-      }
-    } catch (error) {
-      console.error('🔍 Error fetching dynamic hotel data:', error);
-    }
-  } else {
-    console.log('🔍 No search parameters, using static data');
-  }
 
   return (
     <>
@@ -276,53 +247,16 @@ export default async function HotelSlugPage({
             <div className="mt-4">
               {/* Debug info */}
               <div className="text-xs text-red-500 mb-2">
-                Debug: dynamicHotelData = {dynamicHotelData ? 'EXISTS' : 'NULL'} | 
-                hasSearchParams = {hasSearchParams ? 'YES' : 'NO'}
+                Debug: hasSearchParams = {hasSearchParams ? 'YES' : 'NO'}
               </div>
               
-              {dynamicHotelData ? (
-                <div className="space-y-3">
-                  {/* Dynamic Price Display */}
-                  {dynamicHotelData.before_taxes ? (
-                    <div className="text-center sm:text-left">
-                      <div className="text-2xl font-bold text-green-600">
-                        ${dynamicHotelData.before_taxes} CAD
-                      </div>
-                      <div className="text-sm text-gray-500">per night</div>
-                    </div>
-                  ) : null}
-                  
-                  {/* Dynamic Booking Button */}
-                  <a 
-                    href={dynamicHotelData.link || hotel.booking_url} 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-200 transform hover:-translate-y-0.5 w-full sm:w-auto"
-                  >
-                    Book Direct Now
-                  </a>
-                  
-                  {/* Dynamic Remarks */}
-                  {dynamicHotelData.remarks && (
-                    <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
-                      {dynamicHotelData.remarks}
-                    </div>
-                  )}
-                  
-                  {dynamicHotelData.discount_remarks && (
-                    <div className="text-xs text-green-600 bg-green-50 p-2 rounded">
-                      {dynamicHotelData.discount_remarks}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <a 
-                  href="/search" 
-                  className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-200 transform hover:-translate-y-0.5 w-full sm:w-auto"
-                >
-                  Check Direct Rates
-                </a>
-              )}
+              {/* Use client component for dynamic data */}
+              <DynamicHotelData 
+                slug={params.slug}
+                searchParams={searchParams}
+                hotel={hotel}
+                hasSearchParams={hasSearchParams}
+              />
             </div>
             
             {/* Value Signals */}
@@ -375,31 +309,17 @@ export default async function HotelSlugPage({
         {/* CTA Section */}
         <div className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 text-center">
           <h3 className="text-lg font-semibold text-gray-800 mb-3">
-            {dynamicHotelData ? 'Ready to Book?' : 'Ready to Check Rates?'}
+            Ready to Check Rates?
           </h3>
           <p className="text-gray-600 mb-4">
-            {dynamicHotelData 
-              ? 'Book directly with the hotel with no commissions or hidden fees.'
-              : 'Check real-time availability and rates directly from the hotel with no commissions or hidden fees.'
-            }
+            Check real-time availability and rates directly from the hotel with no commissions or hidden fees.
           </p>
-          {dynamicHotelData ? (
-            <a 
-              href={dynamicHotelData.link || hotel.booking_url} 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg shadow-lg font-semibold transition-all duration-200 transform hover:-translate-y-0.5"
-            >
-              Book Direct Now
-            </a>
-          ) : (
-            <a 
-              href="/search" 
-              className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg shadow-lg font-semibold transition-all duration-200 transform hover:-translate-y-0.5"
-            >
-              Check Direct Rates
-            </a>
-          )}
+          <a 
+            href="/search" 
+            className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg shadow-lg font-semibold transition-all duration-200 transform hover:-translate-y-0.5"
+          >
+            Check Direct Rates
+          </a>
         </div>
 
         {/* Footer Branding */}
@@ -439,23 +359,12 @@ export default async function HotelSlugPage({
       {/* Mobile Sticky CTA */}
       <div className="fixed bottom-0 w-full bg-white border-t shadow-sm p-4 md:hidden">
         <div className="flex justify-center">
-          {dynamicHotelData ? (
-            <a 
-              href={dynamicHotelData.link || hotel.booking_url} 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold text-center w-full max-w-sm"
-            >
-              Book Direct Now
-            </a>
-          ) : (
-            <a 
-              href="/search" 
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold text-center w-full max-w-sm"
-            >
-              Check Direct Rates
-            </a>
-          )}
+          <a 
+            href="/search" 
+            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold text-center w-full max-w-sm"
+          >
+            Check Direct Rates
+          </a>
         </div>
       </div>
     </div>
