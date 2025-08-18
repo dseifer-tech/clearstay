@@ -34,6 +34,9 @@ export default function OptimizedImage({
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
+  // Check if this is a proxy URL (should bypass Next.js image optimization)
+  const isProxyUrl = src.includes('/api/hotel-images');
+
   // Fallback for error state
   if (hasError) {
     return (
@@ -46,6 +49,34 @@ export default function OptimizedImage({
     );
   }
 
+  // Use regular img tag for proxy URLs to avoid Next.js image optimization issues
+  if (isProxyUrl) {
+    return (
+      <div className={`relative ${className}`}>
+        <img
+          src={src}
+          alt={alt}
+          className={`
+            transition-opacity duration-300
+            ${isLoading ? 'opacity-0' : 'opacity-100'}
+            ${fill ? 'absolute inset-0 w-full h-full object-cover' : ''}
+          `}
+          style={{
+            ...style,
+            ...(fill ? { position: 'absolute', height: '100%', width: '100%', inset: 0 } : {})
+          }}
+          onLoad={() => setIsLoading(false)}
+          onError={() => setHasError(true)}
+          {...props}
+        />
+        {isLoading && (
+          <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+        )}
+      </div>
+    );
+  }
+
+  // Use Next.js Image for non-proxy URLs
   return (
     <div className={`relative ${className}`}>
       <Image
