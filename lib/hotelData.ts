@@ -184,7 +184,13 @@ export async function fetch_individual_hotel(slug: string, checkin: string, chec
         phone: hotelMetadata.phone || "",
         gps_coordinates: hotelMetadata.gps_coordinates || null,
         hotel_class: hotelMetadata.hotel_class || hotelRating,
-        images: hotelImages.map((img: any) => img.original_image || img),
+        images: hotelImages.map((img: any) => {
+          const directUrl = img.original_image || img;
+          if (typeof directUrl === 'string') {
+            return `/api/hotel-images?url=${encodeURIComponent(directUrl)}&hotel=${encodeURIComponent(hotelName)}`;
+          }
+          return directUrl;
+        }),
         rating: hotelRating,
         reviews: data.reviews || null,
         nearby_places: data.nearby_places || [],
@@ -384,11 +390,18 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
       
       if (data.images && data.images.length > 0) {
         const firstImage = data.images[0];
+        let directImageUrl = null;
+        
         if (typeof firstImage === 'string') {
-          hotelImage = firstImage;
+          directImageUrl = firstImage;
         } else if (firstImage && typeof firstImage === 'object') {
           // Handle image objects with properties like original_image, thumbnail, etc.
-          hotelImage = firstImage.original_image || firstImage.thumbnail || firstImage.url || firstImage.src || HOTEL_IMAGES[hotel.name];
+          directImageUrl = firstImage.original_image || firstImage.thumbnail || firstImage.url || firstImage.src;
+        }
+        
+        // Convert direct URL to proxy URL if we have a direct URL
+        if (directImageUrl) {
+          hotelImage = `/api/hotel-images?url=${encodeURIComponent(directImageUrl)}&hotel=${encodeURIComponent(hotel.name)}`;
         }
       }
       
