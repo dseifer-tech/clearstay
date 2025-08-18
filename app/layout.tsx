@@ -171,10 +171,12 @@ export default function RootLayout({
            height="0" width="0" style="display:none;visibility:hidden"></iframe>`
          }} />
          {/* End Google Tag Manager (noscript) */}
-         <GA4RouteTracker />
-         <Suspense fallback={null}>
-           <PageViewTracker />
-         </Suspense>
+                         <Suspense fallback={null}>
+                  <GA4RouteTracker />
+                </Suspense>
+                <Suspense fallback={null}>
+                  <PageViewTracker />
+                </Suspense>
         {children}
         
         {/* Footer */}
