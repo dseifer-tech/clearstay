@@ -22,7 +22,7 @@ export default function BreadcrumbNav({ items }: BreadcrumbNavProps) {
       </Link>
       
       {items.map((item, index) => (
-        <div key={index} className="flex items-center">
+        <div key={`breadcrumb-${item.label}-${index}`} className="flex items-center">
           <ChevronRight className="w-4 h-4 mx-1" />
           {item.href ? (
             <Link 

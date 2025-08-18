@@ -247,7 +247,7 @@ export default async function HotelSlugPage({
         checkin={searchParams.checkin || ""}
         checkout={searchParams.checkout || ""}
         adults={parseInt(searchParams.adults || "2")}
-        children={parseInt(searchParams.children || "0")}
+        childrenCount={parseInt(searchParams.children || "0")}
       />
       <script
         type="application/ld+json"

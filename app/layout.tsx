@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { Suspense } from 'react'
 
 import PageViewTracker from './components/PageViewTracker'
+import OptimizedImage from './components/OptimizedImage'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -176,9 +177,11 @@ export default function RootLayout({
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="flex items-center mb-4 md:mb-0">
-                <img
+                <OptimizedImage
                   src="/innstastay-logo.svg"
                   alt="InnstaStay Logo"
+                  width={32}
+                  height={32}
                   className="h-8 w-auto mr-3"
                 />
                 <span className="text-sm text-gray-300">Commission-Free Hotel Booking</span>

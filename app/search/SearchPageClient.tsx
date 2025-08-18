@@ -9,6 +9,7 @@ import { format, addDays } from 'date-fns';
 import StickySearchBar from '@/app/components/StickySearchBar';
 import MobileMenu from '@/app/components/MobileMenu';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
+import OptimizedImage from '@/app/components/OptimizedImage';
 import { gtmEvent } from '@/lib/ga4';
 
 interface HotelRoom {
@@ -166,7 +167,13 @@ function Attractions() {
         {pois.map(p => (
           <div key={p.name} className="fade-in-up min-w-[280px] rounded-2xl overflow-hidden border border-zinc-200 bg-white card-hover-lift shadow-sm">
             <div className="h-40 w-full bg-zinc-100 image-hover-zoom relative">
-              <img src={p.img} alt={p.name} className="h-full w-full object-cover" />
+              <OptimizedImage 
+                src={p.img} 
+                alt={p.name} 
+                fill={true}
+                className="object-cover"
+                sizes="280px"
+              />
               <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1">
                 <MapPin className="h-4 w-4 text-blue-600" />
               </div>
@@ -302,7 +309,7 @@ export default function SearchPageClient() {
 
   const handleCategoryChange = (category: string) => {
     // Filter hotels based on category (implement filtering logic)
-    console.log('Category changed to:', category);
+    // TODO: Implement category filtering
   };
 
   // Get current search parameters
@@ -382,12 +389,13 @@ export default function SearchPageClient() {
             {/* Logo and Navigation Links */}
             <div className="flex items-center gap-6">
               <a href="/" className="flex flex-col items-center">
-                <img
+                <OptimizedImage
                   src="/innstastay-logo.svg"
                   alt="InnstaStay Logo"
                   width={100}
                   height={80}
                   className="h-12 sm:h-16 md:h-20 w-auto block"
+                  priority={true}
                 />
                 <span className="text-xs text-blue-600 tracking-wide mt-1">Commission-Free Booking</span>
               </a>
@@ -518,10 +526,12 @@ export default function SearchPageClient() {
                    {/* Hotel Image */}
                    <div className="h-48 w-full relative image-hover-zoom">
                      {hotel.image ? (
-                       <img 
+                       <OptimizedImage 
                          src={hotel.image} 
                          alt={hotel.hotel} 
-                         className="w-full h-full object-cover"
+                         fill={true}
+                         className="object-cover"
+                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                        />
                      ) : (
                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -641,11 +651,13 @@ export default function SearchPageClient() {
                          className="card-hover-lift block p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-white transition-all duration-200"
                        >
                          <div className="flex items-center gap-3">
-                           <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-                             <img 
+                           <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 relative">
+                             <OptimizedImage 
                                src={hotel.img} 
                                alt={hotel.name} 
-                               className="w-full h-full object-cover"
+                               fill={true}
+                               className="object-cover"
+                               sizes="48px"
                              />
                            </div>
                            <div className="flex-1">

@@ -145,15 +145,11 @@ export async function GET(request: NextRequest) {
   try {
     // If slug is provided, return individual hotel data
     if (slug) {
-      console.log(`API: Fetching individual hotel data for slug: ${slug}`);
       const hotelData = await fetch_individual_hotel(slug, checkin, checkout, adultsNum, childrenNum);
-      console.log(`API: Successfully fetched hotel data for ${slug}:`, hotelData);
       return NextResponse.json(hotelData, { headers });
     } else {
       // Otherwise, return all hotels for search
-      console.log(`API: Fetching all hotels data`);
       const hotels = await fetch_all_hotels(checkin, checkout, adultsNum, childrenNum);
-      console.log(`API: Successfully fetched all hotels data:`, hotels);
       return NextResponse.json(hotels, { headers });
     }
   } catch (error) {

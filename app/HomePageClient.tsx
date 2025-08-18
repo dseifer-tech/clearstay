@@ -14,6 +14,7 @@ import StickySearchBar from '@/app/components/StickySearchBar';
 import SearchShortcuts from '@/app/components/SearchShortcuts';
 import SecondaryCTA from '@/app/components/SecondaryCTA';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
+import OptimizedImage from '@/app/components/OptimizedImage';
 
 export default function HomePageClient() {
   const [searchParams, setSearchParams] = useState<SearchParams>({
@@ -77,13 +78,14 @@ export default function HomePageClient() {
             {/* Logo and Navigation Links */}
             <div className="flex items-center gap-6">
               <a href="/" className="flex flex-col items-center">
-                <img
-                  src="/innstastay-logo.svg"
-                  alt="InnstaStay Logo"
-                  width={100}
-                  height={80}
-                  className="h-12 sm:h-16 md:h-20 w-auto block"
-                />
+                                 <OptimizedImage
+                   src="/innstastay-logo.svg"
+                   alt="InnstaStay Logo"
+                   width={100}
+                   height={80}
+                   className="h-12 sm:h-16 md:h-20 w-auto block"
+                   priority={true}
+                 />
                 <span className="text-xs text-blue-600 tracking-wide mt-1">Commission-Free Booking</span>
               </a>
               
@@ -139,18 +141,17 @@ export default function HomePageClient() {
 
       {/* HERO START */}
       <section id="hero" className="hero">
-        <picture className="hero-media">
-          <img
-            src="/hero/homepage.jpg"
-            alt="Toronto skyline with CN Tower at golden hour"
-            className="hero-img"
-            width="1920" 
-            height="800"
-            loading="eager" 
-            fetchPriority="high"
-            decoding="async"
-          />
-        </picture>
+                 <picture className="hero-media">
+           <OptimizedImage
+             src="/hero/homepage.jpg"
+             alt="Toronto skyline with CN Tower at golden hour"
+             className="hero-img"
+             width={1920} 
+             height={800}
+             priority={true}
+             sizes="100vw"
+           />
+         </picture>
 
         {/* Gradient overlays */}
         <div className="hero-overlay hero-overlay-dark"></div>
@@ -297,10 +298,12 @@ export default function HomePageClient() {
                                        {/* Hotel Image */}
                     <div className="h-48 w-full relative">
                       {hotel.image_url ? (
-                        <img 
+                        <OptimizedImage 
                           src={hotel.image_url} 
                           alt={hotel.name} 
-                          className="w-full h-full object-cover"
+                          fill={true}
+                          className="object-cover"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                       ) : (
                         <div className="w-full h-full bg-gray-200 flex items-center justify-center">

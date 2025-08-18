@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Menu } from 'lucide-react';
 import MobileMenu from '@/app/components/MobileMenu';
+import OptimizedImage from '@/app/components/OptimizedImage';
 
 export default function DowntownPageClient() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -16,12 +17,13 @@ export default function DowntownPageClient() {
             {/* Logo and Navigation Links */}
             <div className="flex items-center gap-6">
               <a href="/" className="flex flex-col items-center">
-                <img
+                <OptimizedImage
                   src="/innstastay-logo.svg"
                   alt="InnstaStay Logo"
                   width={100}
                   height={80}
                   className="h-12 sm:h-16 md:h-20 w-auto block"
+                  priority={true}
                 />
                 <span className="text-xs text-blue-600 tracking-wide mt-1">Commission-Free Booking</span>
               </a>
@@ -79,15 +81,14 @@ export default function DowntownPageClient() {
       {/* Hero Section with Background Image - Same size as homepage */}
       <section className="hero">
         <picture className="hero-media">
-          <img
+          <OptimizedImage
             src="/hero/toronto-downtown.jpg"
             alt="Downtown Toronto skyline with CN Tower"
             className="hero-img"
-            width="1920" 
-            height="800"
-            loading="eager" 
-            fetchPriority="high"
-            decoding="async"
+            width={1920} 
+            height={800}
+            priority={true}
+            sizes="100vw"
           />
         </picture>
         
@@ -287,9 +288,11 @@ export default function DowntownPageClient() {
               }
             ].map((poi, i) => (
               <div key={i} className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 flex gap-4">
-                <img
+                <OptimizedImage
                   src={poi.thumbnail}
                   alt={poi.name}
+                  width={112}
+                  height={112}
                   className="w-28 h-28 rounded-lg object-cover flex-shrink-0"
                 />
                 <div className="flex-1">

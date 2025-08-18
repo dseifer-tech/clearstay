@@ -1,6 +1,7 @@
 "use client";
 
 import { X } from 'lucide-react';
+import OptimizedImage from './OptimizedImage';
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -16,6 +17,12 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       <div 
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') onClose();
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label="Close menu"
       />
       
       {/* Menu Panel */}
@@ -24,11 +31,13 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-100">
             <div className="flex flex-col items-center">
-              <img
-                src="/innstastay-logo.svg"
-                alt="InnstaStay Logo"
-                className="h-12 w-auto"
-              />
+                             <OptimizedImage
+                 src="/innstastay-logo.svg"
+                 alt="InnstaStay Logo"
+                 width={48}
+                 height={48}
+                 className="h-12 w-auto"
+               />
               <span className="text-xs text-blue-600 tracking-wide mt-1">Commission-Free Booking</span>
             </div>
             <button

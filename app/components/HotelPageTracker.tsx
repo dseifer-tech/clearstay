@@ -8,7 +8,7 @@ interface HotelPageTrackerProps {
   checkin: string;
   checkout: string;
   adults: number;
-  children: number;
+  childrenCount: number;
 }
 
 export default function HotelPageTracker({ 
@@ -17,7 +17,7 @@ export default function HotelPageTracker({
   checkin, 
   checkout, 
   adults, 
-  children 
+  childrenCount 
 }: HotelPageTrackerProps) {
   useEffect(() => {
     // Track hotel page view
@@ -27,9 +27,9 @@ export default function HotelPageTracker({
       checkin_date: checkin,
       checkout_date: checkout,
       adults: adults,
-      children: children
+      children: childrenCount
     });
-  }, [hotelName, slug, checkin, checkout, adults, children]);
+  }, [hotelName, slug, checkin, checkout, adults, childrenCount]);
 
   const handleBookDirect = (bookingUrl: string) => {
     gtmEvent('booking_click', {
@@ -49,7 +49,7 @@ export default function HotelPageTracker({
       // @ts-ignore
       delete window.handleHotelBooking;
     };
-  }, [hotelName, slug]);
+  }, [hotelName, slug, handleBookDirect]);
 
   return null;
 }
