@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   title: 'InnstaStay - Commission-Free Hotel Booking in Toronto | Book Direct & Save',
   description: 'Compare real-time direct hotel rates in downtown Toronto. No middlemen, no fees—book direct and save with InnstaStay. Find the best prices on verified hotels.',
   keywords: 'Toronto hotels, direct booking, no commission, downtown Toronto, hotel rates, InnstaStay, book direct',
+  robots: 'index, follow',
+  alternates: {
+    canonical: 'https://www.innstastay.com/',
+  },
   openGraph: {
     title: 'InnstaStay - Commission-Free Hotel Booking in Toronto',
     description: 'Compare real-time direct hotel rates in downtown Toronto. No middlemen, no fees—book direct and save.',
