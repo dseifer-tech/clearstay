@@ -293,13 +293,14 @@ export default function HomePageClient() {
                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
              {TORONTO_HOTELS.map((hotel) => {
                const slug = HOTEL_SLUG_MAP[hotel.token];
+               const proxyImageUrl = hotel.image_url ? `/api/hotel-images?url=${encodeURIComponent(hotel.image_url)}&hotel=${encodeURIComponent(hotel.name)}` : null;
                return (
                  <div key={hotel.token} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
                                        {/* Hotel Image */}
                     <div className="h-48 w-full relative">
-                      {hotel.image_url ? (
+                      {proxyImageUrl ? (
                         <OptimizedImage 
-                          src={hotel.image_url} 
+                          src={proxyImageUrl} 
                           alt={hotel.name} 
                           fill={true}
                           className="object-cover"
