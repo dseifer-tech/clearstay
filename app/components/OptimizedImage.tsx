@@ -14,6 +14,7 @@ interface OptimizedImageProps {
   sizes?: string;
   placeholder?: 'blur' | 'empty';
   blurDataURL?: string;
+  style?: React.CSSProperties;
 }
 
 export default function OptimizedImage({
@@ -27,6 +28,7 @@ export default function OptimizedImage({
   sizes,
   placeholder = 'empty',
   blurDataURL,
+  style,
   ...props
 }: OptimizedImageProps) {
   const [isLoading, setIsLoading] = useState(true);
@@ -60,6 +62,7 @@ export default function OptimizedImage({
         sizes={sizes}
         placeholder={placeholder}
         blurDataURL={blurDataURL}
+        style={style}
         onLoad={() => setIsLoading(false)}
         onError={() => setHasError(true)}
         {...props}

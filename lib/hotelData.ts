@@ -50,16 +50,16 @@ const SLUG_TO_HOTEL_NAME: { [key: string]: string } = {
   "ace-hotel-toronto": "Ace Hotel Toronto"
 };
 
-// Real hotel images from Google Maps and Hotelbeds
+// Hotel images using original external URLs with proxy
 export const HOTEL_IMAGES: { [key: string]: string } = {
-  "Pantages Hotel Downtown Toronto": "https://lh5.googleusercontent.com/p/AF1QipMt1ZolVWnJTgIMqogAUCjh9EldFh8vSDHY5TU=s10000",
-  "Town Inn Suites": "https://lh5.googleusercontent.com/p/AF1QipN2HhQs9GSWKldSNWx_1o4EC3ojDlzgG9UVxgV1=s10000",
-  "One King West Hotel & Residence": "https://lh5.googleusercontent.com/p/AF1QipPI-2hASi1fH2dzw3hOyxjk2UV9CVV9P3sKUYuX=s10000",
-  "The Omni King Edward Hotel": "https://lh5.googleusercontent.com/p/AF1QipMvGKOVckX0M2FfmY-77Mt9eykQw6pHyHgmK067=s10000",
-  "Chelsea Hotel, Toronto": "https://photos.hotelbeds.com/giata/original/04/049472/049472a_hb_f_004.JPG",
-  "The Anndore House - JDV by Hyatt": "https://lh5.googleusercontent.com/p/AF1QipOh__jl8gimUkhS0FUaJSr1ft0-WORdu7KieteX=s10000",
-  "Sutton Place Hotel Toronto": "https://lh5.googleusercontent.com/p/AF1QipPFImvLwmvVatoeTOPO-h4UCI53SGoH1ITu0BbY=s10000",
-  "Ace Hotel Toronto": "https://lh5.googleusercontent.com/p/AF1QipNGix9dVAg06s82e08vaUXkAhqFlV2XPyTByWkj=s10000"
+  "Pantages Hotel Downtown Toronto": "/api/hotel-images?url=https://lh5.googleusercontent.com/p/AF1QipMt1ZolVWnJTgIMqogAUCjh9EldFh8vSDHY5TU=s10000&hotel=Pantages%20Hotel%20Downtown%20Toronto",
+  "Town Inn Suites": "/api/hotel-images?url=https://lh5.googleusercontent.com/p/AF1QipN2HhQs9GSWKldSNWx_1o4EC3ojDlzgG9UVxgV1=s10000&hotel=Town%20Inn%20Suites",
+  "One King West Hotel & Residence": "/api/hotel-images?url=https://lh5.googleusercontent.com/p/AF1QipPI-2hASi1fH2dzw3hOyxjk2UV9CVV9P3sKUYuX=s10000&hotel=One%20King%20West%20Hotel%20%26%20Residence",
+  "The Omni King Edward Hotel": "/api/hotel-images?url=https://lh5.googleusercontent.com/p/AF1QipMvGKOVckX0M2FfmY-77Mt9eykQw6pHyHgmK067=s10000&hotel=The%20Omni%20King%20Edward%20Hotel",
+  "Chelsea Hotel, Toronto": "/api/hotel-images?url=https://photos.hotelbeds.com/giata/original/04/049472/049472a_hb_f_004.JPG&hotel=Chelsea%20Hotel%2C%20Toronto",
+  "The Anndore House - JDV by Hyatt": "/api/hotel-images?url=https://lh5.googleusercontent.com/p/AF1QipOh__jl8gimUkhS0FUaJSr1ft0-WORdu7KieteX=s10000&hotel=The%20Anndore%20House%20-%20JDV%20by%20Hyatt",
+  "Sutton Place Hotel Toronto": "/api/hotel-images?url=https://lh5.googleusercontent.com/p/AF1QipPFImvLwmvVatoeTOPO-h4UCI53SGoH1ITu0BbY=s10000&hotel=Sutton%20Place%20Hotel%20Toronto",
+  "Ace Hotel Toronto": "/api/hotel-images?url=https://lh5.googleusercontent.com/p/AF1QipNGix9dVAg06s82e08vaUXkAhqFlV2XPyTByWkj=s10000&hotel=Ace%20Hotel%20Toronto"
 };
 
 function inject_parameters_into_url(base_url: string, checkin: string, checkout: string, adults: number, children: number): string {

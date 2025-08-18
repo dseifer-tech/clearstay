@@ -5,17 +5,18 @@ import { Suspense } from 'react'
 import PageViewTracker from './components/PageViewTracker'
 import OptimizedImage from './components/OptimizedImage'
 import './globals.css'
+import GA4RouteTracker from './components/GA4RouteTracker';
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'InnstaStay - Commission-Free Hotel Booking in Toronto | Book Direct & Save',
-  description: 'Compare real-time direct hotel rates in downtown Toronto. No middlemen, no fees—book direct and save with InnstaStay. Find the best prices on verified hotels.',
+  title: 'InnstaStay - Commission-Free Hotel Booking in Toronto',
+  description: 'Compare real-time direct hotel rates in downtown Toronto. No middlemen, no fees—book direct and save with InnstaStay.',
   metadataBase: new URL('https://www.innstastay.com'),
   icons: {
-    icon: '/browser.png',
-    shortcut: '/browser.png',
-    apple: '/iPhone.png',
+    icon: '/innstastay-logo.svg',
+    shortcut: '/innstastay-logo.svg',
+    apple: '/innstastay-logo.svg',
     other: {
       rel: 'icon',
       url: '/Android.png',
@@ -102,6 +103,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://lh3.googleusercontent.com" />
         <link rel="preconnect" href="https://maps.googleapis.com" />
         <link rel="preconnect" href="https://images.unsplash.com" />
+        <link rel="icon" href="/innstastay-logo.svg" />
+        <link rel="shortcut icon" href="/innstastay-logo.svg" />
+        <link rel="apple-touch-icon" href="/innstastay-logo.svg" />
       </head>
       <body className={inter.className}>
         {/* Organization Schema */}
@@ -167,6 +171,7 @@ export default function RootLayout({
            height="0" width="0" style="display:none;visibility:hidden"></iframe>`
          }} />
          {/* End Google Tag Manager (noscript) */}
+         <GA4RouteTracker />
          <Suspense fallback={null}>
            <PageViewTracker />
          </Suspense>

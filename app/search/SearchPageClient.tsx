@@ -389,13 +389,10 @@ export default function SearchPageClient() {
             {/* Logo and Navigation Links */}
             <div className="flex items-center gap-6">
               <a href="/" className="flex flex-col items-center">
-                <OptimizedImage
+                <img
                   src="/innstastay-logo.svg"
                   alt="InnstaStay Logo"
-                  width={100}
-                  height={80}
                   className="h-12 sm:h-16 md:h-20 w-auto block"
-                  priority={true}
                 />
                 <span className="text-xs text-blue-600 tracking-wide mt-1">Commission-Free Booking</span>
               </a>
@@ -524,7 +521,7 @@ export default function SearchPageClient() {
                {hotels.map((hotel, index) => (
                  <div key={index} className="fade-in-up bg-white rounded-xl shadow-md overflow-hidden card-hover-lift">
                    {/* Hotel Image */}
-                   <div className="h-48 w-full relative image-hover-zoom">
+                   <div className="h-48 w-full relative image-hover-zoom" style={{ minHeight: '192px' }}>
                      {hotel.image ? (
                        <OptimizedImage 
                          src={hotel.image} 
@@ -636,14 +633,14 @@ export default function SearchPageClient() {
                    <h3 className="font-semibold text-gray-800 mb-4">Featured Hotels in Toronto</h3>
                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                      {[
-                       { name: "Pantages Hotel Downtown Toronto", slug: "pantages-hotel-downtown-toronto", img: "https://lh5.googleusercontent.com/p/AF1QipMt1ZolVWnJTgIMqogAUCjh9EldFh8vSDHY5TU=s10000" },
-                       { name: "Town Inn Suites", slug: "town-inn-suites", img: "https://lh5.googleusercontent.com/p/AF1QipN2HhQs9GSWKldSNWx_1o4EC3ojDlzgG9UVxgV1=s10000" },
-                       { name: "One King West Hotel & Residence", slug: "one-king-west-hotel-residence", img: "https://lh5.googleusercontent.com/p/AF1QipPI-2hASi1fH2dzw3hOyxjk2UV9CVV9P3sKUYuX=s10000" },
-                       { name: "The Omni King Edward Hotel", slug: "the-omni-king-edward-hotel", img: "https://lh5.googleusercontent.com/p/AF1QipMvGKOVckX0M2FfmY-77Mt9eykQw6pHyHgmK067=s10000" },
-                       { name: "Chelsea Hotel, Toronto", slug: "chelsea-hotel-toronto", img: "https://photos.hotelbeds.com/giata/original/04/049472/049472a_hb_f_004.JPG" },
-                       { name: "The Anndore House - JDV by Hyatt", slug: "the-anndore-house-jdv", img: "https://lh5.googleusercontent.com/p/AF1QipOh__jl8gimUkhS0FUaJSr1ft0-WORdu7KieteX=s10000" },
-                       { name: "Sutton Place Hotel Toronto", slug: "sutton-place-hotel-toronto", img: "https://lh5.googleusercontent.com/p/AF1QipPFImvLwmvVatoeTOPO-h4UCI53SGoH1ITu0BbY=s10000" },
-                       { name: "Ace Hotel Toronto", slug: "ace-hotel-toronto", img: "https://lh5.googleusercontent.com/p/AF1QipNGix9dVAg06s82e08vaUXkAhqFlV2XPyTByWkj=s10000" }
+                       { name: "Pantages Hotel Downtown Toronto", slug: "pantages-hotel-downtown-toronto", img: "/api/hotel-images?url=https://lh5.googleusercontent.com/p/AF1QipMt1ZolVWnJTgIMqogAUCjh9EldFh8vSDHY5TU=s10000&hotel=Pantages%20Hotel%20Downtown%20Toronto" },
+                       { name: "Town Inn Suites", slug: "town-inn-suites", img: "/api/hotel-images?url=https://lh5.googleusercontent.com/p/AF1QipN2HhQs9GSWKldSNWx_1o4EC3ojDlzgG9UVxgV1=s10000&hotel=Town%20Inn%20Suites" },
+                       { name: "One King West Hotel & Residence", slug: "one-king-west-hotel-residence", img: "/api/hotel-images?url=https://lh5.googleusercontent.com/p/AF1QipPI-2hASi1fH2dzw3hOyxjk2UV9CVV9P3sKUYuX=s10000&hotel=One%20King%20West%20Hotel%20%26%20Residence" },
+                       { name: "The Omni King Edward Hotel", slug: "the-omni-king-edward-hotel", img: "/api/hotel-images?url=https://lh5.googleusercontent.com/p/AF1QipMvGKOVckX0M2FfmY-77Mt9eykQw6pHyHgmK067=s10000&hotel=The%20Omni%20King%20Edward%20Hotel" },
+                       { name: "Chelsea Hotel, Toronto", slug: "chelsea-hotel-toronto", img: "/api/hotel-images?url=https://photos.hotelbeds.com/giata/original/04/049472/049472a_hb_f_004.JPG&hotel=Chelsea%20Hotel%2C%20Toronto" },
+                       { name: "The Anndore House - JDV by Hyatt", slug: "the-anndore-house-jdv", img: "/api/hotel-images?url=https://lh5.googleusercontent.com/p/AF1QipOh__jl8gimUkhS0FUaJSr1ft0-WORdu7KieteX=s10000&hotel=The%20Anndore%20House%20-%20JDV%20by%20Hyatt" },
+                       { name: "Sutton Place Hotel Toronto", slug: "sutton-place-hotel-toronto", img: "/api/hotel-images?url=https://lh5.googleusercontent.com/p/AF1QipPFImvLwmvVatoeTOPO-h4UCI53SGoH1ITu0BbY=s10000&hotel=Sutton%20Place%20Hotel%20Toronto" },
+                       { name: "Ace Hotel Toronto", slug: "ace-hotel-toronto", img: "/api/hotel-images?url=https://lh5.googleusercontent.com/p/AF1QipNGix9dVAg06s82e08vaUXkAhqFlV2XPyTByWkj=s10000&hotel=Ace%20Hotel%20Toronto" }
                      ].map((hotel) => (
                        <Link
                          key={hotel.slug}
