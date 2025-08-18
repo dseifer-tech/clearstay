@@ -6,11 +6,12 @@ import { Star, ExternalLink, Eye, Search, Menu, Shield, CheckCircle, Zap, Calend
 import Link from 'next/link';
 import { HOTEL_SLUG_MAP, TORONTO_HOTELS } from '@/lib/hotels';
 import { format, addDays } from 'date-fns';
-import StickySearchBar from '@/app/components/StickySearchBar';
+import SearchBarWide from '@/app/components/SearchBarWide';
 import MobileMenu from '@/app/components/MobileMenu';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import OptimizedImage from '@/app/components/OptimizedImage';
 import { gtmEvent } from '@/lib/ga4';
+import ProfessionalCalendar from '@/app/components/ProfessionalCalendar';
 
 interface HotelRoom {
   hotel: string;
@@ -237,12 +238,48 @@ export default function SearchPageClient() {
   const [error, setError] = useState<string | null>(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [view, setView] = useState<'list' | 'map'>('list');
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTravelerModal, setShowTravelerModal] = useState(false);
+  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
+    addDays(new Date(), 1),
+    addDays(new Date(), 2)
+  ]);
+  const [searchParamsState, setSearchParamsState] = useState({
+    adults: 2,
+    children: 0
+  });
 
   // Create a mapping from hotel names to slugs
   const hotelNameToSlug = TORONTO_HOTELS.reduce((acc, hotel) => {
     acc[hotel.name] = HOTEL_SLUG_MAP[hotel.token];
     return acc;
   }, {} as Record<string, string>);
+
+  // Sync state with URL parameters
+  useEffect(() => {
+    const checkin = searchParams?.get('checkin');
+    const checkout = searchParams?.get('checkout');
+    const adults = searchParams?.get('adults');
+    const children = searchParams?.get('children');
+
+    if (checkin && checkout) {
+      try {
+        const checkinDate = new Date(checkin);
+        const checkoutDate = new Date(checkout);
+        setDateRange([checkinDate, checkoutDate]);
+      } catch (error) {
+        console.error('Error parsing dates from URL:', error);
+        setDateRange([addDays(new Date(), 1), addDays(new Date(), 2)]);
+      }
+    }
+
+    if (adults) {
+      setSearchParamsState(prev => ({ ...prev, adults: parseInt(adults) || 2 }));
+    }
+    if (children) {
+      setSearchParamsState(prev => ({ ...prev, children: parseInt(children) || 0 }));
+    }
+  }, [searchParams]);
 
   // Fetch hotels when search parameters are present
   useEffect(() => {
@@ -310,6 +347,30 @@ export default function SearchPageClient() {
   const handleCategoryChange = (category: string) => {
     // Filter hotels based on category (implement filtering logic)
     // TODO: Implement category filtering
+  };
+
+  const handleDateRangeChange = (start: Date | null, end: Date | null) => {
+    setDateRange([start, end]);
+  };
+
+  const handleSearch = () => {
+    const checkIn = dateRange[0] ? format(dateRange[0], 'yyyy-MM-dd') : format(addDays(new Date(), 1), 'yyyy-MM-dd');
+    const checkOut = dateRange[1] ? format(dateRange[1], 'yyyy-MM-dd') : format(addDays(new Date(), 2), 'yyyy-MM-dd');
+    
+    const searchUrl = `/search?checkin=${checkIn}&checkout=${checkOut}&adults=${searchParamsState.adults}&children=${searchParamsState.children}`;
+    router.push(searchUrl);
+  };
+
+  const handleTravelerChange = (type: 'adults' | 'children', value: number) => {
+    setSearchParamsState({
+      ...searchParamsState,
+      [type]: value
+    });
+  };
+
+  const getTravelerText = () => {
+    const total = searchParamsState.adults + searchParamsState.children;
+    return `${total} traveler${total > 1 ? 's' : ''}, 1 room`;
   };
 
   // Get current search parameters
@@ -469,7 +530,18 @@ export default function SearchPageClient() {
           {/* Search bar */}
           <div className="mt-6">
             <div className="enhanced-search-bar">
-              <StickySearchBar />
+              <SearchBarWide
+                dateLabel="Dates"
+                dateValue={dateRange[0] && dateRange[1] 
+                  ? `${format(dateRange[0], 'MMM dd')} – ${format(dateRange[1], 'MMM dd')}`
+                  : 'Select dates'
+                }
+                onOpenDates={() => setShowDatePicker(!showDatePicker)}
+                paxLabel="Travelers"
+                paxValue={getTravelerText()}
+                onOpenPax={() => setShowTravelerModal(!showTravelerModal)}
+                onSearch={handleSearch}
+              />
             </div>
           </div>
 
@@ -692,8 +764,98 @@ export default function SearchPageClient() {
        {/* Section Divider */}
        <div className="section-divider"></div>
 
-       {/* Attractions Section */}
-       <Attractions />
-    </div>
-  );
-}
+               {/* Attractions Section */}
+        <Attractions />
+
+        {/* Professional Calendar Modal */}
+        <ProfessionalCalendar
+          isOpen={showDatePicker}
+          onClose={() => setShowDatePicker(false)}
+          startDate={dateRange[0]}
+          endDate={dateRange[1]}
+          onDateRangeChange={handleDateRangeChange}
+          minDate={new Date()}
+          maxDate={addDays(new Date(), 365)}
+        />
+
+        {/* Traveler Modal */}
+        {showTravelerModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">Select Travelers</h3>
+                <button
+                  onClick={() => setShowTravelerModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                  aria-label="Close traveler selection"
+                >
+                  <span className="text-2xl">×</span>
+                </button>
+              </div>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-neutral-800">Adults</p>
+                    <p className="text-xs text-neutral-500">Ages 13+</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => handleTravelerChange('adults', Math.max(1, searchParamsState.adults - 1))}
+                      className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                      aria-label="Decrease adults"
+                    >
+                      <span className="text-gray-600">−</span>
+                    </button>
+                    <span className="w-8 text-center font-medium">{searchParamsState.adults}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleTravelerChange('adults', Math.min(6, searchParamsState.adults + 1))}
+                      className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                      aria-label="Increase adults"
+                    >
+                      <span className="text-gray-600">+</span>
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-neutral-800">Children</p>
+                    <p className="text-xs text-neutral-500">Ages 0-12</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => handleTravelerChange('children', Math.max(0, searchParamsState.children - 1))}
+                      className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                      aria-label="Decrease children"
+                    >
+                      <span className="text-gray-600">−</span>
+                    </button>
+                    <span className="w-8 text-center font-medium">{searchParamsState.children}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleTravelerChange('children', Math.min(4, searchParamsState.children + 1))}
+                      className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                      aria-label="Increase children"
+                    >
+                      <span className="text-gray-600">+</span>
+                    </button>
+                  </div>
+                </div>
+                
+                <button
+                  type="button"
+                  onClick={() => setShowTravelerModal(false)}
+                  className="w-full bg-blue-600 text-white py-3 px-4 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+     </div>
+   );
+ }
