@@ -27,16 +27,15 @@ export async function GET(req: NextRequest) {
   const urlStr = searchParams.get('url');
   if (!urlStr) return NextResponse.json({ error: 'Image URL is required' }, { status: 400 });
 
-  console.log('Proxy request for URL:', urlStr);
+
 
   // Unwrap accidental double-proxying
   let target = urlStr;
   try {
     const maybe = new URL(urlStr, 'https://dummy.invalid');
-    if (maybe.pathname.startsWith('/api/hotel-images') && maybe.searchParams.get('url')) {
-      target = maybe.searchParams.get('url')!;
-      console.log('Unwrapped double-proxy to:', target);
-    }
+          if (maybe.pathname.startsWith('/api/hotel-images') && maybe.searchParams.get('url')) {
+        target = maybe.searchParams.get('url')!;
+      }
   } catch {}
 
   let url: URL;
@@ -46,7 +45,6 @@ export async function GET(req: NextRequest) {
   }
 
   url = normalizeImageUrl(url);
-  console.log('Normalized URL:', url.toString());
 
   try {
     const upstream = await fetch(url.toString(), {
@@ -58,23 +56,19 @@ export async function GET(req: NextRequest) {
       cache: 'no-store',
     });
 
-    console.log('Upstream response status:', upstream.status);
-    console.log('Upstream content-type:', upstream.headers.get('content-type'));
+
 
     if (!upstream.ok) {
-      console.error('Upstream failed:', upstream.status, upstream.statusText);
       return NextResponse.json({ error: `Upstream ${upstream.status}` }, { status: 502 });
     }
 
     const type = upstream.headers.get('content-type') ?? 'application/octet-stream';
     if (!type.startsWith('image/')) {
-      console.error('Invalid content type:', type);
       return NextResponse.json({ error: `Invalid content type: ${type}` }, { status: 502 });
     }
 
     // Stream the body to avoid memory / size issues on Vercel
     if (upstream.body) {
-      console.log('Using streaming response');
       return new NextResponse(upstream.body as any, {
         status: 200,
         headers: {
@@ -85,9 +79,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Fallback if no stream available
-    console.log('Using buffer response');
     const buf = await upstream.arrayBuffer();
-    console.log('Buffer size:', buf.byteLength, 'bytes');
     return new NextResponse(buf, {
       status: 200,
       headers: {
@@ -96,7 +88,6 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (e) {
-    console.error('Proxy error:', e);
     // Transparent 1x1 PNG fallback
     const b64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAD0lEQVR4nGMAAQAABQABNqv1nQAAAABJRU5ErkJggg==';
     const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
