@@ -103,7 +103,7 @@ export default function DynamicHotelData({ slug, searchParams, hotel, hasSearchP
                     sizes="(max-width: 1024px) 100vw, 320px"
                     placeholder="blur"
                     className="object-cover"
-                    wrapperClassName="rounded-xl overflow-hidden"
+                    wrapperClassName="w-full lg:w-80 h-56 lg:h-48 flex-shrink-0 relative rounded-xl overflow-hidden"
                   />
                 </div>
               )}
@@ -150,7 +150,7 @@ export default function DynamicHotelData({ slug, searchParams, hotel, hasSearchP
                         sizes="(max-width: 768px) 100vw, 400px"
                         placeholder="blur"
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        wrapperClassName="overflow-hidden"
+                        wrapperClassName="w-full h-48 relative overflow-hidden"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                     </div>

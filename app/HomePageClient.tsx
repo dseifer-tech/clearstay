@@ -304,7 +304,7 @@ export default function HomePageClient() {
                           alt={hotel.name} 
                           fill
                           className="object-cover"
-                          wrapperClassName="rounded-xl overflow-hidden"
+                          wrapperClassName="h-48 w-full relative rounded-xl overflow-hidden"
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                       ) : (

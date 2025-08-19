@@ -295,7 +295,7 @@ export default function DowntownPageClient() {
                     alt={poi.name}
                     fill
                     className="object-cover"
-                    wrapperClassName="rounded-lg overflow-hidden"
+                    wrapperClassName="w-28 h-28 relative rounded-lg overflow-hidden"
                   />
                 </div>
                 <div className="flex-1">
