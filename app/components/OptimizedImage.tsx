@@ -59,20 +59,16 @@ export default function OptimizedImage({
           alt={alt}
           className={`
             transition-opacity duration-300
-            ${isLoading ? 'opacity-0' : 'opacity-100'}
+            opacity-100
             ${fill ? 'absolute inset-0 w-full h-full object-cover' : ''}
           `}
           style={{
             ...style,
             ...(fill ? { position: 'absolute', height: '100%', width: '100%', inset: 0 } : {})
           }}
-          onLoad={() => setIsLoading(false)}
           onError={() => setHasError(true)}
           {...props}
         />
-        {isLoading && (
-          <div className="absolute inset-0 bg-gray-200 animate-pulse" />
-        )}
       </div>
     );
   }
