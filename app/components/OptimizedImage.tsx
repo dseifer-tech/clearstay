@@ -40,11 +40,15 @@ export default function OptimizedImage({
   // Check if this is a proxy URL
   const isProxy = src.startsWith('/api/hotel-images');
   
+  // Debug logging
+  console.log('OptimizedImage:', { src, isProxy, alt });
+  
   // Use blur placeholder for better perceived performance
   const effectiveBlurDataURL = blurDataURL || (placeholder === 'blur' ? BLUR_PLACEHOLDER : undefined);
 
   // Fallback for error state
   if (hasError) {
+    console.log('Image error for:', src);
     return (
       <div 
         className={`bg-gray-200 flex items-center justify-center ${wrapperClassName ?? ''}`}
@@ -74,8 +78,14 @@ export default function OptimizedImage({
         loading={priority ? 'eager' : 'lazy'}
         fetchPriority={priority ? 'high' : 'auto'}
         style={style}
-        onLoadingComplete={() => setIsLoading(false)}
-        onError={() => setHasError(true)}
+        onLoadingComplete={() => {
+          console.log('Image loaded successfully:', src);
+          setIsLoading(false);
+        }}
+        onError={(e) => {
+          console.error('Image failed to load:', src, e);
+          setHasError(true);
+        }}
         className={className} // applies directly to the <img>
         {...props}
       />
