@@ -598,20 +598,25 @@ export default function SearchPageClient() {
                  <div key={index} className="fade-in-up bg-white rounded-xl shadow-md overflow-hidden card-hover-lift">
                    {/* Hotel Image */}
                    <div className="h-48 w-full relative image-hover-zoom" style={{ minHeight: '192px' }}>
-                     {hotel.image ? (
-                       <OptimizedImage 
-                         src={hotel.image} 
-                         alt={hotel.hotel} 
-                         fill={true}
-                         className="object-cover"
-                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                       />
-                     ) : (
-                       <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                         <span className="text-gray-400">No image available</span>
-                         <div className="text-xs text-gray-500 mt-1">Debug: {JSON.stringify(hotel.image)}</div>
-                       </div>
-                     )}
+                                           {hotel.image ? (
+                        <OptimizedImage 
+                          src={hotel.image} 
+                          alt={hotel.hotel} 
+                          fill={true}
+                          className="object-cover"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                          <span className="text-gray-400">No image available</span>
+                          <div className="text-xs text-gray-500 mt-1">Debug: {JSON.stringify(hotel.image)}</div>
+                        </div>
+                      )}
+                      
+                      {/* Debug info */}
+                      <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs p-1 rounded">
+                        Image: {hotel.image ? 'Yes' : 'No'}
+                      </div>
                      
                      {/* Rating Badge */}
                      {hotel.rating && (
