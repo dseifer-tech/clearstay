@@ -306,8 +306,10 @@ export default function SearchPageClient() {
           throw new Error('Failed to fetch hotels');
         }
 
-        const data = await response.json();
-        setHotels(data);
+                 const data = await response.json();
+         console.log('API Response:', data);
+         console.log('Hotel images:', data.map((hotel: any) => ({ name: hotel.hotel, image: hotel.image })));
+         setHotels(data);
         
         // Track successful hotel search
         gtmEvent('hotel_search', {
@@ -606,6 +608,7 @@ export default function SearchPageClient() {
                      ) : (
                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                          <span className="text-gray-400">No image available</span>
+                         <div className="text-xs text-gray-500 mt-1">Debug: {JSON.stringify(hotel.image)}</div>
                        </div>
                      )}
                      
