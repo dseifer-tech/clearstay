@@ -450,6 +450,7 @@ export default function SearchPageClient() {
             {/* Logo and Navigation Links */}
             <div className="flex items-center gap-6">
               <a href="/" className="flex flex-col items-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/innstastay-logo.svg"
                   alt="InnstaStay Logo"

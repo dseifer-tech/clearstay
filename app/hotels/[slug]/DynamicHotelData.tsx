@@ -94,6 +94,7 @@ export default function DynamicHotelData({ slug, searchParams, hotel, hasSearchP
               {/* Hotel Image */}
               {dynamicHotelData.images && dynamicHotelData.images.length > 0 && (
                 <div className="w-full lg:w-80 h-56 lg:h-48 flex-shrink-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img 
                     src={dynamicHotelData.images[0]} 
                     alt={hotel.name}
@@ -137,6 +138,7 @@ export default function DynamicHotelData({ slug, searchParams, hotel, hasSearchP
                   {/* Room Image */}
                   {room.images && room.images.length > 0 && (
                     <div className="w-full h-48 relative overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img 
                         src={room.images[0]} 
                         alt={room.name}

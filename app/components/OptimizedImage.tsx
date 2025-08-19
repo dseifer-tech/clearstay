@@ -51,56 +51,30 @@ export default function OptimizedImage({
 
   // Use regular img tag for proxy URLs to avoid Next.js image optimization issues
   if (isProxyUrl) {
-    if (fill) {
-      // For fill images, don't wrap in a div since parent should provide positioning context
-      return (
-        <>
-          <img
-            src={src}
-            alt={alt}
-            className={`
-              transition-opacity duration-300
-              ${isLoading ? 'opacity-0' : 'opacity-100'}
-              absolute inset-0 w-full h-full object-cover
-            `}
-            style={{
-              ...style,
-              position: 'absolute',
-              height: '100%',
-              width: '100%',
-              inset: 0
-            }}
-            onLoad={() => setIsLoading(false)}
-            onError={() => setHasError(true)}
-            {...props}
-          />
-          {isLoading && (
-            <div className="absolute inset-0 bg-gray-200 animate-pulse" />
-          )}
-        </>
-      );
-    } else {
-      // For non-fill images, keep the wrapper div
-      return (
-        <div className={`relative ${className}`}>
-          <img
-            src={src}
-            alt={alt}
-            className={`
-              transition-opacity duration-300
-              ${isLoading ? 'opacity-0' : 'opacity-100'}
-            `}
-            style={style}
-            onLoad={() => setIsLoading(false)}
-            onError={() => setHasError(true)}
-            {...props}
-          />
-          {isLoading && (
-            <div className="absolute inset-0 bg-gray-200 animate-pulse" />
-          )}
-        </div>
-      );
-    }
+    return (
+      <div className={`relative ${className}`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt={alt}
+          className={`
+            transition-opacity duration-300
+            ${isLoading ? 'opacity-0' : 'opacity-100'}
+            ${fill ? 'absolute inset-0 w-full h-full object-cover' : ''}
+          `}
+          style={{
+            ...style,
+            ...(fill ? { position: 'absolute', height: '100%', width: '100%', inset: 0 } : {})
+          }}
+          onLoad={() => setIsLoading(false)}
+          onError={() => setHasError(true)}
+          {...props}
+        />
+        {isLoading && (
+          <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+        )}
+      </div>
+    );
   }
 
   // Use Next.js Image for non-proxy URLs

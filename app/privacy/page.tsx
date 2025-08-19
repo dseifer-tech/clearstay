@@ -16,6 +16,7 @@ export default function PrivacyPage() {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-6">
               <Link href="/" className="flex flex-col items-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/innstastay-logo.svg"
                   alt="InnstaStay Logo"
