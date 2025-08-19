@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import { BLUR_PLACEHOLDER } from '@/lib/constants';
 
 interface OptimizedImageProps {
   src: string;
@@ -33,9 +34,12 @@ export default function OptimizedImage({
 }: OptimizedImageProps) {
   const [isLoading, setIsLoading] = useState(!priority);
   const [hasError, setHasError] = useState(false);
-
-  // Check if this is a proxy URL (should bypass Next.js image optimization)
-  const isProxyUrl = src.includes('/api/hotel-images');
+  
+  // Check if this is a proxy URL
+  const isProxy = src.startsWith('/api/hotel-images');
+  
+  // Use blur placeholder for better perceived performance
+  const effectiveBlurDataURL = blurDataURL || (placeholder === 'blur' ? BLUR_PLACEHOLDER : undefined);
 
   // Fallback for error state
   if (hasError) {
@@ -49,49 +53,24 @@ export default function OptimizedImage({
     );
   }
 
-  // Use regular img tag for proxy URLs to avoid Next.js image optimization issues
-  if (isProxyUrl) {
-    return (
-      <div className={`relative ${className}`}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={src}
-          alt={alt}
-          className={`
-            transition-opacity duration-300
-            opacity-100
-            ${fill ? 'absolute inset-0 w-full h-full object-cover' : ''}
-          `}
-          style={{
-            ...style,
-            ...(fill ? { position: 'absolute', height: '100%', width: '100%', inset: 0 } : {})
-          }}
-          onError={() => setHasError(true)}
-          {...props}
-        />
-      </div>
-    );
-  }
-
-  // Use Next.js Image for non-proxy URLs
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative ${className}`} style={!fill ? { width, height } : undefined}>
       <Image
         src={src}
         alt={alt}
-        width={width}
-        height={height}
-        className={`
-          transition-opacity duration-300
-          ${isLoading ? 'opacity-0' : 'opacity-100'}
-        `}
-        priority={priority}
+        width={fill ? undefined : width}
+        height={fill ? undefined : height}
         fill={fill}
         sizes={sizes}
+        priority={priority}
         placeholder={placeholder}
-        blurDataURL={blurDataURL}
+        blurDataURL={effectiveBlurDataURL}
+        unoptimized={isProxy} // Bypass Next.js optimization for proxy URLs
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : 'auto'}
         style={style}
         onLoadingComplete={() => setIsLoading(false)}
+        onError={() => setHasError(true)}
         {...props}
       />
       {isLoading && (

@@ -7,6 +7,7 @@ import HotelPageTracker from '@/app/components/HotelPageTracker';
 import { HOTEL_IMAGES } from '@/lib/hotelData';
 import DynamicHotelData from './DynamicHotelData';
 import BreadcrumbNav from '@/app/components/BreadcrumbNav';
+import OptimizedImage from '@/app/components/OptimizedImage';
 
 // Create a mapping from slug to hotel name for metadata
 const SLUG_TO_HOTEL_NAME: Record<string, string> = {
@@ -349,12 +350,12 @@ export default async function HotelSlugPage({
             {/* Logo and Navigation Links */}
             <div className="flex items-center gap-6">
               <a href="/" className="flex flex-col items-center">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <OptimizedImage
                   src="/innstastay-logo.svg"
                   alt="InnstaStay Logo"
                   width={100}
                   height={80}
+                  priority
                   className="h-12 sm:h-16 md:h-20 w-auto block"
                 />
                 <span className="text-xs text-blue-600 tracking-wide mt-1">Commission-Free Booking</span>
