@@ -15,6 +15,7 @@ import SearchShortcuts from '@/app/components/SearchShortcuts';
 import SecondaryCTA from '@/app/components/SecondaryCTA';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import OptimizedImage from '@/app/components/OptimizedImage';
+import { proxify } from '@/lib/img';
 
 export default function HomePageClient() {
   const [searchParams, setSearchParams] = useState<SearchParams>({
@@ -292,18 +293,18 @@ export default function HomePageClient() {
           
                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
              {TORONTO_HOTELS.map((hotel) => {
-               const slug = HOTEL_SLUG_MAP[hotel.token];
-               const proxyImageUrl = hotel.image_url ? `/api/hotel-images?url=${encodeURIComponent(hotel.image_url)}&hotel=${encodeURIComponent(hotel.name)}` : null;
+                               const slug = HOTEL_SLUG_MAP[hotel.token];
                return (
                  <div key={hotel.token} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
                                        {/* Hotel Image */}
                     <div className="h-48 w-full relative">
-                      {proxyImageUrl ? (
+                      {hotel.image_url ? (
                         <OptimizedImage 
-                          src={proxyImageUrl} 
+                          src={proxify(hotel.image_url, hotel.name)} 
                           alt={hotel.name} 
-                          fill={true}
+                          fill
                           className="object-cover"
+                          wrapperClassName="rounded-xl overflow-hidden"
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                       ) : (

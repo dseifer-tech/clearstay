@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import OptimizedImage from '@/app/components/OptimizedImage';
+import { proxify } from '@/lib/img';
 
 interface Hotel {
   name: string;
@@ -96,12 +97,13 @@ export default function DynamicHotelData({ slug, searchParams, hotel, hasSearchP
               {dynamicHotelData.images && dynamicHotelData.images.length > 0 && (
                 <div className="w-full lg:w-80 h-56 lg:h-48 flex-shrink-0 relative rounded-xl overflow-hidden shadow-lg">
                   <OptimizedImage
-                    src={`/api/hotel-images?url=${encodeURIComponent(dynamicHotelData.images[0])}&hotel=${encodeURIComponent(hotel.name)}`}
+                    src={proxify(dynamicHotelData.images[0], hotel.name)}
                     alt={hotel.name}
                     fill
                     sizes="(max-width: 1024px) 100vw, 320px"
                     placeholder="blur"
                     className="object-cover"
+                    wrapperClassName="rounded-xl overflow-hidden"
                   />
                 </div>
               )}
@@ -142,12 +144,13 @@ export default function DynamicHotelData({ slug, searchParams, hotel, hasSearchP
                   {room.images && room.images.length > 0 && (
                     <div className="w-full h-48 relative overflow-hidden">
                       <OptimizedImage
-                        src={`/api/hotel-images?url=${encodeURIComponent(room.images[0])}&hotel=${encodeURIComponent(hotel.name)}`}
+                        src={proxify(room.images[0], hotel.name)}
                         alt={room.name}
                         fill
                         sizes="(max-width: 768px) 100vw, 400px"
                         placeholder="blur"
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        wrapperClassName="overflow-hidden"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                     </div>

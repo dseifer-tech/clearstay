@@ -291,8 +291,9 @@ export default function AboutPageClient() {
                       <OptimizedImage 
                         src={proxify(hotel.image_url, hotel.name)} 
                         alt={hotel.name} 
-                        fill={true}
+                        fill
                         className="object-cover"
+                        wrapperClassName="rounded-xl overflow-hidden"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     ) : (

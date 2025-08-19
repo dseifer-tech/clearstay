@@ -289,13 +289,15 @@ export default function DowntownPageClient() {
               }
             ].map((poi, i) => (
               <div key={i} className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 flex gap-4">
-                <OptimizedImage
-                  src={poi.thumbnail}
-                  alt={poi.name}
-                  width={112}
-                  height={112}
-                  className="w-28 h-28 rounded-lg object-cover flex-shrink-0"
-                />
+                <div className="w-28 h-28 relative rounded-lg overflow-hidden flex-shrink-0">
+                  <OptimizedImage
+                    src={poi.thumbnail}
+                    alt={poi.name}
+                    fill
+                    className="object-cover"
+                    wrapperClassName="rounded-lg overflow-hidden"
+                  />
+                </div>
                 <div className="flex-1">
                   <a href={`/search?near=${poi.name.toLowerCase().replace(/\s+/g, '-')}`} className="block">
                     <h3 className="text-lg font-semibold text-blue-600 hover:underline">{poi.name}</h3>

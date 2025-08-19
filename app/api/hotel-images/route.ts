@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { IMAGE_OPTIMIZATION } from '@/lib/constants';
 
+// Force Node runtime and disable caching for Vercel
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0; // disable ISR for this route
+
 // Security: Blocked hosts and private IP ranges
 const BLOCKED_HOSTS = new Set(['localhost', '127.0.0.1', '::1']);
 const PRIVATE_CIDR = [/^10\./, /^192\.168\./, /^172\.(1[6-9]|2\d|3[0-1])\./, /^169\.254\./];
@@ -10,83 +15,83 @@ function isPrivateHost(host: string): boolean {
   return PRIVATE_CIDR.some(rx => rx.test(host));
 }
 
+// Normalize image URLs to prevent oversized responses
+function normalizeImageUrl(u: URL) {
+  // Google Photos: enforce a smaller size (e.g., s1200)
+  if (u.hostname.endsWith('googleusercontent.com')) {
+    // Common pattern: .../p/<id>=sNNNN
+    u.search = ''; // strip any search (they usually use =s### as a suffix, not query)
+    u.pathname = u.pathname.replace(/=s\d+$/, '=s1200');
+    if (!/=s\d+$/.test(u.pathname)) {
+      u.pathname += '=s1200';
+    }
+  }
+  // OPTIONAL: add other CDNs here (e.g., ?w=1200 for known hosts)
+
+  return u;
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const imageUrl = searchParams.get('url');
+  const urlStr = searchParams.get('url');
   const hotelName = searchParams.get('hotel') || 'image';
 
-  if (!imageUrl) {
+  if (!urlStr) {
     return NextResponse.json({ error: 'Image URL is required' }, { status: 400 });
   }
 
-  // Validate URL format and security
+  // UNWRAP if someone double-proxied
+  let target = urlStr;
+  try {
+    const t = new URL(urlStr, 'https://dummy.invalid');
+    if (t.pathname.startsWith('/api/hotel-images') && t.searchParams.get('url')) {
+      target = t.searchParams.get('url')!;
+    }
+  } catch {}
+
   let url: URL;
   try {
-    url = new URL(imageUrl);
+    url = new URL(target);
   } catch {
     return NextResponse.json({ error: 'Invalid URL' }, { status: 400 });
   }
 
-  // Security checks
   if (!/^https?:$/.test(url.protocol) || isPrivateHost(url.hostname)) {
     return NextResponse.json({ error: 'Blocked URL' }, { status: 400 });
   }
 
+  // Normalize the URL to prevent oversized responses
+  url = normalizeImageUrl(url);
+
   try {
-    const res = await fetch(url.toString(), {
+    const upstream = await fetch(url.toString(), {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'User-Agent': 'Mozilla/5.0',
         'Accept': 'image/avif,image/webp,image/*,*/*;q=0.8',
         'Referer': url.origin,
       },
-      cache: 'no-store', // Don't cache the fetch, but we'll set our own cache headers
-      signal: AbortSignal.timeout(10000), // 10 second timeout
+      cache: 'no-store',
     });
 
-    if (!res.ok) {
-      console.error(`HTTP error ${res.status} for ${hotelName}: ${imageUrl}`);
-      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    if (!upstream.ok) {
+      return NextResponse.json({ error: `Upstream ${upstream.status}` }, { status: 502 });
     }
 
-    // Validate content type
-    const contentType = res.headers.get('content-type') || 'application/octet-stream';
-    if (!contentType.startsWith('image/')) {
-      console.error(`Invalid content type for ${hotelName}: ${contentType}`);
-      throw new Error(`Invalid content type: ${contentType}`);
+    const type = upstream.headers.get('content-type') ?? 'application/octet-stream';
+    if (!type.startsWith('image/')) {
+      return NextResponse.json({ error: `Invalid content type: ${type}` }, { status: 502 });
     }
 
-    const arrayBuf = await res.arrayBuffer();
-
-    // Return the image with proper headers
-    const resp = new NextResponse(arrayBuf, {
+    const buf = await upstream.arrayBuffer();
+    return new NextResponse(buf, {
       status: 200,
       headers: {
-        'Content-Type': contentType,
+        'Content-Type': type,
         'Cache-Control': IMAGE_OPTIMIZATION.CACHE.PROXY,
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET',
-        'Access-Control-Allow-Headers': 'Content-Type',
       },
     });
-    return resp;
   } catch (error) {
-    console.error(`Error fetching hotel image for ${hotelName}:`, error);
-    console.error(`Failed URL: ${imageUrl}`);
-    
-    // Return a 1x1 transparent PNG instead of JSON error
-    const transparentPng = Uint8Array.from(
-      atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAD0lEQVR4nGMAAQAABQABNqv1nQAAAABJRU5ErkJggg=='),
-      c => c.charCodeAt(0)
-    );
-    
-    return new NextResponse(transparentPng, {
-      status: 200,
-      headers: {
-        'Content-Type': 'image/png',
-        'Cache-Control': IMAGE_OPTIMIZATION.CACHE.FALLBACK,
-        'Access-Control-Allow-Origin': '*',
-        'X-Fallback': 'true',
-      },
-    });
+    console.error('Image proxy error:', error);
+    return NextResponse.json({ error: 'Failed to fetch image' }, { status: 502 });
   }
 }
