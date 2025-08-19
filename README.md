@@ -274,6 +274,235 @@ npm run type-check   # Run TypeScript checks
 2. Inspect image elements for correct `src` attributes and `opacity-100` classes
 3. Verify parent containers have proper height and positioning context
 
+## 🖼️ Image Optimization System
+
+### Overview
+The image optimization system provides secure, performant image delivery for both local and external hotel images. It eliminates mixed usage of raw `<img>` tags and `next/image`, resolves proxy and optimization mismatches, and ensures proper caching and security.
+
+### Architecture Components
+
+#### 1. Image Proxy API (`/api/hotel-images`)
+**Purpose:** Secure server-side proxy for external images
+**Location:** `app/api/hotel-images/route.ts`
+
+**Key Features:**
+- **SSRF Protection:** Blocks private IPs, localhost, and internal networks
+- **Content Validation:** Ensures responses are actual images
+- **Google Photos Optimization:** Downsizes massive images (s10000 → s1200)
+- **Streaming Responses:** Prevents memory issues on Vercel
+- **Error Handling:** Returns transparent 1x1 PNG on failures
+- **Caching:** CDN-friendly cache headers (24h cache, 7d stale-while-revalidate)
+
+**Configuration:**
+```typescript
+export const runtime = 'nodejs';           // Force Node.js runtime
+export const dynamic = 'force-dynamic';    // Disable Vercel caching
+export const revalidate = 0;               // Disable ISR
+```
+
+**Security Measures:**
+```typescript
+const BLOCKED = new Set(['localhost', '127.0.0.1']);
+const PRIVATE = [/^10\./, /^192\.168\./, /^172\.(1[6-9]|2\d|3[0-1])\./, /^169\.254\./];
+```
+
+#### 2. OptimizedImage Component
+**Purpose:** Centralized image component with consistent optimization
+**Location:** `app/components/OptimizedImage.tsx`
+
+**Key Features:**
+- **Dual Styling:** Separate `className` (for `<img>`) and `wrapperClassName` (for container)
+- **Proxy Detection:** Automatically uses `unoptimized=true` for proxy URLs
+- **Loading States:** Skeleton loading with blur placeholders
+- **Error Handling:** Graceful fallback for failed images
+- **Performance:** Priority loading and fetch priority hints
+
+**Critical Layout Fix:**
+```tsx
+// WRONG - causes zero-height images with fill prop
+<div className="h-48 w-full relative">
+  <OptimizedImage
+    src={proxify(hotel.image_url, hotel.name)}
+    alt={hotel.name}
+    fill
+    className="object-cover h-48 w-full relative" // ❌ className on <img> doesn't size wrapper
+  />
+</div>
+
+// CORRECT - wrapperClassName handles sizing
+<OptimizedImage
+  src={proxify(hotel.image_url, hotel.name)}
+  alt={hotel.name}
+  fill
+  className="object-cover" // ✅ styles the <img> element
+  wrapperClassName="h-48 w-full relative rounded-xl overflow-hidden" // ✅ styles the wrapper
+/>
+```
+
+#### 3. Proxify Helper Function
+**Purpose:** Safely convert external URLs to proxy URLs
+**Location:** `lib/img.ts`
+
+**Key Features:**
+- **Bullet-proof:** Unwraps accidental double-proxying
+- **Local Asset Support:** Preserves local paths (`/logo.svg`)
+- **URL Validation:** Handles malformed URLs gracefully
+
+**Usage:**
+```typescript
+import { proxify } from '@/lib/img';
+
+// External image → proxy URL
+proxify('https://lh5.googleusercontent.com/photo.jpg', 'Hotel Name')
+// Returns: /api/hotel-images?url=https%3A%2F%2Flh5.googleusercontent.com%2Fphoto.jpg&hotel=Hotel%20Name
+
+// Local asset → unchanged
+proxify('/innstastay-logo.svg', 'Hotel Name')
+// Returns: /innstastay-logo.svg
+
+// Already proxied → unwrapped and re-proxied
+proxify('/api/hotel-images?url=https://example.com/image.jpg', 'Hotel Name')
+// Returns: /api/hotel-images?url=https%3A%2F%2Fexample.com%2Fimage.jpg&hotel=Hotel%20Name
+```
+
+#### 4. Constants and Configuration
+**Purpose:** Centralized configuration for image optimization
+**Location:** `lib/constants.ts`
+
+**Key Constants:**
+```typescript
+export const BLUR_PLACEHOLDER = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAD0lEQVR4nGMAAQAABQABNqv1nQAAAABJRU5ErkJggg==';
+export const IMAGE_OPTIMIZATION = {
+  CACHE: {
+    PROXY: 'public, s-maxage=86400, stale-while-revalidate=604800',
+    FALLBACK: 'public, s-maxage=600',
+  }
+};
+```
+
+### Implementation Checklist
+
+#### ✅ Completed Fixes
+1. **Eliminated Mixed Usage**
+   - Converted all raw `<img>` tags to `OptimizedImage`
+   - Consistent proxy usage across all components
+
+2. **Proxy Safety & Caching**
+   - SSRF protection with IP validation
+   - Content-type validation and forwarding
+   - CDN-friendly cache headers
+   - Transparent PNG error fallback
+
+3. **Google Photos Optimization**
+   - URL normalization to prevent oversized responses
+   - Automatic downsizing (s10000 → s1200)
+   - Prevents Vercel function timeouts
+
+4. **Layout Issues Resolved**
+   - Fixed `fill` prop requiring sized, relative parent
+   - Applied sizing classes to `wrapperClassName`
+   - Separated image styling (`className`) from container styling (`wrapperClassName`)
+
+5. **Double-Proxying Prevention**
+   - Bullet-proof `proxify` function
+   - Auto-unwrapping in API route
+   - Consistent usage patterns
+
+#### 🔧 Critical Implementation Details
+
+**1. Vercel Deployment Requirements:**
+```typescript
+// app/api/hotel-images/route.ts
+export const runtime = 'nodejs';           // Required for fetch() and streaming
+export const dynamic = 'force-dynamic';    // Prevents aggressive caching
+export const revalidate = 0;               // Disables ISR
+```
+
+**2. Streaming Response Pattern:**
+```typescript
+// Prevents memory/size issues on Vercel
+if (upstream.body) {
+  return new NextResponse(upstream.body as any, {
+    status: 200,
+    headers: { 'Content-Type': type, 'Cache-Control': cacheHeader }
+  });
+}
+```
+
+**3. Layout Requirements for Fill Images:**
+```tsx
+// Parent container MUST have:
+// - position: relative (or relative class)
+// - explicit height (h-48, h-56, etc.)
+// - explicit width (w-full, w-80, etc.)
+
+<OptimizedImage
+  src={proxify(imageUrl, hotelName)}
+  alt={hotelName}
+  fill
+  className="object-cover" // styles the <img>
+  wrapperClassName="h-48 w-full relative rounded-xl overflow-hidden" // styles the wrapper
+/>
+```
+
+**4. Error Handling Pattern:**
+```typescript
+// Transparent 1x1 PNG fallback
+const b64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAD0lEQVR4nGMAAQAABQABNqv1nQAAAABJRU5ErkJggg==';
+return new NextResponse(Buffer.from(b64, 'base64'), {
+  status: 502,
+  headers: { 'Content-Type': 'image/png', 'Cache-Control': 'public, s-maxage=600' }
+});
+```
+
+### Debugging Guide
+
+#### Common Issues and Solutions
+
+**1. Images Not Visible (200 OK but blank)**
+- **Cause:** Layout issue - `fill` prop needs sized, relative parent
+- **Solution:** Apply sizing classes to `wrapperClassName`
+- **Check:** Inspect element for zero-height wrapper div
+
+**2. Double-Proxying Errors (400 Bad Request)**
+- **Cause:** URL parameter already contains proxy URL
+- **Solution:** Use `proxify()` helper consistently, never build proxy URLs manually
+- **Check:** Network tab for malformed proxy URLs
+
+**3. Vercel Function Timeouts**
+- **Cause:** Oversized Google Photos images
+- **Solution:** URL normalization in proxy API
+- **Check:** Image URLs containing `=s10000` or similar large sizes
+
+**4. CORS Errors**
+- **Cause:** Direct external image requests from client
+- **Solution:** Always use proxy for external images
+- **Check:** Network tab for direct external requests
+
+#### Verification Commands
+```bash
+# Check for any remaining raw <img> tags
+grep -r "<img" app/ --include="*.tsx" --include="*.ts"
+
+# Verify proxy usage
+grep -r "proxify(" app/ --include="*.tsx" --include="*.ts"
+
+# Check for manual proxy URL construction
+grep -r "/api/hotel-images?url=" app/ --include="*.tsx" --include="*.ts"
+```
+
+### Performance Impact
+- **Proxy Overhead:** ~50-100ms per external image
+- **Caching Benefit:** 24-hour CDN cache reduces repeat requests
+- **Memory Usage:** Streaming responses prevent Vercel memory limits
+- **Bundle Size:** Minimal impact (shared constants and helper)
+
+### Security Considerations
+- **SSRF Protection:** Blocks private IPs and internal networks
+- **Content Validation:** Ensures responses are actual images
+- **URL Sanitization:** Prevents injection attacks
+- **Error Handling:** Safe fallbacks prevent information leakage
+
 ## 🎯 Business Model
 
 ### Commission-Free Approach
