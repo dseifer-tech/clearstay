@@ -7,6 +7,7 @@ import MobileMenu from '@/app/components/MobileMenu';
 import SecondaryCTA from '@/app/components/SecondaryCTA';
 import { TORONTO_HOTELS, HOTEL_SLUG_MAP } from '@/lib/hotels';
 import OptimizedImage from '@/app/components/OptimizedImage';
+import { proxify } from '@/lib/img';
 
 export default function AboutPageClient() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -288,7 +289,7 @@ export default function AboutPageClient() {
                   <div className="h-48 w-full relative">
                     {hotel.image_url ? (
                       <OptimizedImage 
-                        src={hotel.image_url} 
+                        src={proxify(hotel.image_url, hotel.name)} 
                         alt={hotel.name} 
                         fill={true}
                         className="object-cover"

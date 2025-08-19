@@ -12,6 +12,7 @@ import LoadingSpinner from '@/app/components/LoadingSpinner';
 import OptimizedImage from '@/app/components/OptimizedImage';
 import { gtmEvent } from '@/lib/ga4';
 import ProfessionalCalendar from '@/app/components/ProfessionalCalendar';
+import { proxify } from '@/lib/img';
 
 interface HotelRoom {
   hotel: string;
@@ -140,21 +141,21 @@ function Attractions() {
     { 
       name: 'CN Tower', 
       min: '8 min', 
-      img: 'https://lh5.googleusercontent.com/p/AF1QipMt1ZolVWnJTgIMqogAUCjh9EldFh8vSDHY5TU=s10000',
+      img: proxify('https://lh5.googleusercontent.com/p/AF1QipMt1ZolVWnJTgIMqogAUCjh9EldFh8vSDHY5TU=s10000', 'CN Tower'),
       rating: 4.5,
       type: 'Landmark'
     },
     { 
       name: 'Royal Ontario Museum', 
       min: '10 min', 
-      img: 'https://lh5.googleusercontent.com/p/AF1QipPI-2hASi1fH2dzw3hOyxjk2UV9CVV9P3sKUYuX=s10000',
+      img: proxify('https://lh5.googleusercontent.com/p/AF1QipPI-2hASi1fH2dzw3hOyxjk2UV9CVV9P3sKUYuX=s10000', 'Royal Ontario Museum'),
       rating: 4.3,
       type: 'Museum'
     },
     { 
       name: 'Ripley\'s Aquarium', 
       min: '9 min', 
-      img: 'https://lh5.googleusercontent.com/p/AF1QipMvGKOVckX0M2FfmY-77Mt9eykQw6pHyHgmK067=s10000',
+      img: proxify('https://lh5.googleusercontent.com/p/AF1QipMvGKOVckX0M2FfmY-77Mt9eykQw6pHyHgmK067=s10000', 'Ripley\'s Aquarium'),
       rating: 4.4,
       type: 'Aquarium'
     },
@@ -599,7 +600,7 @@ export default function SearchPageClient() {
                    <div className="h-48 w-full relative image-hover-zoom" style={{ minHeight: '192px' }}>
                                            {hotel.image ? (
                         <OptimizedImage 
-                          src={hotel.image} 
+                          src={proxify(hotel.image, hotel.hotel)} 
                           alt={hotel.hotel} 
                           fill={true}
                           className="object-cover"
