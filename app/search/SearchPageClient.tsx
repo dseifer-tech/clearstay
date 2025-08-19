@@ -307,9 +307,6 @@ export default function SearchPageClient() {
         }
 
                  const data = await response.json();
-         console.log('API Response:', data);
-         console.log('Hotel images:', data.map((hotel: any) => ({ name: hotel.hotel, image: hotel.image })));
-         console.log('First hotel full data:', data[0]);
          setHotels(data);
         
         // Track successful hotel search
@@ -609,14 +606,8 @@ export default function SearchPageClient() {
                       ) : (
                         <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                           <span className="text-gray-400">No image available</span>
-                          <div className="text-xs text-gray-500 mt-1">Debug: {JSON.stringify(hotel.image)}</div>
                         </div>
                       )}
-                      
-                      {/* Debug info */}
-                      <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs p-1 rounded">
-                        Image: {hotel.image ? 'Yes' : 'No'}
-                      </div>
                      
                      {/* Rating Badge */}
                      {hotel.rating && (
