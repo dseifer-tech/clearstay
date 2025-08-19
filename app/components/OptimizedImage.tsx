@@ -9,7 +9,8 @@ interface OptimizedImageProps {
   alt: string;
   width?: number;
   height?: number;
-  className?: string;
+  className?: string;        // styles for the <img>
+  wrapperClassName?: string; // styles for the wrapper div
   priority?: boolean;
   fill?: boolean;
   sizes?: string;
@@ -24,6 +25,7 @@ export default function OptimizedImage({
   width,
   height,
   className = '',
+  wrapperClassName,
   priority = false,
   fill = false,
   sizes,
@@ -45,7 +47,7 @@ export default function OptimizedImage({
   if (hasError) {
     return (
       <div 
-        className={`bg-gray-200 flex items-center justify-center ${className}`}
+        className={`bg-gray-200 flex items-center justify-center ${wrapperClassName ?? ''}`}
         style={!fill ? { width, height } : undefined}
       >
         <span className="text-gray-400 text-sm">Image unavailable</span>
@@ -54,7 +56,10 @@ export default function OptimizedImage({
   }
 
   return (
-    <div className={`relative ${className}`} style={!fill ? { width, height } : undefined}>
+    <div
+      className={`relative ${wrapperClassName ?? ''}`}
+      style={!fill ? { width, height } : undefined}
+    >
       <Image
         src={src}
         alt={alt}
@@ -65,12 +70,13 @@ export default function OptimizedImage({
         priority={priority}
         placeholder={placeholder}
         blurDataURL={effectiveBlurDataURL}
-        unoptimized={isProxy} // Bypass Next.js optimization for proxy URLs
+        unoptimized={isProxy}
         loading={priority ? 'eager' : 'lazy'}
         fetchPriority={priority ? 'high' : 'auto'}
         style={style}
         onLoadingComplete={() => setIsLoading(false)}
         onError={() => setHasError(true)}
+        className={className} // applies directly to the <img>
         {...props}
       />
       {isLoading && (
