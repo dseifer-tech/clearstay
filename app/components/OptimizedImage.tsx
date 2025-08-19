@@ -31,7 +31,7 @@ export default function OptimizedImage({
   style,
   ...props
 }: OptimizedImageProps) {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!priority);
   const [hasError, setHasError] = useState(false);
 
   // Check if this is a proxy URL (should bypass Next.js image optimization)
@@ -95,8 +95,7 @@ export default function OptimizedImage({
         placeholder={placeholder}
         blurDataURL={blurDataURL}
         style={style}
-        onLoad={() => setIsLoading(false)}
-        onError={() => setHasError(true)}
+        onLoadingComplete={() => setIsLoading(false)}
         {...props}
       />
       {isLoading && (

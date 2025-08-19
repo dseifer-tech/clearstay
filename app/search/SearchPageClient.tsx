@@ -309,6 +309,7 @@ export default function SearchPageClient() {
                  const data = await response.json();
          console.log('API Response:', data);
          console.log('Hotel images:', data.map((hotel: any) => ({ name: hotel.hotel, image: hotel.image })));
+         console.log('First hotel full data:', data[0]);
          setHotels(data);
         
         // Track successful hotel search
