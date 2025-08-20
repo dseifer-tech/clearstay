@@ -280,88 +280,122 @@ export default function HomePageClient() {
       </section>
 
       {/* Hotel Directory Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-slate-800 mb-6">
               Featured Hotels in Toronto
             </h2>
-            <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
               Discover our curated selection of premium hotels in downtown Toronto. Each property offers direct booking with no commissions.
             </p>
           </div>
           
-                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-             {TORONTO_HOTELS.map((hotel) => {
-                               const slug = HOTEL_SLUG_MAP[hotel.token];
-               return (
-                 <div key={hotel.token} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
-                                       {/* Hotel Image */}
-                    <div className="h-48 w-full relative">
-                      {hotel.image_url ? (
-                        <OptimizedImage 
-                          src={proxify(hotel.image_url, hotel.name)} 
-                          alt={hotel.name} 
-                          fill
-                          className="object-cover"
-                          wrapperClassName="h-48 w-full relative rounded-xl overflow-hidden"
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                          <span className="text-gray-400">Hotel Image</span>
-                        </div>
-                      )}
-                      
-                      {/* Rating Badge */}
-                      <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="text-sm font-semibold text-gray-800">{hotel.rating}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {TORONTO_HOTELS.map((hotel, index) => {
+              const slug = HOTEL_SLUG_MAP[hotel.token];
+              // Create a subtle color variation for each card
+              const colorVariants = [
+                'from-blue-500/10 to-indigo-500/10 border-blue-200/50',
+                'from-emerald-500/10 to-teal-500/10 border-emerald-200/50',
+                'from-purple-500/10 to-violet-500/10 border-purple-200/50',
+                'from-amber-500/10 to-orange-500/10 border-amber-200/50',
+                'from-rose-500/10 to-pink-500/10 border-rose-200/50',
+                'from-cyan-500/10 to-blue-500/10 border-cyan-200/50'
+              ];
+              const colorVariant = colorVariants[index % colorVariants.length];
+              
+              return (
+                <div key={hotel.token} className={`group relative bg-white/80 backdrop-blur-sm rounded-2xl border ${colorVariant} shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden`}>
+                  {/* Gradient overlay for subtle color */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${colorVariant} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
+                  
+                  {/* Hotel Image */}
+                  <div className="h-56 w-full relative overflow-hidden">
+                    {hotel.image_url ? (
+                      <OptimizedImage 
+                        src={proxify(hotel.image_url, hotel.name)} 
+                        alt={hotel.name} 
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-700"
+                        wrapperClassName="h-56 w-full relative overflow-hidden"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center">
+                        <Building className="w-12 h-12 text-slate-400" />
+                      </div>
+                    )}
+                    
+                    {/* Rating Badge */}
+                    <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md rounded-xl px-3 py-2 flex items-center gap-2 shadow-lg">
+                      <Star className="w-4 h-4 text-amber-500 fill-current" />
+                      <span className="text-sm font-bold text-slate-800">{hotel.rating}</span>
+                    </div>
+                    
+                    {/* Premium Badge */}
+                    <div className="absolute top-4 right-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                      Premium
+                    </div>
+                  </div>
+
+                  {/* Hotel Info */}
+                  <div className="p-6 relative z-10">
+                    <h3 className="font-bold text-xl text-slate-800 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
+                      {hotel.name}
+                    </h3>
+                    
+                    <p className="text-sm text-slate-600 mb-4 line-clamp-2 leading-relaxed">
+                      {hotel.address}
+                    </p>
+
+                    {/* Amenities */}
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {hotel.amenities?.slice(0, 2).map((amenity: string, index: number) => (
+                        <span
+                          key={index}
+                          className="text-xs bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 px-3 py-1 rounded-full font-medium"
+                        >
+                          {amenity}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Features */}
+                    <div className="flex items-center gap-4 mb-6 text-xs text-slate-500">
+                      <div className="flex items-center gap-1">
+                        <Shield className="w-3 h-3" />
+                        <span>Direct Booking</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <DollarSign className="w-3 h-3" />
+                        <span>No Commission</span>
                       </div>
                     </div>
 
-                   {/* Hotel Info */}
-                   <div className="p-4">
-                     <h3 className="font-semibold text-lg text-gray-800 mb-2 line-clamp-2">
-                       {hotel.name}
-                     </h3>
-                     
-                     <p className="text-sm text-gray-600 mb-3 line-clamp-1">
-                       {hotel.address}
-                     </p>
-
-                     {/* Amenities */}
-                     <div className="flex flex-wrap gap-1 mb-3">
-                       {hotel.amenities?.slice(0, 2).map((amenity: string, index: number) => (
-                         <span
-                           key={index}
-                           className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
-                         >
-                           {amenity}
-                         </span>
-                       ))}
-                     </div>
-
-                     {/* Action Buttons */}
-                     <div className="flex gap-2">
-                       <a
-                         href={`/hotels/${slug}`}
-                         className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center gap-2"
-                       >
-                         <Eye className="w-4 h-4" />
-                         View Hotel
-                       </a>
-                     </div>
-                   </div>
-                 </div>
-               );
-             })}
-           </div>
+                    {/* Action Button */}
+                    <div className="flex gap-3">
+                      <a
+                        href={`/hotels/${slug}`}
+                        className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                      >
+                        <Eye className="w-4 h-4" />
+                        View Hotel
+                      </a>
+                    </div>
+                  </div>
+                  
+                  {/* Subtle border glow on hover */}
+                  <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-blue-300/50 transition-colors duration-500 pointer-events-none"></div>
+                </div>
+              );
+            })}
+          </div>
           
-          <div className="text-center mt-8">
+          <div className="text-center mt-12">
             <a 
               href="/search" 
-              className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-sm font-semibold shadow hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
+              className="inline-block bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 rounded-xl text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
             >
               View All Hotels →
             </a>
