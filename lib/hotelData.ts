@@ -6,6 +6,9 @@ const descriptionCache: { [key: string]: string } = {};
 // Static cache for hotel metadata
 const globalCache = (global as any)._hotelStaticCache ||= {};
 
+// Environment validation
+import { validateEnv } from '@/lib/env';
+
 // Helper function to format date as MM/DD/YYYY
 function formatDateToMMDDYYYY(dateString: string): string {
   const date = new Date(dateString);
@@ -127,28 +130,22 @@ function parseHotelDescription(data: any, hotelName: string): string {
 }
 
 export async function fetch_individual_hotel(slug: string, checkin: string, checkout: string, adults: number, children: number) {
-  console.log(`fetch_individual_hotel: Processing slug: ${slug}`);
-  
   const token = SLUG_TO_TOKEN[slug];
   if (!token) {
-    console.error(`fetch_individual_hotel: Invalid slug: ${slug}`);
     throw new Error(`Invalid slug: ${slug}`);
   }
 
   const hotelName = SLUG_TO_HOTEL_NAME[slug];
   if (!hotelName) {
-    console.error(`fetch_individual_hotel: Hotel not found for slug: ${slug}`);
     throw new Error(`Hotel not found for slug: ${slug}`);
   }
-  
-  console.log(`fetch_individual_hotel: Found hotel: ${hotelName} with token: ${token}`);
 
   const apiKey = process.env.SERPAPI_KEY;
   if (!apiKey) {
-    console.log("SERPAPI_KEY environment variable is not set, using fallback data");
-    const fallbackData = getFallbackHotelData(slug, hotelName, checkin, checkout, adults, children);
-    console.log("Fallback data generated:", fallbackData);
-    return fallbackData;
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('SERPAPI_KEY environment variable is required in production');
+    }
+    return getFallbackHotelData(slug, hotelName, checkin, checkout, adults, children);
   }
 
   const serpUrl = `https://serpapi.com/search.json?engine=google_hotels&q=Toronto&property_token=${token}&check_in_date=${checkin}&check_out_date=${checkout}&adults=${adults}&children=${children}&currency=CAD&hl=en&gl=ca&api_key=${apiKey}`;
@@ -166,7 +163,6 @@ export async function fetch_individual_hotel(slug: string, checkin: string, chec
     }
 
     const data = await response.json();
-    console.log(`API Response for ${hotelName}:`, JSON.stringify(data, null, 2));
 
     // Extract hotel metadata from the response
     const hotelMetadata = data.hotel_info || data.hotel || {};

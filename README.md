@@ -24,9 +24,14 @@ InnstaStay is a direct booking platform that:
 
 ### Backend & APIs
 - **SerpAPI** - Hotel data and real-time pricing
+  - Rate limit: 100 requests/month (free tier)
+  - Real-time availability and pricing
+  - Hotel images and amenities data
 - **Next.js API Routes** - Serverless backend functions
-- **Rate Limiting** - API protection
-- **Input Validation** - Sanitized user inputs
+  - `/api/search` - Hotel search endpoint
+  - `/api/hotel-images` - Image proxy for external images
+- **Rate Limiting** - API protection with request throttling
+- **Input Validation** - Sanitized user inputs with Zod schemas
 
 ### SEO & Analytics
 - **Google Analytics 4** - User tracking
@@ -43,7 +48,7 @@ InnstaStay is a direct booking platform that:
 ## 📁 Project Structure
 
 ```
-ClearStay/
+InnstaStay/
 ├── app/                          # Next.js App Router
 │   ├── api/                      # API routes
 │   │   └── search/               # Hotel search endpoint
@@ -154,6 +159,16 @@ ClearStay/
 - **Performance** - Optimized loading speeds
 
 ## 🚀 Getting Started
+
+### Quick Start
+```bash
+# Clone and setup in under 2 minutes
+git clone https://github.com/dseifer-tech/innstastay.git
+cd innstastay
+npm install
+cp .env.example .env.local  # Add your SERPAPI_KEY
+npm run dev
+```
 
 ### Prerequisites
 - Node.js 18+ 
@@ -566,6 +581,12 @@ grep -r "/api/hotel-images?url=" app/ --include="*.tsx" --include="*.ts"
 ## 📄 License
 
 This project is proprietary software. All rights reserved.
+
+See [LICENSE](LICENSE) file for details.
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) for details.
 
 ## 🙏 Acknowledgments
 

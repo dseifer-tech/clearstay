@@ -15,7 +15,7 @@ export default function Analytics() {
   useEffect(() => {
     // Track page views
     if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('config', 'G-XXXXXXXXXX', {
+      window.gtag('config', process.env.NEXT_PUBLIC_GA_ID || 'G-XXXXXXXXXX', {
         page_path: pathname,
       });
     }
