@@ -288,7 +288,7 @@ export default function DowntownPageClient() {
                 description: "Downtown public space hosting community events, concerts, and cultural activations."
               }
             ].map((poi, i) => (
-              <div key={i} className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 flex gap-4">
+              <div key={poi.name} className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 flex gap-4">
                 <div className="w-28 h-28 relative rounded-lg overflow-hidden flex-shrink-0">
                   <OptimizedImage
                     src={poi.thumbnail}

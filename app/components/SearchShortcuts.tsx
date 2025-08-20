@@ -41,7 +41,7 @@ export default function SearchShortcuts() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {shortcuts.map((shortcut, index) => (
             <a
-              key={index}
+              key={shortcut.title}
               href={shortcut.href}
               className="group bg-gray-50 hover:bg-blue-50 rounded-xl p-4 text-center transition-all duration-200 hover:shadow-md hover:-translate-y-1"
             >

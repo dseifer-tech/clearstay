@@ -353,7 +353,7 @@ export default function HomePageClient() {
                     <div className="flex flex-wrap gap-2 mb-6">
                       {hotel.amenities?.slice(0, 2).map((amenity: string, index: number) => (
                         <span
-                          key={index}
+                          key={`amenity-${amenity}`}
                           className="text-xs bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 px-3 py-1 rounded-full font-medium"
                         >
                           {amenity}

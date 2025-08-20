@@ -479,7 +479,7 @@ export default async function HotelSlugPage({
             <h4 className="font-semibold text-gray-800 mb-3">What Makes {hotel.name.split(' ').slice(-2).join(' ')} Special</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {uniqueAmenities.slice(0, 4).map((amenity, index) => (
-                <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
+                <div key={`unique-amenity-${amenity}`} className="flex items-center gap-2 text-sm text-gray-600">
                   <CheckCircle className="w-4 h-4 text-green-500" />
                   {amenity}
                 </div>
@@ -492,7 +492,7 @@ export default async function HotelSlugPage({
             <h4 className="font-semibold text-gray-800 mb-3">Hotel Amenities</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {hotel.amenities?.map((amenity, index) => (
-                <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
+                <div key={`hotel-amenity-${amenity}`} className="flex items-center gap-2 text-sm text-gray-600">
                   <CheckCircle className="w-4 h-4 text-green-500" />
                   {amenity}
                 </div>
@@ -552,7 +552,7 @@ export default async function HotelSlugPage({
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Frequently Asked Questions</h3>
           <div className="space-y-4">
             {HOTEL_FAQS[params.slug]?.map((faq, index) => (
-              <div key={index} className="border-b border-gray-100 pb-4 last:border-b-0">
+              <div key={`faq-${faq.question}`} className="border-b border-gray-100 pb-4 last:border-b-0">
                 <h4 className="font-medium text-gray-800 mb-2">{faq.question}</h4>
                 <p className="text-sm text-gray-600 leading-relaxed">{faq.answer}</p>
               </div>

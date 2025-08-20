@@ -135,7 +135,7 @@ export default function DynamicHotelData({ slug, searchParams, hotel, hotelImage
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {dynamicHotelData.rooms.map((room: any, index: number) => (
-                <div key={index} className="bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden group">
+                <div key={room.name} className="bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden group">
                   {/* Room Image */}
                   {room.images && room.images.length > 0 && (
                     <div className="w-full h-48 relative overflow-hidden">

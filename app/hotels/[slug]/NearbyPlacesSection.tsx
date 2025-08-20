@@ -28,7 +28,7 @@ export default function NearbyPlacesSection({ nearby_places }: NearbyPlacesSecti
       <h3 className="text-lg font-semibold text-gray-800 mb-4">Nearby Places</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {displayedPlaces.map((place, i) => (
-          <div key={i} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <div key={place.name} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <h4 className="font-medium text-gray-800 text-sm mb-1">{place.name}</h4>
             <p className="text-gray-600 text-xs">{place.description}</p>
           </div>
