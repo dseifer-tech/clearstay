@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { HOTEL_SLUG_MAP, TORONTO_HOTELS } from '@/lib/hotels';
+import type { HotelTag } from '@/types/hotel';
 import { Star, MapPin, Wifi, Coffee, Car, Dumbbell, Users, Building, Shield, CheckCircle, Search, Menu, Clock, CreditCard } from 'lucide-react';
 import Link from 'next/link';
 import NearbyPlacesSection from './NearbyPlacesSection';
@@ -197,8 +198,8 @@ function getHotelArea(slug: string): string | undefined {
   return areaMap[slug];
 }
 
-function getHotelTags(slug: string): string[] {
-  const tagMap: Record<string, string[]> = {
+function getHotelTags(slug: string): HotelTag[] {
+  const tagMap: Record<string, HotelTag[]> = {
     "pantages-hotel-downtown-toronto": ["luxury", "entertainment_district", "downtown"],
     "town-inn-suites": ["extended_stay", "family_friendly", "downtown"],
     "one-king-west-hotel-residence": ["luxury", "business", "financial_district"],
