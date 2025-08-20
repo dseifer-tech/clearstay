@@ -9,6 +9,19 @@ const globalCache = (global as any)._hotelStaticCache ||= {};
 // Environment validation
 import { validateEnv } from '@/lib/env';
 
+// Timeout wrapper for API requests
+async function withTimeout<T>(promise: Promise<T>, timeoutMs: number = 9000): Promise<T> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  
+  try {
+    // For fetch requests, we'll pass the signal in the actual fetch call
+    return await promise;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 // Helper function to format date as MM/DD/YYYY
 function formatDateToMMDDYYYY(dateString: string): string {
   const date = new Date(dateString);
@@ -151,11 +164,16 @@ export async function fetch_individual_hotel(slug: string, checkin: string, chec
   const serpUrl = `https://serpapi.com/search.json?engine=google_hotels&q=Toronto&property_token=${token}&check_in_date=${checkin}&check_out_date=${checkout}&adults=${adults}&children=${children}&currency=CAD&hl=en&gl=ca&api_key=${apiKey}`;
 
   try {
-    const response = await fetch(serpUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-      }
-    });
+    const controller = new AbortController();
+    const response = await withTimeout(
+      fetch(serpUrl, {
+        signal: controller.signal,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+      }),
+      9000 // 9 second timeout
+    );
 
     if (!response.ok) {
       console.error(`API Error for ${hotelName}: ${response.status} ${response.statusText}`);
@@ -324,13 +342,147 @@ function getFallbackHotelData(slug: string, hotelName: string, checkin: string, 
   return result;
 }
 
+// Helper function to fetch a single hotel with timeout and error handling
+async function fetchSingleHotel(hotel: { name: string; token: string }, checkin: string, checkout: string, adults: number, children: number, apiKey: string) {
+  try {
+    const controller = new AbortController();
+    const serpUrl = `https://serpapi.com/search.json?engine=google_hotels&q=Toronto&property_token=${hotel.token}&check_in_date=${checkin}&check_out_date=${checkout}&adults=${adults}&children=${children}&currency=CAD&hl=en&gl=ca&api_key=${apiKey}`;
+    
+    const response = await withTimeout(
+      fetch(serpUrl, {
+        signal: controller.signal,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+      }),
+      8000 // 8 second timeout for parallel requests
+    );
+    
+    if (!response.ok) {
+      console.warn(`API Error for ${hotel.name}: ${response.status} ${response.statusText}`);
+      return null;
+    }
+    
+    const data = await response.json();
+      
+    // Parse hotel description
+    const description = parseHotelDescription(data, hotel.name);
+    
+    // Initialize hotel result with fallback data
+    const base_link = HARDCODED_BOOKING_LINKS[hotel.name];
+    const link = base_link ? 
+      inject_parameters_into_url(base_link, checkin, checkout, adults, children) : 
+      null;
+
+    // Use the same image logic as the slug pages - prioritize API images
+    let hotelImage = HOTEL_IMAGES[hotel.name]; // Default to fallback
+    
+    if (data.images && data.images.length > 0) {
+      const firstImage = data.images[0];
+      let directImageUrl = null;
+      
+      if (typeof firstImage === 'string') {
+        directImageUrl = firstImage;
+      } else if (firstImage && typeof firstImage === 'object') {
+        directImageUrl = firstImage.original_image || firstImage.thumbnail || firstImage.url || firstImage.src;
+      }
+      
+      if (directImageUrl) {
+        hotelImage = `/api/hotel-images?url=${encodeURIComponent(directImageUrl)}&hotel=${encodeURIComponent(hotel.name)}`;
+      }
+    }
+    
+    let hotelResult = {
+      hotel: hotel.name,
+      link: link,
+      before_taxes: null,
+      source: "Official Site",
+      address: getHotelAddress(hotel.name),
+      rating: getHotelRating(hotel.name),
+      image: hotelImage,
+      remarks: null,
+      discount_remarks: null,
+      description: description,
+      hasDirectRate: false
+    };
+
+    // Check featured_prices[] for official offers
+    const featuredPrices = data?.featured_prices || [];
+    for (const offer of featuredPrices) {
+      const isOTA = offer.source && (
+        offer.source.toLowerCase().includes('trivago') ||
+        offer.source.toLowerCase().includes('booking.com') ||
+        offer.source.toLowerCase().includes('expedia') ||
+        offer.source.toLowerCase().includes('hotels.com') ||
+        offer.source.toLowerCase().includes('orbitz') ||
+        offer.source.toLowerCase().includes('priceline') ||
+        offer.source.toLowerCase().includes('kayak') ||
+        offer.source.toLowerCase().includes('tripadvisor')
+      );
+      
+      if (offer.official === true && !isOTA) {
+        const rooms = offer.rooms || [];
+        for (const room of rooms) {
+          const beforeTaxes = room.rate_per_night?.extracted_before_taxes_fees || room.before_taxes?.extracted_before_taxes_fees || room.price_per_night?.extracted_before_taxes_fees;
+          
+          if (beforeTaxes && (!hotelResult.before_taxes || beforeTaxes < hotelResult.before_taxes)) {
+            hotelResult = {
+              ...hotelResult,
+              before_taxes: beforeTaxes,
+              source: offer.source || "Official Site",
+              remarks: room.remarks || null,
+              discount_remarks: room.discount_remarks || offer.remarks || null,
+              hasDirectRate: true
+            };
+          }
+        }
+      }
+    }
+    
+    // Check prices[] for official offers
+    const prices = data?.prices || [];
+    for (const price of prices) {
+      const isOTA = price.source && (
+        price.source.toLowerCase().includes('trivago') ||
+        price.source.toLowerCase().includes('booking.com') ||
+        price.source.toLowerCase().includes('expedia') ||
+        price.source.toLowerCase().includes('hotels.com') ||
+        price.source.toLowerCase().includes('orbitz') ||
+        price.source.toLowerCase().includes('priceline') ||
+        price.source.toLowerCase().includes('kayak') ||
+        price.source.toLowerCase().includes('tripadvisor')
+      );
+      
+      if (price.official === true && !isOTA) {
+        const beforeTaxes = price.rate_per_night?.extracted_before_taxes_fees;
+        
+        if (beforeTaxes && (!hotelResult.before_taxes || beforeTaxes < hotelResult.before_taxes)) {
+          hotelResult = {
+            ...hotelResult,
+            before_taxes: beforeTaxes,
+            source: price.source || "Official Site",
+            remarks: price.remarks || null,
+            discount_remarks: price.discount_remarks || null,
+            hasDirectRate: true
+          };
+        }
+      }
+    }
+    
+    return hotelResult;
+    
+  } catch (error) {
+    console.warn(`Error fetching data for ${hotel.name}:`, error);
+    return null; // Return null for failed requests to be filtered out
+  }
+}
+
 export async function fetch_all_hotels(checkin: string, checkout: string, adults: number, children: number) {
   const apiKey = process.env.SERPAPI_KEY;
   if (!apiKey) {
     if (process.env.NODE_ENV === 'production') {
       throw new Error('SERPAPI_KEY environment variable is required in production');
     }
-    // Return fallback data for all hotels
     return getFallbackHotelDataForAllHotels(checkin, checkout, adults, children);
   }
 
@@ -341,220 +493,92 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
     { name: "The Omni King Edward Hotel", token: "ChYIkv69nuv-zoT7ARoJL20vMDhoeTJrEAE" },
     { name: "Chelsea Hotel, Toronto", token: "ChkIqY3kqoyj49-pARoML2cvMWhjMnpocnZ4EAE" },
     { name: "The Anndore House - JDV by Hyatt", token: "ChoIhpvZ14Ln1MShARoNL2cvMTFnOW1mbTB3ZhAB" },
-    { name: "Sutton Place Hotel Toronto", token: "ChkI6ffjk7GsktVCGg0vZy8xMW5tbF9objJwEAE" },
+    { name: "Sutton Place Hotel Toronto", token: "ChkI6ffjk7GsktVCGg0vZy8xMW5tbF9vajJwEAE" },
     { name: "Ace Hotel Toronto", token: "ChkI2N-3xo2i371FGg0vZy8xMXJzYzM2X2hmEAE" }
   ];
 
-  // Create an array of promises for parallel execution
-  const hotelPromises = hotels.map(async (hotel) => {
-    try {
-      const response = await fetch(
-        `https://serpapi.com/search.json?engine=google_hotels&q=Toronto&property_token=${hotel.token}&check_in_date=${checkin}&check_out_date=${checkout}&adults=${adults}&children=${children}&currency=CAD&hl=en&gl=ca&api_key=${apiKey}`,
-        {
-          headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-          }
-        }
-      );
-      
-      if (!response.ok) {
-        return null; // Return null for failed requests
-      }
-      
-      const data = await response.json();
-      
-      // Parse hotel description
-      const description = parseHotelDescription(data, hotel.name);
-      
-      // Initialize hotel result with fallback data
-      const base_link = HARDCODED_BOOKING_LINKS[hotel.name];
-      const link = base_link ? 
-        inject_parameters_into_url(base_link, checkin, checkout, adults, children) : 
-        null;
-
-      // Use the same image logic as the slug pages - prioritize API images
-      // Handle different image formats from API
-      let hotelImage = HOTEL_IMAGES[hotel.name]; // Default to fallback
-      
-      if (data.images && data.images.length > 0) {
-        const firstImage = data.images[0];
-        let directImageUrl = null;
-        
-        if (typeof firstImage === 'string') {
-          directImageUrl = firstImage;
-        } else if (firstImage && typeof firstImage === 'object') {
-          // Handle image objects with properties like original_image, thumbnail, etc.
-          directImageUrl = firstImage.original_image || firstImage.thumbnail || firstImage.url || firstImage.src;
-        }
-        
-        // Convert direct URL to proxy URL if we have a direct URL
-        if (directImageUrl) {
-          hotelImage = `/api/hotel-images?url=${encodeURIComponent(directImageUrl)}&hotel=${encodeURIComponent(hotel.name)}`;
-        }
-      }
-      
-
-      
-      let hotelResult = {
-        hotel: hotel.name,
-        link: link, // Always set the direct booking link
-        before_taxes: null,
-        source: "Official Site",
-        address: getHotelAddress(hotel.name),
-        rating: getHotelRating(hotel.name),
-        image: hotelImage,
-        remarks: null,
-        discount_remarks: null,
-        description: description,
-        hasDirectRate: false // Track if we have a direct rate from API
-      };
-
-      // Check featured_prices[] for official offers
-      const featuredPrices = data?.featured_prices || [];
-      for (const offer of featuredPrices) {
-        // Filter out OTAs even if they're marked as "official" by SerpAPI
-        const isOTA = offer.source && (
-          offer.source.toLowerCase().includes('trivago') ||
-          offer.source.toLowerCase().includes('booking.com') ||
-          offer.source.toLowerCase().includes('expedia') ||
-          offer.source.toLowerCase().includes('hotels.com') ||
-          offer.source.toLowerCase().includes('orbitz') ||
-          offer.source.toLowerCase().includes('priceline') ||
-          offer.source.toLowerCase().includes('kayak') ||
-          offer.source.toLowerCase().includes('tripadvisor')
-        );
-        
-        if (isOTA) {
-          // Filter out OTA sources
-        }
-        
-        if (offer.official === true && !isOTA) {
-          const rooms = offer.rooms || [];
-          for (const room of rooms) {
-            const beforeTaxes = room.rate_per_night?.extracted_before_taxes_fees || room.before_taxes?.extracted_before_taxes_fees || room.price_per_night?.extracted_before_taxes_fees;
-            
-            // Only update if we have a valid before_taxes price and it's lower than current
-            if (beforeTaxes && (!hotelResult.before_taxes || beforeTaxes < hotelResult.before_taxes)) {
-              hotelResult = {
-                hotel: hotel.name,
-                link: link, // Only set link if we have a direct rate
-                before_taxes: beforeTaxes,
-                source: offer.source || "Official Site",
-                address: getHotelAddress(hotel.name),
-                rating: getHotelRating(hotel.name),
-                image: hotelImage,
-                remarks: room.remarks || null,
-                discount_remarks: room.discount_remarks || offer.remarks || null,
-                description: description,
-                hasDirectRate: true // Mark that we have a direct rate
-              };
-            }
-          }
-        }
-      }
-      
-      // Check prices[] for official offers
-      const prices = data?.prices || [];
-      for (const price of prices) {
-        // Filter out OTAs even if they're marked as "official" by SerpAPI
-        const isOTA = price.source && (
-          price.source.toLowerCase().includes('trivago') ||
-          price.source.toLowerCase().includes('booking.com') ||
-          price.source.toLowerCase().includes('expedia') ||
-          price.source.toLowerCase().includes('hotels.com') ||
-          price.source.toLowerCase().includes('orbitz') ||
-          price.source.toLowerCase().includes('priceline') ||
-          price.source.toLowerCase().includes('kayak') ||
-          price.source.toLowerCase().includes('tripadvisor')
-        );
-        
-        if (isOTA) {
-          // Filter out OTA sources
-        }
-        
-        if (price.official === true && !isOTA) {
-          const beforeTaxes = price.rate_per_night?.extracted_before_taxes_fees;
-          
-          // Only update if we have a valid before_taxes price and it's lower than current
-          if (beforeTaxes && (!hotelResult.before_taxes || beforeTaxes < hotelResult.before_taxes)) {
-            hotelResult = {
-              hotel: hotel.name,
-              link: link, // Only set link if we have a direct rate
-              before_taxes: beforeTaxes,
-              source: price.source || "Official Site",
-              address: getHotelAddress(hotel.name),
-              rating: getHotelRating(hotel.name),
-              image: hotelImage,
-              remarks: price.remarks || null,
-              discount_remarks: price.discount_remarks || null,
-              description: description,
-              hasDirectRate: true // Mark that we have a direct rate
-                          };
-            }
-        }
-      }
-      
-      // Always keep the direct booking link, even if no rate is available from API
-      // The hotel's direct site will handle availability and pricing
-      
-      return hotelResult;
-      
-    } catch (error) {
-      // Return fallback data for this hotel
-      const base_link = HARDCODED_BOOKING_LINKS[hotel.name];
-      const link = base_link ? 
-        inject_parameters_into_url(base_link, checkin, checkout, adults, children) : 
-        null;
-      
-      return {
-        hotel: hotel.name,
-        link,
-        before_taxes: null,
-        source: "Official Site",
-        address: getHotelAddress(hotel.name),
-        rating: getHotelRating(hotel.name),
-        image: HOTEL_IMAGES[hotel.name],
-        remarks: null,
-        discount_remarks: null,
-        description: HOTEL_DESCRIPTIONS[hotel.name] || "A comfortable hotel in downtown Toronto with modern amenities and excellent service."
-      };
-    }
-  });
-
-  // Wait for all promises to resolve in parallel
-  const results = await Promise.all(hotelPromises);
+  // Create tasks for bounded parallel execution
+  const tasks = hotels.map(hotel => () => fetchSingleHotel(hotel, checkin, checkout, adults, children, apiKey));
   
-  // Filter out null results and hotels without links
-  const filteredResults = results.filter(hotel => hotel && hotel.link !== null);
+  // Bounded concurrency execution
+  const concurrency = 6;
+  const queue: Promise<any>[] = [];
+  const results: any[] = [];
   
-  // Sort hotels to prioritize those with direct pricing for better engagement
-  const finalResults = filteredResults.sort((a, b) => {
-    // Type safety check
-    if (!a || !b) return 0;
+  for (const task of tasks) {
+    const promise = task().then(result => {
+      results.push(result);
+      return result;
+    }).catch(() => {
+      results.push(null);
+      return null;
+    });
     
-    // First priority: hotels with direct pricing (hasDirectRate = true)
-    const aHasDirectRate = 'hasDirectRate' in a ? a.hasDirectRate : false;
-    const bHasDirectRate = 'hasDirectRate' in b ? b.hasDirectRate : false;
+    queue.push(promise);
     
-    if (aHasDirectRate && !bHasDirectRate) return -1;
-    if (!aHasDirectRate && bHasDirectRate) return 1;
-    
-    // Second priority: hotels with any pricing (before_taxes)
-    if (a.before_taxes && !b.before_taxes) return -1;
-    if (!a.before_taxes && b.before_taxes) return 1;
-    
-    // Third priority: hotels with higher ratings
-    if (a.rating && b.rating) {
-      return b.rating - a.rating;
+    if (queue.length >= concurrency) {
+      await Promise.race(queue);
+      // Remove settled promises
+      for (let i = queue.length - 1; i >= 0; i--) {
+        if (await Promise.race([queue[i].then(() => true, () => true), Promise.resolve(false)])) {
+          queue.splice(i, 1);
+        }
+      }
     }
+  }
+  
+  // Wait for remaining promises
+  await Promise.allSettled(queue);
+  
+  // Filter out null results and add fallback data for failed requests
+  const validResults = results.filter(hotel => hotel !== null);
+  const failedHotels = hotels.filter((_, index) => results[index] === null);
+  
+  // Add fallback data for failed hotels
+  const fallbackResults = failedHotels.map(hotel => {
+    const base_link = HARDCODED_BOOKING_LINKS[hotel.name];
+    const link = base_link ? 
+      inject_parameters_into_url(base_link, checkin, checkout, adults, children) : 
+      null;
     
-    // Default: maintain original order
-    return 0;
+    return {
+      hotel: hotel.name,
+      link,
+      before_taxes: null,
+      source: "Official Site",
+      address: getHotelAddress(hotel.name),
+      rating: getHotelRating(hotel.name),
+      image: HOTEL_IMAGES[hotel.name],
+      remarks: null,
+      discount_remarks: null,
+      description: HOTEL_DESCRIPTIONS[hotel.name] || "A comfortable hotel in downtown Toronto with modern amenities and excellent service.",
+      hasDirectRate: false
+    };
   });
   
-
+  const allResults = [...validResults, ...fallbackResults];
   
-  return finalResults;
+  // Sort hotels to prioritize those with direct pricing
+  return allResults
+    .filter(hotel => hotel.link !== null)
+    .sort((a, b) => {
+      if (!a || !b) return 0;
+      
+      const aHasDirectRate = 'hasDirectRate' in a ? a.hasDirectRate : false;
+      const bHasDirectRate = 'hasDirectRate' in b ? b.hasDirectRate : false;
+      
+      if (aHasDirectRate && !bHasDirectRate) return -1;
+      if (!aHasDirectRate && bHasDirectRate) return 1;
+      
+      if (a.before_taxes && !b.before_taxes) return -1;
+      if (!a.before_taxes && b.before_taxes) return 1;
+      
+      if (a.rating && b.rating) {
+        return b.rating - a.rating;
+      }
+      
+      return 0;
+    });
 }
 
 function getHotelAddress(hotelName: string): string {

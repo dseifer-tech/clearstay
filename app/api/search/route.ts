@@ -1,5 +1,68 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetch_individual_hotel, fetch_all_hotels } from '@/lib/hotelData';
+import { z } from 'zod';
+
+// Zod schema for search parameters validation
+const SearchParamsSchema = z.object({
+  slug: z.string()
+    .regex(/^[a-z0-9-]+$/, 'Invalid hotel slug format')
+    .optional(),
+  checkin: z.string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format. Use YYYY-MM-DD format')
+    .refine(dateStr => {
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return false;
+      
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      return date >= today;
+    }, 'Date must be today or in the future')
+    .refine(dateStr => {
+      const date = new Date(dateStr);
+      const maxDate = new Date();
+      maxDate.setFullYear(maxDate.getFullYear() + 1);
+      
+      return date <= maxDate;
+    }, 'Date cannot be more than 1 year in the future'),
+  checkout: z.string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format. Use YYYY-MM-DD format')
+    .refine(dateStr => {
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return false;
+      
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      return date >= today;
+    }, 'Date must be today or in the future')
+    .refine(dateStr => {
+      const date = new Date(dateStr);
+      const maxDate = new Date();
+      maxDate.setFullYear(maxDate.getFullYear() + 1);
+      
+      return date <= maxDate;
+    }, 'Date cannot be more than 1 year in the future'),
+  adults: z.coerce.number()
+    .int('Adults must be a whole number')
+    .min(1, 'At least 1 adult is required')
+    .max(10, 'Maximum 10 adults allowed'),
+  children: z.coerce.number()
+    .int('Children must be a whole number')
+    .min(0, 'Children cannot be negative')
+    .max(10, 'Maximum 10 children allowed')
+}).refine(data => {
+  // Cross-field validation: checkout must be after checkin
+  if (data.checkin && data.checkout) {
+    const checkinDate = new Date(data.checkin);
+    const checkoutDate = new Date(data.checkout);
+    return checkoutDate > checkinDate;
+  }
+  return true;
+}, {
+  message: 'Checkout date must be after checkin date',
+  path: ['checkout']
+});
 
 // Simple rate limiting cache
 const rateLimitCache = new Map<string, { count: number; resetTime: number }>();
@@ -24,45 +87,19 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-// Input sanitization function
-function sanitizeInput(input: string): string {
+// Helper function to sanitize string inputs (basic security)
+function sanitizeString(input: string): string {
   return input
     .trim()
     .replace(/[<>]/g, '') // Remove potential HTML tags
     .substring(0, 100); // Limit length
 }
 
-// Validate date format and range
-function validateDate(dateStr: string): { isValid: boolean; date: Date | null; error?: string } {
-  // Check format
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-    return { isValid: false, date: null, error: 'Invalid date format. Use YYYY-MM-DD format.' };
-  }
-  
-  const date = new Date(dateStr);
-  if (isNaN(date.getTime())) {
-    return { isValid: false, date: null, error: 'Invalid date.' };
-  }
-  
-  // Check if date is in the future
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  if (date < today) {
-    return { isValid: false, date: null, error: 'Date must be in the future.' };
-  }
-  
-  // Check if date is not too far in the future (1 year)
-  const maxDate = new Date();
-  maxDate.setFullYear(maxDate.getFullYear() + 1);
-  if (date > maxDate) {
-    return { isValid: false, date: null, error: 'Date cannot be more than 1 year in the future.' };
-  }
-  
-  return { isValid: true, date };
-}
+// Add revalidation interval for better caching
+export const revalidate = 30; // Revalidate every 30 seconds
 
 export async function GET(request: NextRequest) {
-  // CORS headers
+  // CORS and caching headers
   const headers = {
     'Access-Control-Allow-Origin': process.env.NODE_ENV === 'production' 
       ? 'https://www.innstastay.com' 
@@ -72,6 +109,8 @@ export async function GET(request: NextRequest) {
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Cache-Control': 's-maxage=30, stale-while-revalidate=120', // Cache for 30s, serve stale for 2 minutes
+    'Vary': 'Accept-Encoding'
   };
 
   // Handle preflight requests
@@ -89,67 +128,40 @@ export async function GET(request: NextRequest) {
 
   const { searchParams } = new URL(request.url);
   
-  // Sanitize and validate all inputs
-  const checkin = sanitizeInput(searchParams.get('checkin') || '');
-  const checkout = sanitizeInput(searchParams.get('checkout') || '');
-  const adults = sanitizeInput(searchParams.get('adults') || '');
-  const children = sanitizeInput(searchParams.get('children') || '');
-  const slug = sanitizeInput(searchParams.get('slug') || ''); // For individual hotel requests
+  // Extract and sanitize parameters
+  const rawParams = {
+    slug: searchParams.get('slug') ? sanitizeString(searchParams.get('slug')!) : undefined,
+    checkin: searchParams.get('checkin') ? sanitizeString(searchParams.get('checkin')!) : '',
+    checkout: searchParams.get('checkout') ? sanitizeString(searchParams.get('checkout')!) : '',
+    adults: searchParams.get('adults') || '',
+    children: searchParams.get('children') || ''
+  };
 
-  // Validate required parameters
-  if (!checkin || !checkout || !adults || !children) {
+  // Validate parameters with Zod schema
+  const validation = SearchParamsSchema.safeParse(rawParams);
+  
+  if (!validation.success) {
+    const errors = validation.error.issues.map(issue => ({
+      field: issue.path.join('.'),
+      message: issue.message
+    }));
+    
     return NextResponse.json({ 
-      error: 'Missing required parameters: checkin, checkout, adults, children' 
+      error: 'Invalid request parameters',
+      details: errors
     }, { status: 400, headers });
   }
 
-  // Validate dates
-  const checkinValidation = validateDate(checkin);
-  if (!checkinValidation.isValid) {
-    return NextResponse.json({ 
-      error: checkinValidation.error 
-    }, { status: 400, headers });
-  }
-
-  const checkoutValidation = validateDate(checkout);
-  if (!checkoutValidation.isValid) {
-    return NextResponse.json({ 
-      error: checkoutValidation.error 
-    }, { status: 400, headers });
-  }
-
-  // Validate date range
-  if (checkinValidation.date! >= checkoutValidation.date!) {
-    return NextResponse.json({ 
-      error: 'Checkout date must be after checkin date.' 
-    }, { status: 400, headers });
-  }
-
-  // Validate traveler counts
-  const adultsNum = parseInt(adults);
-  const childrenNum = parseInt(children);
-
-  if (isNaN(adultsNum) || isNaN(childrenNum) || adultsNum < 1 || adultsNum > 10 || childrenNum < 0 || childrenNum > 10) {
-    return NextResponse.json({ 
-      error: 'Invalid traveler count. Adults must be 1-10, children 0-10.' 
-    }, { status: 400, headers });
-  }
-
-  // Validate slug if provided
-  if (slug && !/^[a-z0-9-]+$/.test(slug)) {
-    return NextResponse.json({ 
-      error: 'Invalid hotel slug format.' 
-    }, { status: 400, headers });
-  }
+  const { slug, checkin, checkout, adults, children } = validation.data;
 
   try {
     // If slug is provided, return individual hotel data
     if (slug) {
-      const hotelData = await fetch_individual_hotel(slug, checkin, checkout, adultsNum, childrenNum);
+      const hotelData = await fetch_individual_hotel(slug, checkin, checkout, adults, children);
       return NextResponse.json(hotelData, { headers });
     } else {
       // Otherwise, return all hotels for search
-      const hotels = await fetch_all_hotels(checkin, checkout, adultsNum, childrenNum);
+      const hotels = await fetch_all_hotels(checkin, checkout, adults, children);
       return NextResponse.json(hotels, { headers });
     }
   } catch (error) {

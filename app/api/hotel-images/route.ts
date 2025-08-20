@@ -2,11 +2,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Remove force-dynamic to allow CDN caching
+export const revalidate = 3600; // Cache for 1 hour
+
+// Allowlist for trusted image hosts
+const ALLOWED_HOSTS = [
+  /(^|\.)googleusercontent\.com$/i,
+  /(^|\.)gstatic\.com$/i,
+  /(^|\.)akamaized\.net$/i,
+  /(^|\.)hotelbeds\.com$/i,
+  /(^|\.)amazonaws\.com$/i,
+  /(^|\.)cloudinary\.com$/i,
+  /(^|\.)unsplash\.com$/i
+];
 
 const BLOCKED = new Set(['localhost', '127.0.0.1']);
 const PRIVATE = [/^10\./, /^192\.168\./, /^172\.(1[6-9]|2\d|3[0-1])\./, /^169\.254\./];
+
+function isAllowedHost(host: string): boolean {
+  return ALLOWED_HOSTS.some(pattern => pattern.test(host));
+}
 
 function isPrivateHost(host: string) {
   return BLOCKED.has(host) || PRIVATE.some(rx => rx.test(host));
@@ -40,21 +55,37 @@ export async function GET(req: NextRequest) {
 
   let url: URL;
   try { url = new URL(target); } catch { return NextResponse.json({ error: 'Invalid URL' }, { status: 400 }); }
-  if (!/^https?:$/.test(url.protocol) || isPrivateHost(url.hostname)) {
-    return NextResponse.json({ error: 'Blocked URL' }, { status: 400 });
+  
+  // Security checks
+  if (!/^https?:$/.test(url.protocol)) {
+    return NextResponse.json({ error: 'Invalid protocol. Only HTTP/HTTPS allowed' }, { status: 400 });
+  }
+  
+  if (isPrivateHost(url.hostname)) {
+    return NextResponse.json({ error: 'Private network access blocked' }, { status: 400 });
+  }
+  
+  if (!isAllowedHost(url.hostname)) {
+    return NextResponse.json({ error: 'Host not in allowlist' }, { status: 400 });
   }
 
   url = normalizeImageUrl(url);
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+    
     const upstream = await fetch(url.toString(), {
+      signal: controller.signal,
       headers: {
-        'User-Agent': 'Mozilla/5.0',
+        'User-Agent': 'Mozilla/5.0 (compatible; InnstaStay-ImageProxy/1.0)',
         'Accept': 'image/avif,image/webp,image/*,*/*;q=0.8',
         'Referer': url.origin,
       },
-      cache: 'no-store',
+      cache: 'force-cache', // Allow caching at fetch level
     });
+    
+    clearTimeout(timeoutId);
 
 
 
@@ -67,14 +98,20 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: `Invalid content type: ${type}` }, { status: 502 });
     }
 
+    // Improved caching and response headers
+    const responseHeaders = {
+      'Content-Type': type,
+      'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800', // Cache for 24h, stale for 7 days
+      'Vary': 'Accept',
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'DENY'
+    };
+
     // Stream the body to avoid memory / size issues on Vercel
     if (upstream.body) {
       return new NextResponse(upstream.body as any, {
         status: 200,
-        headers: {
-          'Content-Type': type,
-          'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800',
-        },
+        headers: responseHeaders,
       });
     }
 
@@ -82,10 +119,7 @@ export async function GET(req: NextRequest) {
     const buf = await upstream.arrayBuffer();
     return new NextResponse(buf, {
       status: 200,
-      headers: {
-        'Content-Type': type,
-        'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800',
-      },
+      headers: responseHeaders,
     });
   } catch (e) {
     // Transparent 1x1 PNG fallback
