@@ -720,95 +720,122 @@ export default function SearchPageClient() {
         </>
       ) : (
         // No search parameters or no results
-        <div className="text-center py-12">
-          <div className="max-w-md mx-auto">
-            <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              {checkin && checkout ? 'No hotels found' : 'Search for hotels'}
-            </h2>
-            <p className="text-gray-600 mb-6">
-              {checkin && checkout 
-                ? 'Try adjusting your search criteria or dates.'
-                : 'Enter your travel dates to find available hotels in Toronto.'
-              }
-            </p>
-            
+        <div className="py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
             {!checkin || !checkout ? (
               <>
-                                 {/* Hotel Directory */}
-                 <div className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-8 rounded-2xl shadow-xl border border-slate-200/50">
-                   <h3 className="text-2xl font-bold text-slate-800 mb-6 text-center">Featured Hotels in Toronto</h3>
-                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                     {[
-                       { name: "Pantages Hotel Downtown Toronto", slug: "pantages-hotel-downtown-toronto", img: "https://lh5.googleusercontent.com/p/AF1QipMt1ZolVWnJTgIMqogAUCjh9EldFh8vSDHY5TU=s10000" },
-                       { name: "Town Inn Suites", slug: "town-inn-suites", img: "https://lh5.googleusercontent.com/p/AF1QipN2HhQs9GSWKldSNWx_1o4EC3ojDlzgG9UVxgV1=s10000" },
-                       { name: "One King West Hotel & Residence", slug: "one-king-west-hotel-residence", img: "https://lh5.googleusercontent.com/p/AF1QipPI-2hASi1fH2dzw3hOyxjk2UV9CVV9P3sKUYuX=s10000" },
-                       { name: "The Omni King Edward Hotel", slug: "the-omni-king-edward-hotel", img: "https://lh5.googleusercontent.com/p/AF1QipMvGKOVckX0M2FfmY-77Mt9eykQw6pHyHgmK067=s10000" },
-                       { name: "Chelsea Hotel, Toronto", slug: "chelsea-hotel-toronto", img: "https://photos.hotelbeds.com/giata/original/04/049472/049472a_hb_f_004.JPG" },
-                       { name: "The Anndore House - JDV by Hyatt", slug: "the-anndore-house-jdv", img: "https://lh5.googleusercontent.com/p/AF1QipOh__jl8gimUkhS0FUaJSr1ft0-WORdu7KieteX=s10000" },
-                       { name: "Sutton Place Hotel Toronto", slug: "sutton-place-hotel-toronto", img: "https://lh5.googleusercontent.com/p/AF1QipPFImvLwmvVatoeTOPO-h4UCI53SGoH1ITu0BbY=s10000" },
-                       { name: "Ace Hotel Toronto", slug: "ace-hotel-toronto", img: "https://lh5.googleusercontent.com/p/AF1QipNGix9dVAg06s82e08vaUXkAhqFlV2XPyTByWkj=s10000" }
-                     ].map((hotel, index) => {
-                       // Create a subtle color variation for each card
-                       const colorVariants = [
-                         'from-blue-500/10 to-indigo-500/10 border-blue-200/50',
-                         'from-emerald-500/10 to-teal-500/10 border-emerald-200/50',
-                         'from-purple-500/10 to-violet-500/10 border-purple-200/50',
-                         'from-amber-500/10 to-orange-500/10 border-amber-200/50',
-                         'from-rose-500/10 to-pink-500/10 border-rose-200/50',
-                         'from-cyan-500/10 to-blue-500/10 border-cyan-200/50'
-                       ];
-                       const colorVariant = colorVariants[index % colorVariants.length];
-                       
-                       return (
-                         <Link
-                           key={hotel.slug}
-                           href={`/hotels/${hotel.slug}`}
-                           className={`group relative bg-white/80 backdrop-blur-sm rounded-2xl border ${colorVariant} shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-1 overflow-hidden`}
-                         >
-                           <div className="p-6">
-                             <div className="flex items-center gap-4">
-                               <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 relative group-hover:scale-110 transition-transform duration-300">
-                                 <OptimizedImage 
-                                   src={proxify(hotel.img, hotel.name)} 
-                                   alt={hotel.name} 
-                                   fill
-                                   className="object-cover"
-                                   sizes="64px"
-                                 />
-                               </div>
-                               <div className="flex-1">
-                                 <div className="font-bold text-slate-800 group-hover:text-blue-600 transition-colors duration-300 line-clamp-2">
-                                   {hotel.name}
-                                 </div>
-                                 <div className="flex items-center gap-2 mt-2">
-                                   <div className="text-xs text-green-600 bg-gradient-to-r from-green-50 to-emerald-50 px-3 py-1 rounded-full font-medium border border-green-200/50">
-                                     Direct Booking
-                                   </div>
-                                   <div className="text-xs text-slate-500 flex items-center gap-1">
-                                     <Shield className="w-3 h-3" />
-                                     <span>No Commission</span>
-                                   </div>
-                                 </div>
-                               </div>
-                             </div>
-                           </div>
-                           
-                           {/* Subtle border glow on hover */}
-                           <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-blue-300/50 transition-colors duration-500 pointer-events-none"></div>
-                         </Link>
-                       );
-                     })}
-                   </div>
-                 </div>
+                {/* Search Prompt */}
+                <div className="text-center mb-12">
+                  <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+                    Search for hotels
+                  </h2>
+                  <p className="text-gray-600 mb-6">
+                    Enter your travel dates to find available hotels in Toronto.
+                  </p>
+                </div>
+                
+                {/* Hotel Directory */}
+                <div className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-8 rounded-2xl shadow-xl border border-slate-200/50">
+                  <h3 className="text-3xl font-bold text-slate-800 mb-8 text-center">Featured Hotels in Toronto</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {[
+                      { name: "Pantages Hotel Downtown Toronto", slug: "pantages-hotel-downtown-toronto", img: "https://lh5.googleusercontent.com/p/AF1QipMt1ZolVWnJTgIMqogAUCjh9EldFh8vSDHY5TU=s10000" },
+                      { name: "Town Inn Suites", slug: "town-inn-suites", img: "https://lh5.googleusercontent.com/p/AF1QipN2HhQs9GSWKldSNWx_1o4EC3ojDlzgG9UVxgV1=s10000" },
+                      { name: "One King West Hotel & Residence", slug: "one-king-west-hotel-residence", img: "https://lh5.googleusercontent.com/p/AF1QipPI-2hASi1fH2dzw3hOyxjk2UV9CVV9P3sKUYuX=s10000" },
+                      { name: "The Omni King Edward Hotel", slug: "the-omni-king-edward-hotel", img: "https://lh5.googleusercontent.com/p/AF1QipMvGKOVckX0M2FfmY-77Mt9eykQw6pHyHgmK067=s10000" },
+                      { name: "Chelsea Hotel, Toronto", slug: "chelsea-hotel-toronto", img: "https://photos.hotelbeds.com/giata/original/04/049472/049472a_hb_f_004.JPG" },
+                      { name: "The Anndore House - JDV by Hyatt", slug: "the-anndore-house-jdv", img: "https://lh5.googleusercontent.com/p/AF1QipOh__jl8gimUkhS0FUaJSr1ft0-WORdu7KieteX=s10000" },
+                      { name: "Sutton Place Hotel Toronto", slug: "sutton-place-hotel-toronto", img: "https://lh5.googleusercontent.com/p/AF1QipPFImvLwmvVatoeTOPO-h4UCI53SGoH1ITu0BbY=s10000" },
+                      { name: "Ace Hotel Toronto", slug: "ace-hotel-toronto", img: "https://lh5.googleusercontent.com/p/AF1QipNGix9dVAg06s82e08vaUXkAhqFlV2XPyTByWkj=s10000" }
+                    ].map((hotel, index) => {
+                      // Create a subtle color variation for each card
+                      const colorVariants = [
+                        'from-blue-500/10 to-indigo-500/10 border-blue-200/50',
+                        'from-emerald-500/10 to-teal-500/10 border-emerald-200/50',
+                        'from-purple-500/10 to-violet-500/10 border-purple-200/50',
+                        'from-amber-500/10 to-orange-500/10 border-amber-200/50',
+                        'from-rose-500/10 to-pink-500/10 border-rose-200/50',
+                        'from-cyan-500/10 to-blue-500/10 border-cyan-200/50'
+                      ];
+                      const colorVariant = colorVariants[index % colorVariants.length];
+                      
+                      return (
+                        <div key={hotel.slug} className={`group relative bg-white/80 backdrop-blur-sm rounded-2xl border ${colorVariant} shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden`}>
+                          {/* Gradient overlay for subtle color */}
+                          <div className={`absolute inset-0 bg-gradient-to-br ${colorVariant} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
+                          
+                          {/* Hotel Image */}
+                          <div className="h-48 w-full relative overflow-hidden">
+                            <OptimizedImage 
+                              src={proxify(hotel.img, hotel.name)} 
+                              alt={hotel.name} 
+                              fill
+                              className="object-cover group-hover:scale-110 transition-transform duration-700"
+                              wrapperClassName="h-48 w-full relative overflow-hidden"
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            />
+                            
+                            {/* Premium Badge */}
+                            <div className="absolute top-4 right-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                              Premium
+                            </div>
+                          </div>
+
+                          {/* Hotel Info */}
+                          <div className="p-6 relative z-10">
+                            <h3 className="font-bold text-xl text-slate-800 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
+                              {hotel.name}
+                            </h3>
+                            
+                            {/* Features */}
+                            <div className="flex items-center gap-4 mb-6 text-xs text-slate-500">
+                              <div className="flex items-center gap-1">
+                                <Shield className="w-3 h-3" />
+                                <span>Direct Booking</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Zap className="w-3 h-3" />
+                                <span>No Commission</span>
+                              </div>
+                            </div>
+
+                            {/* Action Button */}
+                            <div className="flex gap-3">
+                              <Link
+                                href={`/hotels/${hotel.slug}`}
+                                className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                              >
+                                <Eye className="w-4 h-4" />
+                                View Hotel
+                              </Link>
+                            </div>
+                          </div>
+                          
+                          {/* Subtle border glow on hover */}
+                          <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-blue-300/50 transition-colors duration-500 pointer-events-none"></div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </>
             ) : (
-              <button
-                onClick={() => router.push('/search')}
-                className="bg-blue-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-              >
-                New Search
-              </button>
+              <div className="text-center">
+                <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                  No hotels found
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Try adjusting your search criteria or dates.
+                </p>
+                <button
+                  onClick={() => router.push('/search')}
+                  className="bg-blue-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                >
+                  New Search
+                </button>
+              </div>
             )}
           </div>
         </div>
