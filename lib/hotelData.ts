@@ -290,16 +290,11 @@ export async function fetch_individual_hotel(slug: string, checkin: string, chec
 }
 
 function getFallbackHotelData(slug: string, hotelName: string, checkin: string, checkout: string, adults: number, children: number) {
-  console.log(`getFallbackHotelData: Generating fallback data for ${hotelName}`);
-  
   const base_link = HARDCODED_BOOKING_LINKS[hotelName];
-  console.log(`getFallbackHotelData: Base link for ${hotelName}:`, base_link);
   
   const link = base_link ? 
     inject_parameters_into_url(base_link, checkin, checkout, adults, children) : 
     null;
-  
-  console.log(`getFallbackHotelData: Generated link for ${hotelName}:`, link);
 
   const result = {
     hotel: hotelName,
@@ -326,14 +321,15 @@ function getFallbackHotelData(slug: string, hotelName: string, checkin: string, 
     rooms: []
   };
   
-  console.log(`getFallbackHotelData: Final fallback data for ${hotelName}:`, result);
   return result;
 }
 
 export async function fetch_all_hotels(checkin: string, checkout: string, adults: number, children: number) {
   const apiKey = process.env.SERPAPI_KEY;
   if (!apiKey) {
-    console.error("SERPAPI_KEY environment variable is not set");
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('SERPAPI_KEY environment variable is required in production');
+    }
     // Return fallback data for all hotels
     return getFallbackHotelDataForAllHotels(checkin, checkout, adults, children);
   }
@@ -352,7 +348,6 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
   // Create an array of promises for parallel execution
   const hotelPromises = hotels.map(async (hotel) => {
     try {
-      console.log(`Fetching data for ${hotel.name}...`);
       const response = await fetch(
         `https://serpapi.com/search.json?engine=google_hotels&q=Toronto&property_token=${hotel.token}&check_in_date=${checkin}&check_out_date=${checkout}&adults=${adults}&children=${children}&currency=CAD&hl=en&gl=ca&api_key=${apiKey}`,
         {
@@ -363,13 +358,10 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
       );
       
       if (!response.ok) {
-        console.error(`API Error for ${hotel.name}: ${response.status} ${response.statusText}`);
         return null; // Return null for failed requests
       }
       
       const data = await response.json();
-      console.log(`API Response for ${hotel.name}:`, JSON.stringify(data, null, 2));
-      console.log(`Images for ${hotel.name}:`, data.images);
       
       // Parse hotel description
       const description = parseHotelDescription(data, hotel.name);
@@ -401,11 +393,7 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
         }
       }
       
-      console.log(`Setting image for ${hotel.name}:`, hotelImage);
-      console.log(`  - API images:`, data.images);
-      console.log(`  - API images[0]:`, data.images?.[0]);
-      console.log(`  - Fallback image:`, HOTEL_IMAGES[hotel.name]);
-      console.log(`  - Final image:`, hotelImage);
+
       
       let hotelResult = {
         hotel: hotel.name,
@@ -423,7 +411,6 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
 
       // Check featured_prices[] for official offers
       const featuredPrices = data?.featured_prices || [];
-      console.log(`Featured prices for ${hotel.name}:`, featuredPrices);
       for (const offer of featuredPrices) {
         // Filter out OTAs even if they're marked as "official" by SerpAPI
         const isOTA = offer.source && (
@@ -438,14 +425,13 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
         );
         
         if (isOTA) {
-          console.log(`Filtering out OTA source for ${hotel.name}: ${offer.source}`);
+          // Filter out OTA sources
         }
         
         if (offer.official === true && !isOTA) {
           const rooms = offer.rooms || [];
           for (const room of rooms) {
             const beforeTaxes = room.rate_per_night?.extracted_before_taxes_fees || room.before_taxes?.extracted_before_taxes_fees || room.price_per_night?.extracted_before_taxes_fees;
-            console.log(`Room ${room.name} price:`, beforeTaxes);
             
             // Only update if we have a valid before_taxes price and it's lower than current
             if (beforeTaxes && (!hotelResult.before_taxes || beforeTaxes < hotelResult.before_taxes)) {
@@ -462,7 +448,6 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
                 description: description,
                 hasDirectRate: true // Mark that we have a direct rate
               };
-              console.log(`Updated ${hotel.name} with price:`, beforeTaxes);
             }
           }
         }
@@ -470,7 +455,6 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
       
       // Check prices[] for official offers
       const prices = data?.prices || [];
-      console.log(`Regular prices for ${hotel.name}:`, prices);
       for (const price of prices) {
         // Filter out OTAs even if they're marked as "official" by SerpAPI
         const isOTA = price.source && (
@@ -485,12 +469,11 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
         );
         
         if (isOTA) {
-          console.log(`Filtering out OTA source for ${hotel.name}: ${price.source}`);
+          // Filter out OTA sources
         }
         
         if (price.official === true && !isOTA) {
           const beforeTaxes = price.rate_per_night?.extracted_before_taxes_fees;
-          console.log(`Price for ${hotel.name}:`, beforeTaxes);
           
           // Only update if we have a valid before_taxes price and it's lower than current
           if (beforeTaxes && (!hotelResult.before_taxes || beforeTaxes < hotelResult.before_taxes)) {
@@ -506,20 +489,17 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
               discount_remarks: price.discount_remarks || null,
               description: description,
               hasDirectRate: true // Mark that we have a direct rate
-            };
-            console.log(`Updated ${hotel.name} with price:`, beforeTaxes);
-          }
+                          };
+            }
         }
       }
       
       // Always keep the direct booking link, even if no rate is available from API
       // The hotel's direct site will handle availability and pricing
-      console.log(`Final result for ${hotel.name}: hasDirectRate=${hotelResult.hasDirectRate}, link=${hotelResult.link}`);
       
       return hotelResult;
       
     } catch (error) {
-      console.error(`Error fetching data for ${hotel.name}:`, error);
       // Return fallback data for this hotel
       const base_link = HARDCODED_BOOKING_LINKS[hotel.name];
       const link = base_link ? 
@@ -542,7 +522,6 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
   });
 
   // Wait for all promises to resolve in parallel
-  console.log('Starting parallel API calls for all hotels...');
   const results = await Promise.all(hotelPromises);
   
   // Filter out null results and hotels without links
@@ -573,12 +552,7 @@ export async function fetch_all_hotels(checkin: string, checkout: string, adults
     return 0;
   });
   
-  console.log('Final hotel results (sorted by direct pricing priority):', finalResults);
-  console.log('Final results with images:', finalResults.map(hotel => ({ 
-    name: hotel?.hotel, 
-    image: hotel?.image, 
-    before_taxes: hotel?.before_taxes 
-  })));
+
   
   return finalResults;
 }

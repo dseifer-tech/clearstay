@@ -20,24 +20,28 @@ class LoggerImpl implements Logger {
 
   debug(message: string, ...args: any[]): void {
     if (this.shouldLog('debug')) {
+      // eslint-disable-next-line no-console
       console.log(`[DEBUG] ${message}`, ...args);
     }
   }
 
   info(message: string, ...args: any[]): void {
     if (this.shouldLog('info')) {
+      // eslint-disable-next-line no-console
       console.log(`[INFO] ${message}`, ...args);
     }
   }
 
   warn(message: string, ...args: any[]): void {
     if (this.shouldLog('warn')) {
+      // eslint-disable-next-line no-console
       console.warn(`[WARN] ${message}`, ...args);
     }
   }
 
   error(message: string, ...args: any[]): void {
     if (this.shouldLog('error')) {
+      // eslint-disable-next-line no-console
       console.error(`[ERROR] ${message}`, ...args);
     }
   }

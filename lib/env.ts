@@ -1,4 +1,6 @@
 // Environment variable validation
+import { logger } from '@/lib/logger';
+
 export function validateEnv() {
   const required = {
     SERPAPI_KEY: process.env.SERPAPI_KEY,
@@ -22,7 +24,8 @@ if (typeof window === 'undefined') {
   try {
     validateEnv();
   } catch (error) {
-    console.error('Environment validation failed:', error.message);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    logger.error('Environment validation failed:', errorMessage);
     // Don't throw in development to allow fallback data
     if (process.env.NODE_ENV === 'production') {
       throw error;
