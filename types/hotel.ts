@@ -32,4 +32,26 @@ export interface BookingUrlParams {
   DateOut: string;
   Adults: number;
   Children: number;
+}
+
+export type HotelTag =
+  | "extended_stay"
+  | "boutique"
+  | "family_friendly"
+  | "luxury"
+  | "business"
+  | "entertainment_district"
+  | "financial_district"
+  | "yorkville"
+  | "downtown";
+
+export interface HotelRecord {
+  slug: string;
+  name: string;
+  city: string;
+  area?: string;
+  tags?: HotelTag[];
+  ogImage?: string;
+  seoTitle?: string;
+  seoDescription?: string;
 } 

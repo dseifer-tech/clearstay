@@ -54,6 +54,22 @@ venv.bak/
 !tailwind.config.js
 !postcss.config.js
 !next-env.d.ts
+!sitemap.xml
+!robots.txt
+!manifest.json
+
+# Build artifacts and temporary files
+seo-report.json
+raw.json/
+data/
+coverage/
+*.tsbuildinfo
+.swc/
+
+# Corrupted or malformed files
+eo*
+ive*
+tatus*
 
 # Logs
 *.log

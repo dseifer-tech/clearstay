@@ -10,7 +10,15 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:ci": "jest --ci --coverage --watchAll=false"
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "seo:test": "node scripts/seo-test.js",
+    "seo:test:prod": "BASE_URL=https://www.innstastay.com node scripts/seo-test.js",
+    "seo:generate": "npm run seo:sitemap && npm run seo:robots",
+    "seo:sitemap": "node scripts/sitemap-generator.js",
+    "seo:robots": "node scripts/robots-txt-generator.js",
+    "analyze": "ANALYZE=true npm run build",
+    "seo:full": "npm run seo:generate && npm run seo:test",
+    "seo:view": "node scripts/view-seo-results.js"
   },
   "dependencies": {
     "@types/node": "^20",
@@ -31,6 +39,7 @@
     "zod": "^4.0.17"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^14.2.31",
     "@testing-library/jest-dom": "^6.7.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
@@ -40,6 +49,9 @@
     "eslint-config-next": "14.0.4",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "jest": "^30.0.5",
-    "jest-environment-jsdom": "^30.0.5"
+    "jest-environment-jsdom": "^30.0.5",
+    "lighthouse": "^11.6.0",
+    "puppeteer": "^22.0.0",
+    "@types/puppeteer": "^7.0.4"
   }
 }

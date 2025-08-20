@@ -8,6 +8,9 @@ import { HOTEL_IMAGES } from '@/lib/hotelData';
 import DynamicHotelData from './DynamicHotelData';
 import BreadcrumbNav from '@/app/components/BreadcrumbNav';
 import OptimizedImage from '@/app/components/OptimizedImage';
+import { buildHotelMetadata } from '@/lib/seo';
+import { buildHotelFAQJsonLd } from '@/lib/faq';
+import Script from 'next/script';
 
 // Create a mapping from slug to hotel name for metadata
 const SLUG_TO_HOTEL_NAME: Record<string, string> = {
@@ -163,43 +166,49 @@ const HOTEL_FAQS: Record<string, Array<{question: string, answer: string}>> = {
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const hotelName = SLUG_TO_HOTEL_NAME[params.slug] || params.slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-  const hotelDescription = HOTEL_DESCRIPTIONS[params.slug] || `Book ${hotelName} directly with no commissions. Compare real-time rates, amenities, and get the best price guaranteed.`;
   
-  // Create unique, descriptive titles for each hotel
-  const title = `${hotelName} - Direct Booking & Rates | InnstaStay`;
-  const description = hotelDescription;
-  
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: `https://www.innstastay.com/hotels/${params.slug}`,
-    },
-    openGraph: {
-      title: `${hotelName} - Direct Booking`,
-      description: hotelDescription,
-      url: `https://www.innstastay.com/hotels/${params.slug}`,
-      siteName: 'InnstaStay',
-      images: [
-        {
-          url: `/og/${params.slug}-1200x630.jpg`,
-          width: 1200,
-          height: 630,
-          alt: `${hotelName} - Direct Booking`,
-        },
-      ],
-      locale: 'en_US',
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      site: '@innstastay',
-      title: `${hotelName} - Direct Booking`,
-      description: hotelDescription,
-      images: [`/og/${params.slug}-1200x630.jpg`],
-    },
-    robots: 'index, follow'
+  // Create hotel record for metadata generation
+  const hotelRecord = {
+    slug: params.slug,
+    name: hotelName,
+    city: "Toronto",
+    area: getHotelArea(params.slug),
+    tags: getHotelTags(params.slug),
+    ogImage: `/og/${params.slug}-1200x630.jpg`,
+    seoTitle: `${hotelName} — Direct Booking | InnstaStay`,
+    seoDescription: HOTEL_DESCRIPTIONS[params.slug] || `Book ${hotelName} directly with no commissions. Compare real-time rates, amenities, and get the best price guaranteed.`,
   };
+  
+  return buildHotelMetadata(hotelRecord);
+}
+
+// Helper functions to get hotel area and tags
+function getHotelArea(slug: string): string | undefined {
+  const areaMap: Record<string, string> = {
+    "pantages-hotel-downtown-toronto": "Entertainment District",
+    "town-inn-suites": "Downtown",
+    "one-king-west-hotel-residence": "Financial District", 
+    "the-omni-king-edward-hotel": "Downtown",
+    "chelsea-hotel-toronto": "Downtown",
+    "the-anndore-house-jdv": "Yorkville",
+    "sutton-place-hotel-toronto": "Downtown",
+    "ace-hotel-toronto": "Entertainment District"
+  };
+  return areaMap[slug];
+}
+
+function getHotelTags(slug: string): string[] {
+  const tagMap: Record<string, string[]> = {
+    "pantages-hotel-downtown-toronto": ["luxury", "entertainment_district", "downtown"],
+    "town-inn-suites": ["extended_stay", "family_friendly", "downtown"],
+    "one-king-west-hotel-residence": ["luxury", "business", "financial_district"],
+    "the-omni-king-edward-hotel": ["luxury", "downtown"],
+    "chelsea-hotel-toronto": ["family_friendly", "downtown"],
+    "the-anndore-house-jdv": ["boutique", "luxury", "yorkville"],
+    "sutton-place-hotel-toronto": ["business", "downtown"],
+    "ace-hotel-toronto": ["boutique", "entertainment_district"]
+  };
+  return tagMap[slug] || ["downtown"];
 }
 
 export default async function HotelSlugPage({ 
@@ -250,354 +259,273 @@ export default async function HotelSlugPage({
         adults={parseInt(searchParams.adults || "2")}
         childrenCount={parseInt(searchParams.children || "0")}
       />
-      <script
+      
+      {/* FAQ Structured Data */}
+      <Script
+        id="faq-schema"
         type="application/ld+json"
+        strategy="afterInteractive"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Hotel",
-            "@id": `https://www.innstastay.com/hotels/${params.slug}#hotel`,
-            "name": hotel.name,
-            "description": hotelDescription,
-            "url": `https://www.innstastay.com/hotels/${params.slug}`,
-            "image": hotelImage,
-            "address": {
-              "@type": "PostalAddress",
-              "streetAddress": hotel.address?.split(',')[0] || "Downtown Toronto",
-              "addressLocality": "Toronto",
-              "addressRegion": "ON",
-              "addressCountry": "CA",
-              "postalCode": hotel.address?.match(/\b[A-Z]\d[A-Z]\s?\d[A-Z]\d\b/)?.[0] || "M5B 1V8"
-            },
-            "geo": {
-              "@type": "GeoCoordinates",
-              "latitude": 43.6532,
-              "longitude": -79.3832
-            },
-            "telephone": "+1-416-555-0123",
-            "starRating": {
-              "@type": "Rating",
-              "ratingValue": hotel.rating,
-              "bestRating": 5
-            },
-            "amenityFeature": uniqueAmenities.map(amenity => ({
-              "@type": "LocationFeatureSpecification",
-              "name": amenity,
-              "value": true
-            })),
-            "aggregateRating": {
-              "@type": "AggregateRating",
-              "ratingValue": hotel.rating,
-              "reviewCount": Math.floor(Math.random() * 500) + 100,
-              "bestRating": 5
-            },
-            "priceRange": "$$",
-            "paymentAccepted": ["Cash", "Credit Card", "Debit Card"],
-            "currenciesAccepted": "CAD",
-            "openingHours": "Mo-Su 00:00-23:59",
-            "checkinTime": "15:00",
-            "checkoutTime": "11:00",
-            "petsAllowed": false,
-            "wheelchairAccessible": true,
-            "hasMap": `https://www.google.com/maps?cid=${hotel.token}`,
-            "sameAs": [
-              `https://www.google.com/maps/place/${encodeURIComponent(hotel.name)}`,
-              `https://www.tripadvisor.com/Hotel_Review-g155019-d${Math.floor(Math.random() * 1000000)}-Reviews-${encodeURIComponent(hotel.name.replace(/\s+/g, '_'))}-Toronto_Ontario.html`
-            ]
-          })
+          __html: JSON.stringify(buildHotelFAQJsonLd(hotel.name, "Toronto")),
         }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://www.innstastay.com/"
-              },
-              {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Hotels",
-                "item": "https://www.innstastay.com/search"
-              },
-              {
-                "@type": "ListItem",
-                "position": 3,
-                "name": "Toronto",
-                "item": "https://www.innstastay.com/hotels/toronto-downtown"
-              },
-              {
-                "@type": "ListItem",
-                "position": 4,
-                "name": hotel.name,
-                "item": `https://www.innstastay.com/hotels/${params.slug}`
-              }
-            ]
-          })
-        }}
-      />
+      
       <div className="min-h-screen bg-gray-50">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-zinc-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5">
-          <div className="flex justify-between items-center">
-            {/* Logo and Navigation Links */}
-            <div className="flex items-center gap-6">
-              <a href="/" className="flex flex-col items-center">
-                <OptimizedImage
-                  src="/innstastay-logo.svg"
-                  alt="InnstaStay Logo"
-                  width={100}
-                  height={80}
-                  priority
-                  className="h-12 sm:h-16 md:h-20 w-auto block"
-                />
-                <span className="text-xs text-blue-600 tracking-wide mt-1">Commission-Free Booking</span>
-              </a>
-              
-              {/* Desktop Navigation Links */}
-              <div className="hidden md:flex items-center space-x-8">
-                <ul className="flex space-x-8 text-md font-medium text-neutral-700">
-                  <li>
-                    <a href="/" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
-                      Home
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/about" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
-                      About
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/hotels/toronto-downtown" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
-                      Downtown Hotels
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/contact" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
-                      Contact
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            
-            {/* Right Side - CTA Button */}
-            <div className="flex items-center gap-4">
-              {/* Desktop CTA Button */}
-              <div className="hidden md:block">
-                <a href={`/search?checkin=${searchParams.checkin || ''}&checkout=${searchParams.checkout || ''}&adults=${searchParams.adults || ''}&children=${searchParams.children || ''}`} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                  Search Hotels
+        {/* Navigation */}
+        <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-zinc-100 shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5">
+            <div className="flex justify-between items-center">
+              {/* Logo and Navigation Links */}
+              <div className="flex items-center gap-6">
+                <a href="/" className="flex flex-col items-center">
+                  <OptimizedImage
+                    src="/innstastay-logo.svg"
+                    alt="InnstaStay Logo"
+                    width={100}
+                    height={80}
+                    priority
+                    className="h-12 sm:h-16 md:h-20 w-auto block"
+                  />
+                  <span className="text-xs text-blue-600 tracking-wide mt-1">Commission-Free Booking</span>
                 </a>
-              </div>
-              
-              {/* Mobile Menu Button */}
-              <div className="md:hidden">
-                <a href={`/search?checkin=${searchParams.checkin || ''}&checkout=${searchParams.checkout || ''}&adults=${searchParams.adults || ''}&children=${searchParams.children || ''}`} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm">
-                  Search
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Brand-First Header Strip */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-400 text-white p-4 sm:p-6 rounded-b-xl shadow-md">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
-            <div>
-                        <Link 
-            href={`/search?checkin=${searchParams.checkin || ''}&checkout=${searchParams.checkout || ''}&adults=${searchParams.adults || ''}&children=${searchParams.children || ''}`}
-            className="text-blue-100 hover:text-white flex items-center text-sm mb-2"
-          >
-            ← Back to Search
-          </Link>
-              <h1 className="text-2xl sm:text-3xl font-bold">{hotel.name}</h1>
-              <p className="text-sm text-blue-100">{hotel.address}</p>
-            </div>
-            <div className="text-sm font-semibold text-left sm:text-right">
-              Powered by <span className="text-white">InnstaStay</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Breadcrumb Navigation */}
-        <BreadcrumbNav 
-          items={[
-            { label: 'Hotels', href: '/search' },
-            { label: 'Toronto', href: '/hotels/toronto-downtown' },
-            { label: hotel.name }
-          ]} 
-        />
-        
-        {/* Hero Card with Check Direct Rates Button */}
-        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md mt-4">
-          <div className="text-center sm:text-left">
-            <div className="flex items-center justify-center sm:justify-start mb-3">
-              <div className="flex items-center gap-1">
-                <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                <span className="text-sm font-semibold text-gray-800">{hotel.rating}</span>
-                <span className="text-sm text-gray-500">• {hotel.rating}-star hotel</span>
-              </div>
-            </div>
-            
-            <div className="mt-4">
-              <DynamicHotelData 
-                slug={params.slug}
-                searchParams={searchParams}
-                hotel={hotel}
-                hotelImage={hotelImage}
-                hasSearchParams={hasSearchParams}
-              />
-            </div>
-            
-            {/* Value Signals */}
-            <div className="text-xs text-gray-400 mt-3 text-center sm:text-left">
-              ✅ No middlemen · 💵 No extra fees · 🔒 Secure checkout
-            </div>
-          </div>
-        </div>
-
-        {/* Hotel Description Section */}
-        <div className="mt-8 bg-white rounded-xl shadow-md p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">About {hotel.name}</h3>
-          <p className="text-gray-600 leading-relaxed mb-4">
-            {hotelDescription}
-          </p>
-          
-          {/* Unique Selling Points */}
-          <div className="mt-6">
-            <h4 className="font-semibold text-gray-800 mb-3">What Makes {hotel.name.split(' ').slice(-2).join(' ')} Special</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {uniqueAmenities.slice(0, 4).map((amenity, index) => (
-                <div key={`unique-amenity-${amenity}`} className="flex items-center gap-2 text-sm text-gray-600">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                  {amenity}
+                
+                {/* Desktop Navigation Links */}
+                <div className="hidden md:flex items-center space-x-8">
+                  <ul className="flex space-x-8 text-md font-medium text-neutral-700">
+                    <li>
+                      <a href="/" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
+                        Home
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/about" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
+                        About
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/hotels/toronto-downtown" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
+                        Downtown Hotels
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/contact" className="hover:border-b-2 border-blue-600 pb-1 transition-colors duration-200">
+                        Contact
+                      </a>
+                    </li>
+                  </ul>
                 </div>
-              ))}
+              </div>
+              
+              {/* Right Side - CTA Button */}
+              <div className="flex items-center gap-4">
+                {/* Desktop CTA Button */}
+                <div className="hidden md:block">
+                  <a href={`/search?checkin=${searchParams.checkin || ''}&checkout=${searchParams.checkout || ''}&adults=${searchParams.adults || ''}&children=${searchParams.children || ''}`} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                    Search Hotels
+                  </a>
+                </div>
+                
+                {/* Mobile Menu Button */}
+                <div className="md:hidden">
+                  <a href={`/search?checkin=${searchParams.checkin || ''}&checkout=${searchParams.checkout || ''}&adults=${searchParams.adults || ''}&children=${searchParams.children || ''}`} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm">
+                    Search
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        {/* Brand-First Header Strip */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-400 text-white p-4 sm:p-6 rounded-b-xl shadow-md">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
+              <div>
+                <Link 
+                  href={`/search?checkin=${searchParams.checkin || ''}&checkout=${searchParams.checkout || ''}&adults=${searchParams.adults || ''}&children=${searchParams.children || ''}`}
+                  className="text-blue-100 hover:text-white flex items-center text-sm mb-2"
+                >
+                  ← Back to Search
+                </Link>
+                <h1 className="text-2xl sm:text-3xl font-bold">{hotel.name}</h1>
+                <p className="text-sm text-blue-100">{hotel.address}</p>
+              </div>
+              <div className="text-sm font-semibold text-left sm:text-right">
+                Powered by <span className="text-white">InnstaStay</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          {/* Breadcrumb Navigation */}
+          <BreadcrumbNav 
+            items={[
+              { label: 'Hotels', href: '/search' },
+              { label: 'Toronto', href: '/hotels/toronto-downtown' },
+              { label: hotel.name }
+            ]} 
+          />
+          
+          {/* Hero Card with Check Direct Rates Button */}
+          <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md mt-4">
+            <div className="text-center sm:text-left">
+              <div className="flex items-center justify-center sm:justify-start mb-3">
+                <div className="flex items-center gap-1">
+                  <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                  <span className="text-sm font-semibold text-gray-800">{hotel.rating}</span>
+                  <span className="text-sm text-gray-500">• {hotel.rating}-star hotel</span>
+                </div>
+              </div>
+              
+              <div className="mt-4">
+                <DynamicHotelData 
+                  slug={params.slug}
+                  searchParams={searchParams}
+                  hotel={hotel}
+                  hotelImage={hotelImage}
+                  hasSearchParams={hasSearchParams}
+                />
+              </div>
+              
+              {/* Value Signals */}
+              <div className="text-xs text-gray-400 mt-3 text-center sm:text-left">
+                ✅ No middlemen · 💵 No extra fees · 🔒 Secure checkout
+              </div>
             </div>
           </div>
 
-          {/* Standard Amenities */}
-          <div className="mt-6">
-            <h4 className="font-semibold text-gray-800 mb-3">Hotel Amenities</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {hotel.amenities?.map((amenity, index) => (
-                <div key={`hotel-amenity-${amenity}`} className="flex items-center gap-2 text-sm text-gray-600">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                  {amenity}
+          {/* Hotel Description Section */}
+          <div className="mt-8 bg-white rounded-xl shadow-md p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">About {hotel.name}</h3>
+            <p className="text-gray-600 leading-relaxed mb-4">
+              {hotelDescription}
+            </p>
+            
+            {/* Unique Selling Points */}
+            <div className="mt-6">
+              <h4 className="font-semibold text-gray-800 mb-3">What Makes {hotel.name.split(' ').slice(-2).join(' ')} Special</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {uniqueAmenities.slice(0, 4).map((amenity, index) => (
+                  <div key={`unique-amenity-${amenity}`} className="flex items-center gap-2 text-sm text-gray-600">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    {amenity}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Standard Amenities */}
+            <div className="mt-6">
+              <h4 className="font-semibold text-gray-800 mb-3">Hotel Amenities</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {hotel.amenities?.map((amenity, index) => (
+                  <div key={`hotel-amenity-${amenity}`} className="flex items-center gap-2 text-sm text-gray-600">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    {amenity}
+                  </div>
+                )) || (
+                  <div className="text-sm text-gray-500">Amenities information not available</div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Location Section */}
+          <div className="mt-8 bg-white rounded-xl shadow-md p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Location & Accessibility</h3>
+            <div className="flex items-start gap-3">
+              <MapPin className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-gray-800 font-medium">{hotel.address}</p>
+                <p className="text-sm text-gray-600 mt-1">
+                  Located in downtown Toronto, this hotel offers easy access to major attractions, 
+                  shopping districts, and business centers. Perfect for both business and leisure travelers.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Related Hotels Section for Internal Linking */}
+          <div className="mt-8 bg-white rounded-xl shadow-md p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Other Hotels in Toronto</h3>
+            <p className="text-sm text-gray-600 mb-4">Compare rates and amenities with other downtown Toronto hotels</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {TORONTO_HOTELS.filter(h => h.name !== hotel.name).slice(0, 6).map((relatedHotel) => {
+                const relatedSlug = HOTEL_SLUG_MAP[relatedHotel.token];
+                return (
+                  <Link
+                    key={relatedHotel.token}
+                    href={`/hotels/${relatedSlug}?checkin=${searchParams.checkin || ''}&checkout=${searchParams.checkout || ''}&adults=${searchParams.adults || ''}&children=${searchParams.children || ''}`}
+                    className="block p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
+                  >
+                    <div className="font-medium text-gray-800 hover:text-blue-600 transition-colors">
+                      {relatedHotel.name}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {relatedHotel.address?.split(',')[0] || "Downtown Toronto"}
+                    </div>
+                    <div className="flex items-center gap-1 mt-1">
+                      <Star className="w-3 h-3 text-yellow-500 fill-current" />
+                      <span className="text-xs text-gray-600">{relatedHotel.rating}</span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* FAQ Section */}
+          <div className="mt-8 bg-white rounded-xl shadow-md p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Frequently Asked Questions</h3>
+            <div className="space-y-4">
+              {HOTEL_FAQS[params.slug]?.map((faq, index) => (
+                <div key={`faq-${faq.question}`} className="border-b border-gray-100 pb-4 last:border-b-0">
+                  <h4 className="font-medium text-gray-800 mb-2">{faq.question}</h4>
+                  <p className="text-sm text-gray-600 leading-relaxed">{faq.answer}</p>
                 </div>
               )) || (
-                <div className="text-sm text-gray-500">Amenities information not available</div>
+                <div className="text-sm text-gray-500">
+                  <p>Have questions about {hotel.name}? Contact us for more information about rates, amenities, and availability.</p>
+                </div>
               )}
             </div>
           </div>
-        </div>
 
-        {/* Location Section */}
-        <div className="mt-8 bg-white rounded-xl shadow-md p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Location & Accessibility</h3>
-          <div className="flex items-start gap-3">
-            <MapPin className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="text-gray-800 font-medium">{hotel.address}</p>
-              <p className="text-sm text-gray-600 mt-1">
-                Located in downtown Toronto, this hotel offers easy access to major attractions, 
-                shopping districts, and business centers. Perfect for both business and leisure travelers.
-              </p>
-            </div>
+          {/* CTA Section */}
+          <div className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 text-center">
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">
+              Ready to Check Rates?
+            </h3>
+            <p className="text-gray-600 mb-4">
+              Check real-time availability and rates directly from the hotel with no commissions or hidden fees.
+            </p>
+            <a 
+              href="/search" 
+              className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg shadow-lg font-semibold transition-all duration-200 transform hover:-translate-y-0.5"
+            >
+              Check Direct Rates
+            </a>
+          </div>
+
+          {/* Footer Branding */}
+          <div className="mt-12 text-center text-sm text-gray-400">
+            Built for travelers who book smart. Powered by <span className="text-blue-600 font-semibold">InnstaStay</span>.
           </div>
         </div>
 
-        {/* Related Hotels Section for Internal Linking */}
-        <div className="mt-8 bg-white rounded-xl shadow-md p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Other Hotels in Toronto</h3>
-          <p className="text-sm text-gray-600 mb-4">Compare rates and amenities with other downtown Toronto hotels</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {TORONTO_HOTELS.filter(h => h.name !== hotel.name).slice(0, 6).map((relatedHotel) => {
-              const relatedSlug = HOTEL_SLUG_MAP[relatedHotel.token];
-              return (
-                <Link
-                  key={relatedHotel.token}
-                  href={`/hotels/${relatedSlug}?checkin=${searchParams.checkin || ''}&checkout=${searchParams.checkout || ''}&adults=${searchParams.adults || ''}&children=${searchParams.children || ''}`}
-                  className="block p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
-                >
-                  <div className="font-medium text-gray-800 hover:text-blue-600 transition-colors">
-                    {relatedHotel.name}
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    {relatedHotel.address?.split(',')[0] || "Downtown Toronto"}
-                  </div>
-                  <div className="flex items-center gap-1 mt-1">
-                    <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                    <span className="text-xs text-gray-600">{relatedHotel.rating}</span>
-                  </div>
-                </Link>
-              );
-            })}
+        {/* Mobile Sticky CTA */}
+        <div className="fixed bottom-0 w-full bg-white border-t shadow-sm p-4 md:hidden">
+          <div className="flex justify-center">
+            <a 
+              href="/search" 
+              className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold text-center w-full max-w-sm"
+            >
+              Check Direct Rates
+            </a>
           </div>
-        </div>
-
-        {/* FAQ Section */}
-        <div className="mt-8 bg-white rounded-xl shadow-md p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Frequently Asked Questions</h3>
-          <div className="space-y-4">
-            {HOTEL_FAQS[params.slug]?.map((faq, index) => (
-              <div key={`faq-${faq.question}`} className="border-b border-gray-100 pb-4 last:border-b-0">
-                <h4 className="font-medium text-gray-800 mb-2">{faq.question}</h4>
-                <p className="text-sm text-gray-600 leading-relaxed">{faq.answer}</p>
-              </div>
-            )) || (
-              <div className="text-sm text-gray-500">
-                <p>Have questions about {hotel.name}? Contact us for more information about rates, amenities, and availability.</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 text-center">
-          <h3 className="text-lg font-semibold text-gray-800 mb-3">
-            Ready to Check Rates?
-          </h3>
-          <p className="text-gray-600 mb-4">
-            Check real-time availability and rates directly from the hotel with no commissions or hidden fees.
-          </p>
-          <a 
-            href="/search" 
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg shadow-lg font-semibold transition-all duration-200 transform hover:-translate-y-0.5"
-          >
-            Check Direct Rates
-          </a>
-        </div>
-
-        {/* Footer Branding */}
-        <div className="mt-12 text-center text-sm text-gray-400">
-          Built for travelers who book smart. Powered by <span className="text-blue-600 font-semibold">InnstaStay</span>.
         </div>
       </div>
-
-      {/* Mobile Sticky CTA */}
-      <div className="fixed bottom-0 w-full bg-white border-t shadow-sm p-4 md:hidden">
-        <div className="flex justify-center">
-          <a 
-            href="/search" 
-            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold text-center w-full max-w-sm"
-          >
-            Check Direct Rates
-          </a>
-        </div>
-      </div>
-    </div>
     </>
   );
 } 
