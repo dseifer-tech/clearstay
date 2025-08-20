@@ -38,7 +38,6 @@ export default function HotelCard({ hotel, index }: HotelCardProps) {
             className="object-cover group-hover:scale-110 transition-transform duration-700"
             wrapperClassName="h-56 w-full relative overflow-hidden"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            loading="lazy"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center">
