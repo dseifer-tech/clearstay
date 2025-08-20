@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { gtmEvent } from "@/lib/ga4";
 
 interface HotelPageTrackerProps {
@@ -31,14 +31,14 @@ export default function HotelPageTracker({
     });
   }, [hotelName, slug, checkin, checkout, adults, childrenCount]);
 
-  const handleBookDirect = (bookingUrl: string) => {
+  const handleBookDirect = useCallback((bookingUrl: string) => {
     gtmEvent('booking_click', {
       hotel_name: hotelName,
       hotel_slug: slug,
       source: 'hotel_page'
     });
     window.open(bookingUrl, '_blank');
-  };
+  }, [hotelName, slug]);
 
   // Expose the handler globally for use in the page
   useEffect(() => {

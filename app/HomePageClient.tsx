@@ -208,27 +208,27 @@ export default function HomePageClient() {
                 <Search className="w-10 h-10 text-blue-600" />
               </div>
               <h3 className="text-xl font-semibold text-neutral-800 mb-3">1. Search Hotels</h3>
-              <p className="text-neutral-600 leading-relaxed">
-                Enter your dates and preferences. We'll show you verified hotels with real-time availability.
-              </p>
+                             <p className="text-neutral-600 leading-relaxed">
+                 Enter your dates and preferences. We&apos;ll show you verified hotels with real-time availability.
+               </p>
             </div>
             <div className="text-center group">
               <div className="w-20 h-20 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-200">
                 <DollarSign className="w-10 h-10 text-green-600" />
               </div>
               <h3 className="text-xl font-semibold text-neutral-800 mb-3">2. Compare Direct Rates</h3>
-              <p className="text-neutral-600 leading-relaxed">
-                See the hotel's actual price—no markups, no hidden fees, no booking charges.
-              </p>
+                             <p className="text-neutral-600 leading-relaxed">
+                 See the hotel&apos;s actual price—no markups, no hidden fees, no booking charges.
+               </p>
             </div>
             <div className="text-center group">
               <div className="w-20 h-20 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-200">
                 <Link className="w-10 h-10 text-purple-600" />
               </div>
               <h3 className="text-xl font-semibold text-neutral-800 mb-3">3. Book Direct</h3>
-              <p className="text-neutral-600 leading-relaxed">
-                You book directly on the hotel's website. Keep all loyalty benefits and points.
-              </p>
+                             <p className="text-neutral-600 leading-relaxed">
+                 You book directly on the hotel&apos;s website. Keep all loyalty benefits and points.
+               </p>
             </div>
           </div>
         </div>
@@ -241,9 +241,9 @@ export default function HomePageClient() {
             <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-6">
               What You Get
             </h2>
-            <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
-              The hotel's best available price with all the benefits of direct booking.
-            </p>
+                         <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
+               The hotel&apos;s best available price with all the benefits of direct booking.
+             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -252,7 +252,7 @@ export default function HomePageClient() {
                 <DollarSign className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-lg font-semibold text-neutral-800 mb-3">Transparent Pricing</h3>
-              <p className="text-neutral-600 text-sm leading-relaxed">The hotel's actual rate with no markups or hidden fees</p>
+                             <p className="text-neutral-600 text-sm leading-relaxed">The hotel&apos;s actual rate with no markups or hidden fees</p>
             </div>
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 text-center group hover:shadow-lg transition-shadow duration-200">
               <div className="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-200">

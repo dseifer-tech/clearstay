@@ -12,7 +12,7 @@ interface SecondaryCTAProps {
 
 export default function SecondaryCTA({ 
   title = "Ready to Find Your Perfect Stay?",
-  subtitle = "Compare live rates from Toronto's top hotels in seconds.",
+  subtitle = "Compare live rates from Toronto&apos;s top hotels in seconds.",
   buttonText = "Compare Rates Now",
   href = "/search",
   className = ""
@@ -34,7 +34,7 @@ export default function SecondaryCTA({
           <ArrowRight className="w-5 h-5" />
         </a>
         <p className="text-sm text-gray-500 mt-4">
-          It's free and only takes 10 seconds.
+          It&apos;s free and only takes 10 seconds.
         </p>
       </div>
     </section>

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Suspense } from 'react'
+import Script from 'next/script'
 
 import PageViewTracker from './components/PageViewTracker'
 import OptimizedImage from './components/OptimizedImage'
@@ -64,16 +65,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-             <head>
-         {/* Google Tag Manager */}
-         <script dangerouslySetInnerHTML={{
-           __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-           new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-           j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-           'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-           })(window,document,'script','dataLayer','GTM-T22LS2CW');`
-         }} />
-         {/* End Google Tag Manager */}
+                   <head>
         
         {/* Preload main font for performance */}
         <link 
@@ -108,6 +100,19 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/innstastay-logo.svg" />
       </head>
       <body className={inter.className}>
+        {/* Google Tag Manager */}
+        <Script
+          id="gtm-script"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-T22LS2CW');`
+          }}
+        />
+        
         {/* Organization Schema */}
         <script
           type="application/ld+json"

@@ -131,7 +131,7 @@ export default function PrivacyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">8. Changes to This Policy</h2>
               <p className="text-gray-700">
-                We may update this privacy policy from time to time. We will notify users of any material changes by updating the "Last updated" date at the top of this page.
+                We may update this privacy policy from time to time. We will notify users of any material changes by updating the &quot;Last updated&quot; date at the top of this page.
               </p>
             </section>
 

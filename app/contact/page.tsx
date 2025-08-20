@@ -23,7 +23,7 @@ export default function ContactPage() {
           Get in touch
         </h1>
         <p className="mt-2 text-zinc-600 max-w-2xl">
-          We're here to help with questions about bookings, partnerships, or platform support.
+          We&apos;re here to help with questions about bookings, partnerships, or platform support.
         </p>
       </section>
 

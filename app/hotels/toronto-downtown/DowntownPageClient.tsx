@@ -153,7 +153,7 @@ export default function DowntownPageClient() {
                 </svg>
               </div>
               <h3 className="font-semibold text-gray-800">No Booking Fees</h3>
-              <p className="text-gray-600 text-sm mt-1">We don't add fees. You book directly with the hotel and pay exactly what they charge.</p>
+              <p className="text-gray-600 text-sm mt-1">We don&apos;t add fees. You book directly with the hotel and pay exactly what they charge.</p>
             </div>
           </div>
         </div>

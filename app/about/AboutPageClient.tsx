@@ -139,7 +139,7 @@ export default function AboutPageClient() {
               </div>
               <h3 className="text-xl font-semibold mb-4">Hidden Fees</h3>
               <p className="text-gray-600">
-                Service charges, booking fees, and other hidden costs that aren't disclosed upfront.
+                Service charges, booking fees, and other hidden costs that aren&apos;t disclosed upfront.
               </p>
             </div>
             
@@ -174,7 +174,7 @@ export default function AboutPageClient() {
                   <CheckCircle className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
                     <strong>Transparent Pricing</strong>
-                    <p className="text-gray-600 text-sm">See the hotel's actual rate with no hidden fees</p>
+                    <p className="text-gray-600 text-sm">See the hotel&apos;s actual rate with no hidden fees</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -251,7 +251,7 @@ export default function AboutPageClient() {
               </div>
               <h3 className="text-xl font-semibold mb-3">2. Transparent Pricing</h3>
               <p className="text-gray-600">
-                See the hotel's actual rate with no markups, commissions, or hidden fees.
+                See the hotel&apos;s actual rate with no markups, commissions, or hidden fees.
               </p>
             </div>
             
@@ -261,7 +261,7 @@ export default function AboutPageClient() {
               </div>
               <h3 className="text-xl font-semibold mb-3">3. Book Direct</h3>
               <p className="text-gray-600">
-                You're redirected to the hotel's official website to complete your booking.
+                You&apos;re redirected to the hotel&apos;s official website to complete your booking.
               </p>
             </div>
           </div>
@@ -357,7 +357,7 @@ export default function AboutPageClient() {
             "@context": "https://schema.org",
             "@type": "AboutPage",
             "name": "About InnstaStay",
-            "description": "Learn how InnstaStay eliminates middlemen to provide direct hotel booking in Toronto. No commissions, no markups, just the hotel's actual price.",
+            "description": "Learn how InnstaStay eliminates middlemen to provide direct hotel booking in Toronto. No commissions, no markups, just the hotel&apos;s actual price.",
             "url": "https://www.innstastay.com/about",
             "mainEntity": {
               "@type": "Organization",
