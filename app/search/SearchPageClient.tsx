@@ -593,98 +593,128 @@ export default function SearchPageClient() {
               </div>
             </div>
 
-                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-               {hotels.map((hotel, index) => (
-                 <div key={index} className="fade-in-up bg-white rounded-xl shadow-md overflow-hidden card-hover-lift">
-                   {/* Hotel Image */}
-                   <div className="h-48 w-full relative image-hover-zoom" style={{ minHeight: '192px' }}>
-                     {hotel.image ? (
-                       <OptimizedImage 
-                         src={proxify(hotel.image, hotel.hotel)} 
-                         alt={hotel.hotel} 
-                         fill
-                         className="object-cover"
-                         wrapperClassName="h-48 w-full relative rounded-xl overflow-hidden"
-                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                       />
-                     ) : (
-                       <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                         <span className="text-gray-400">No image available</span>
-                       </div>
-                     )}
+                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+               {hotels.map((hotel, index) => {
+                 // Create a subtle color variation for each card
+                 const colorVariants = [
+                   'from-blue-500/10 to-indigo-500/10 border-blue-200/50',
+                   'from-emerald-500/10 to-teal-500/10 border-emerald-200/50',
+                   'from-purple-500/10 to-violet-500/10 border-purple-200/50',
+                   'from-amber-500/10 to-orange-500/10 border-amber-200/50',
+                   'from-rose-500/10 to-pink-500/10 border-rose-200/50',
+                   'from-cyan-500/10 to-blue-500/10 border-cyan-200/50'
+                 ];
+                 const colorVariant = colorVariants[index % colorVariants.length];
+                 
+                 return (
+                   <div key={index} className={`group relative bg-white/80 backdrop-blur-sm rounded-2xl border ${colorVariant} shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden`}>
+                     {/* Gradient overlay for subtle color */}
+                     <div className={`absolute inset-0 bg-gradient-to-br ${colorVariant} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
                      
-                     {/* Rating Badge */}
-                     {hotel.rating && (
-                       <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
-                         <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                         <span className="text-sm font-semibold text-gray-800">{hotel.rating}</span>
+                     {/* Hotel Image */}
+                     <div className="h-56 w-full relative overflow-hidden">
+                       {hotel.image ? (
+                         <OptimizedImage 
+                           src={proxify(hotel.image, hotel.hotel)} 
+                           alt={hotel.hotel} 
+                           fill
+                           className="object-cover group-hover:scale-110 transition-transform duration-700"
+                           wrapperClassName="h-56 w-full relative overflow-hidden"
+                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                         />
+                       ) : (
+                         <div className="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center">
+                           <Building className="w-12 h-12 text-slate-400" />
+                         </div>
+                       )}
+                       
+                       {/* Rating Badge */}
+                       {hotel.rating && (
+                         <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md rounded-xl px-3 py-2 flex items-center gap-2 shadow-lg">
+                           <Star className="w-4 h-4 text-amber-500 fill-current" />
+                           <span className="text-sm font-bold text-slate-800">{hotel.rating}</span>
+                         </div>
+                       )}
+                       
+                       {/* Premium Badge */}
+                       <div className="absolute top-4 right-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                         Premium
                        </div>
-                     )}
-                   </div>
+                     </div>
 
-                  {/* Hotel Info */}
-                  <div className="p-4">
-                    <h3 className="font-semibold text-lg text-gray-800 mb-2 line-clamp-2">
-                      {hotel.hotel}
-                    </h3>
-                    
-                    <p className="text-sm text-gray-600 mb-3 line-clamp-1">
-                      {hotel.address}
-                    </p>
+                    {/* Hotel Info */}
+                    <div className="p-6 relative z-10">
+                      <h3 className="font-bold text-xl text-slate-800 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
+                        {hotel.hotel}
+                      </h3>
+                      
+                      <p className="text-sm text-slate-600 mb-4 line-clamp-2 leading-relaxed">
+                        {hotel.address}
+                      </p>
 
-                    {/* Price */}
-                    <div className="flex items-center justify-between mb-3">
-                      {hotel.before_taxes ? (
-                        <div>
-                          <span className="text-2xl font-bold text-green-600">
-                            ${hotel.before_taxes} CAD
-                          </span>
-                          <span className="text-sm text-gray-500 ml-2">per night</span>
+                      {/* Price */}
+                      <div className="flex items-center justify-between mb-4">
+                        {hotel.before_taxes ? (
+                          <div>
+                            <span className="text-3xl font-bold text-green-600">
+                              ${hotel.before_taxes} CAD
+                            </span>
+                            <span className="text-sm text-slate-500 ml-2">per night</span>
+                          </div>
+                        ) : (
+                          <span className="text-xl font-semibold text-slate-600">Price on request</span>
+                        )}
+                        
+                        <div className="text-xs text-slate-500 text-right">
+                          <div className="flex items-center gap-1 mb-1">
+                            <Shield className="w-3 h-3" />
+                            <span>Direct booking</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Zap className="w-3 h-3" />
+                            <span>No fees</span>
+                          </div>
                         </div>
-                      ) : (
-                        <span className="text-lg font-semibold text-gray-600">Price on request</span>
+                      </div>
+
+                      {/* Remarks */}
+                      {hotel.remarks && (
+                        <div className="text-xs text-blue-600 mb-4 bg-gradient-to-r from-blue-50 to-blue-100 p-3 rounded-xl border border-blue-200/50">
+                          {hotel.remarks}
+                        </div>
                       )}
-                      
-                      <div className="text-xs text-gray-500 text-right">
-                        <div>Direct booking</div>
-                        <div>No fees</div>
+
+                      {/* Discount Remarks */}
+                      {hotel.discount_remarks && (
+                        <div className="text-xs text-green-600 mb-4 bg-gradient-to-r from-green-50 to-green-100 p-3 rounded-xl border border-green-200/50">
+                          {hotel.discount_remarks}
+                        </div>
+                      )}
+
+                      {/* Action Buttons */}
+                      <div className="flex gap-3">
+                        <button
+                          onClick={() => handleBookDirect(hotel.link, hotel.hotel)}
+                          className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                          Book Direct
+                        </button>
+                        
+                        <Link
+                          href={`/hotels/${hotelNameToSlug[hotel.hotel] || hotel.hotel.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}?checkin=${checkin}&checkout=${checkout}&adults=${adults}&children=${children}`}
+                          className="bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 text-slate-700 py-3 px-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Link>
                       </div>
                     </div>
-
-                    {/* Remarks */}
-                    {hotel.remarks && (
-                      <div className="text-xs text-blue-600 mb-3 bg-blue-50 p-2 rounded">
-                        {hotel.remarks}
-                      </div>
-                    )}
-
-                    {/* Discount Remarks */}
-                    {hotel.discount_remarks && (
-                      <div className="text-xs text-green-600 mb-3 bg-green-50 p-2 rounded">
-                        {hotel.discount_remarks}
-                      </div>
-                    )}
-
-                    {/* Action Buttons */}
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleBookDirect(hotel.link, hotel.hotel)}
-                        className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center gap-2"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                        Book Direct
-                      </button>
-                      
-                                                      <Link
-                                  href={`/hotels/${hotelNameToSlug[hotel.hotel] || hotel.hotel.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}?checkin=${checkin}&checkout=${checkout}&adults=${adults}&children=${children}`}
-                                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center"
-                                >
-                        <Eye className="w-4 h-4" />
-                      </Link>
-                    </div>
+                    
+                    {/* Subtle border glow on hover */}
+                    <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-blue-300/50 transition-colors duration-500 pointer-events-none"></div>
                   </div>
-                </div>
-              ))}
+                );
+               })}
             </div>
           </div>
         </>
@@ -706,9 +736,9 @@ export default function SearchPageClient() {
             {!checkin || !checkout ? (
               <>
                                  {/* Hotel Directory */}
-                 <div className="bg-white p-6 rounded-xl shadow-md">
-                   <h3 className="font-semibold text-gray-800 mb-4">Featured Hotels in Toronto</h3>
-                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                 <div className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-8 rounded-2xl shadow-xl border border-slate-200/50">
+                   <h3 className="text-2xl font-bold text-slate-800 mb-6 text-center">Featured Hotels in Toronto</h3>
+                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                      {[
                        { name: "Pantages Hotel Downtown Toronto", slug: "pantages-hotel-downtown-toronto", img: "https://lh5.googleusercontent.com/p/AF1QipMt1ZolVWnJTgIMqogAUCjh9EldFh8vSDHY5TU=s10000" },
                        { name: "Town Inn Suites", slug: "town-inn-suites", img: "https://lh5.googleusercontent.com/p/AF1QipN2HhQs9GSWKldSNWx_1o4EC3ojDlzgG9UVxgV1=s10000" },
@@ -718,33 +748,57 @@ export default function SearchPageClient() {
                        { name: "The Anndore House - JDV by Hyatt", slug: "the-anndore-house-jdv", img: "https://lh5.googleusercontent.com/p/AF1QipOh__jl8gimUkhS0FUaJSr1ft0-WORdu7KieteX=s10000" },
                        { name: "Sutton Place Hotel Toronto", slug: "sutton-place-hotel-toronto", img: "https://lh5.googleusercontent.com/p/AF1QipPFImvLwmvVatoeTOPO-h4UCI53SGoH1ITu0BbY=s10000" },
                        { name: "Ace Hotel Toronto", slug: "ace-hotel-toronto", img: "https://lh5.googleusercontent.com/p/AF1QipNGix9dVAg06s82e08vaUXkAhqFlV2XPyTByWkj=s10000" }
-                     ].map((hotel) => (
-                       <Link
-                         key={hotel.slug}
-                         href={`/hotels/${hotel.slug}`}
-                         className="card-hover-lift block p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-white transition-all duration-200"
-                       >
-                         <div className="flex items-center gap-3">
-                           <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 relative">
-                             <OptimizedImage 
-                               src={proxify(hotel.img, hotel.name)} 
-                               alt={hotel.name} 
-                               fill
-                               className="object-cover"
-                               sizes="48px"
-                             />
-                           </div>
-                           <div className="flex-1">
-                             <div className="font-medium text-gray-800 hover:text-blue-600 transition-colors">
-                               {hotel.name}
+                     ].map((hotel, index) => {
+                       // Create a subtle color variation for each card
+                       const colorVariants = [
+                         'from-blue-500/10 to-indigo-500/10 border-blue-200/50',
+                         'from-emerald-500/10 to-teal-500/10 border-emerald-200/50',
+                         'from-purple-500/10 to-violet-500/10 border-purple-200/50',
+                         'from-amber-500/10 to-orange-500/10 border-amber-200/50',
+                         'from-rose-500/10 to-pink-500/10 border-rose-200/50',
+                         'from-cyan-500/10 to-blue-500/10 border-cyan-200/50'
+                       ];
+                       const colorVariant = colorVariants[index % colorVariants.length];
+                       
+                       return (
+                         <Link
+                           key={hotel.slug}
+                           href={`/hotels/${hotel.slug}`}
+                           className={`group relative bg-white/80 backdrop-blur-sm rounded-2xl border ${colorVariant} shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-1 overflow-hidden`}
+                         >
+                           <div className="p-6">
+                             <div className="flex items-center gap-4">
+                               <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 relative group-hover:scale-110 transition-transform duration-300">
+                                 <OptimizedImage 
+                                   src={proxify(hotel.img, hotel.name)} 
+                                   alt={hotel.name} 
+                                   fill
+                                   className="object-cover"
+                                   sizes="64px"
+                                 />
+                               </div>
+                               <div className="flex-1">
+                                 <div className="font-bold text-slate-800 group-hover:text-blue-600 transition-colors duration-300 line-clamp-2">
+                                   {hotel.name}
+                                 </div>
+                                 <div className="flex items-center gap-2 mt-2">
+                                   <div className="text-xs text-green-600 bg-gradient-to-r from-green-50 to-emerald-50 px-3 py-1 rounded-full font-medium border border-green-200/50">
+                                     Direct Booking
+                                   </div>
+                                   <div className="text-xs text-slate-500 flex items-center gap-1">
+                                     <Shield className="w-3 h-3" />
+                                     <span>No Commission</span>
+                                   </div>
+                                 </div>
+                               </div>
                              </div>
-                             <div className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full inline-block mt-1">
-                               Direct Booking
-                             </div>
                            </div>
-                         </div>
-                       </Link>
-                     ))}
+                           
+                           {/* Subtle border glow on hover */}
+                           <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-blue-300/50 transition-colors duration-500 pointer-events-none"></div>
+                         </Link>
+                       );
+                     })}
                    </div>
                  </div>
               </>
