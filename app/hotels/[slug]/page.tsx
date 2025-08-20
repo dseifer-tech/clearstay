@@ -455,6 +455,7 @@ export default async function HotelSlugPage({
                 slug={params.slug}
                 searchParams={searchParams}
                 hotel={hotel}
+                hotelImage={hotelImage}
                 hasSearchParams={hasSearchParams}
               />
             </div>

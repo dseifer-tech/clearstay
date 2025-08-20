@@ -3,21 +3,17 @@
 import { useState, useEffect } from 'react';
 import OptimizedImage from '@/app/components/OptimizedImage';
 import { proxify } from '@/lib/img';
-
-interface Hotel {
-  name: string;
-  booking_url: string;
-  // Add other hotel properties as needed
-}
+import { Hotel } from '@/types/hotel';
 
 interface DynamicHotelDataProps {
   slug: string;
   searchParams: { checkin?: string; checkout?: string; adults?: string; children?: string };
   hotel: Hotel;
+  hotelImage?: string;
   hasSearchParams: boolean;
 }
 
-export default function DynamicHotelData({ slug, searchParams, hotel, hasSearchParams }: DynamicHotelDataProps) {
+export default function DynamicHotelData({ slug, searchParams, hotel, hotelImage, hasSearchParams }: DynamicHotelDataProps) {
   const [dynamicHotelData, setDynamicHotelData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -224,13 +220,32 @@ export default function DynamicHotelData({ slug, searchParams, hotel, hasSearchP
     );
   }
 
-  // Show static fallback
+  // Show static fallback with main hotel image
   return (
-    <a 
-      href={`/search?checkin=${searchParams.checkin || ''}&checkout=${searchParams.checkout || ''}&adults=${searchParams.adults || ''}&children=${searchParams.children || ''}`}
-      className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-200 transform hover:-translate-y-0.5 w-full sm:w-auto"
-    >
-      Check Direct Rates
-    </a>
+    <div className="space-y-6">
+      {/* Main Hotel Image */}
+      <div className="w-full h-64 sm:h-80 relative rounded-xl overflow-hidden shadow-lg">
+        <OptimizedImage
+          src={proxify(hotelImage || hotel.image_url || '', hotel.name)}
+          alt={hotel.name}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 1200px"
+          placeholder="blur"
+          className="object-cover"
+          wrapperClassName="w-full h-64 sm:h-80 relative rounded-xl overflow-hidden shadow-lg"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+      </div>
+      
+      {/* Check Direct Rates Button */}
+      <div className="text-center">
+        <a 
+          href={`/search?checkin=${searchParams.checkin || ''}&checkout=${searchParams.checkout || ''}&adults=${searchParams.adults || ''}&children=${searchParams.children || ''}`}
+          className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-200 transform hover:-translate-y-0.5 w-full sm:w-auto"
+        >
+          Check Direct Rates
+        </a>
+      </div>
+    </div>
   );
 }
