@@ -607,7 +607,7 @@ export default function SearchPageClient() {
                  const colorVariant = colorVariants[index % colorVariants.length];
                  
                  return (
-                   <div key={index} className={`group relative bg-white/80 backdrop-blur-sm rounded-2xl border ${colorVariant} shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden`}>
+                   <div key={`${hotel.hotel}-${hotel.source}`} className={`group relative bg-white/80 backdrop-blur-sm rounded-2xl border ${colorVariant} shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden`}>
                      {/* Gradient overlay for subtle color */}
                      <div className={`absolute inset-0 bg-gradient-to-br ${colorVariant} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
                      
