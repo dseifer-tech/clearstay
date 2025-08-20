@@ -224,7 +224,7 @@ export default function ProfessionalCalendar({
           <div className="grid grid-cols-7 gap-1">
             {days.map((date, index) => (
               <button
-                key={index}
+                key={date.toISOString()}
                 onClick={() => handleDateClick(date)}
                 onMouseEnter={() => setHoveredDate(date)}
                 onMouseLeave={() => setHoveredDate(null)}
